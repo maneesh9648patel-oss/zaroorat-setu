@@ -108,15 +108,17 @@ app.use((err, req, res, next) => {
   });
 });
 
-// Only listen if executed directly
-app.listen(PORT, '0.0.0.0', () => {
-  console.log(`=============================================================`);
-  console.log(`🌿 ZarooratSetu Combined Full-Stack Website & API Running!`);
-  console.log(`🌐 Website URL: http://localhost:${PORT}`);
-  console.log(`🔌 API Health:  http://localhost:${PORT}/api/health`);
-  console.log(`📍 Pilot Area:  REC Banda & nearby areas (HackFest 3.0)`);
-  console.log(`🔐 Phone OTP:   Mock Code 123456 (Demo mode active)`);
-  console.log(`=============================================================`);
-});
+// Only listen if executed directly (not when imported as a serverless handler on Vercel)
+if (process.env.VERCEL !== '1') {
+  app.listen(PORT, '0.0.0.0', () => {
+    console.log(`=============================================================`);
+    console.log(`🌿 ZarooratSetu Combined Full-Stack Website & API Running!`);
+    console.log(`🌐 Website URL: http://localhost:${PORT}`);
+    console.log(`🔌 API Health:  http://localhost:${PORT}/api/health`);
+    console.log(`📍 Pilot Area:  REC Banda & nearby areas (HackFest 3.0)`);
+    console.log(`🔐 Phone OTP:   Mock Code 123456 (Demo mode active)`);
+    console.log(`=============================================================`);
+  });
+}
 
 export default app;

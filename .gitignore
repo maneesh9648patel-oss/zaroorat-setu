@@ -1,0 +1,15 @@
+# Dependencies
+node_modules/
+client/node_modules/
+server/node_modules/
+
+# Production Build
+dist/
+
+# Local Tools and Environment
+.tools/
+.env
+.env.local
+
+# Logs
+*.log

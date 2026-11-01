@@ -1,25 +1,28 @@
 {
-  "name": "zaroorat-setu",
+  "name": "zarooratsetu",
   "version": "1.0.0",
-  "description": "ZarooratSetu - Low-cost community network connecting essential resources with verified individuals and NGOs (HackFest 3.0)",
+  "description": "ZarooratSetu - Civic Tech Community Resource Network (HackFest 3.0)",
   "type": "module",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
     "server": "node server/server.js",
     "client": "npm --prefix client run dev",
-    "build": "npm --prefix client run build",
+    "build": "npm --prefix client install && npm --prefix client run build",
     "test": "npm --prefix server test"
   },
-  "keywords": [
-    "civic-tech",
-    "hackfest-3.0",
-    "community-network",
-    "rec-banda"
-  ],
-  "author": "ZarooratSetu Team",
-  "license": "MIT",
+  "dependencies": {
+    "@google/generative-ai": "^0.21.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.1",
+    "express-rate-limit": "^7.4.1",
+    "helmet": "^8.0.0",
+    "zod": "^3.23.8"
+  },
   "devDependencies": {
     "localtunnel": "^2.0.2"
-  }
+  },
+  "author": "ZarooratSetu Team",
+  "license": "MIT"
 }
