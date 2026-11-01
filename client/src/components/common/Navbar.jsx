@@ -127,24 +127,35 @@ export default function Navbar({ onOpenVoiceRecorder, onOpenAssistant, onOpenLen
             <span>{currentLangObj?.label || 'भाषा'}</span>
           </button>
 
-          {/* Quick Theme Toggle (Dark / Light Mode) */}
-          <button
-            onClick={toggleTheme}
-            className="p-2 rounded-full bg-white/10 hover:bg-white/20 text-softYellow hover:text-white transition border border-white/10"
-            title={theme === 'dark' ? "लाइट मोड पर स्विच करें (Switch to Light)" : "डार्क मोड पर स्विच करें (Switch to Dark)"}
-            aria-label="Toggle Theme"
+          {/* Dark & Light Mode Toggle Switch (टॉगल स्विच) */}
+          <div 
+            className="flex items-center gap-1.5 px-2 py-1 rounded-full bg-white/10 border border-white/10 shrink-0"
+            title={theme === 'dark' ? "डार्क मोड सक्रिय (Dark Mode Active) - क्लिक कर लाइट मोड करें" : "लाइट मोड सक्रिय (Light Mode Active) - क्लिक कर डार्क मोड करें"}
           >
-            {theme === 'dark' ? (
-              <Sun className="w-3.5 h-3.5" />
-            ) : (
-              <Moon className="w-3.5 h-3.5" />
-            )}
-          </button>
+            <Sun className={`w-3.5 h-3.5 transition ${theme === 'light' ? 'text-softYellow' : 'text-cream/40'}`} />
+            <button
+              type="button"
+              role="switch"
+              aria-checked={theme === 'dark'}
+              onClick={toggleTheme}
+              className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
+                theme === 'dark' ? 'bg-teal' : 'bg-black/40'
+              }`}
+              aria-label="Theme toggle switch"
+            >
+              <span
+                className={`pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow-sm ring-0 transition duration-200 ease-in-out ${
+                  theme === 'dark' ? 'translate-x-4' : 'translate-x-0'
+                }`}
+              />
+            </button>
+            <Moon className={`w-3.5 h-3.5 transition ${theme === 'dark' ? 'text-softYellow' : 'text-cream/40'}`} />
+          </div>
 
           {/* Settings Modal Trigger (Theme, Mic & Camera Permissions) */}
           <button
             onClick={openSettings}
-            className="p-2 rounded-full bg-white/10 hover:bg-white/20 text-cream/80 hover:text-white transition border border-white/10"
+            className="p-2 rounded-full bg-white/10 hover:bg-white/20 text-cream/80 hover:text-white transition border border-white/10 shrink-0"
             title="सेटिंग्स (वेबसाइट मोड, माइक व कैमरा अनुमति)"
             aria-label="Settings"
           >

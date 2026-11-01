@@ -16,7 +16,7 @@
   }
 }
 
-/* Custom rounded cards and warm shadows */
+/* Original custom rounded cards and warm shadows */
 .card-warm {
   background-color: #FFFFFF;
   border-radius: 1.25rem;
@@ -41,62 +41,45 @@
   animation: voicePulse 1.6s infinite ease-in-out;
 }
 
-/* =========================================================================
-   DARK MODE UNIVERSAL STYLING (वेबसाइट डार्क मोड शैली)
-   ========================================================================= */
+/* Clean Dark Mode (Strictly applies when user toggles dark switch) */
 html.dark .bg-cream {
-  background-color: #1A1410 !important;
-  color: #FAF1E4 !important;
+  background-color: #1A1410;
+  color: #FAF1E4;
 }
 
 html.dark .bg-white {
-  background-color: #241D17 !important;
-  color: #FAF1E4 !important;
-  border-color: rgba(255, 255, 255, 0.12) !important;
+  background-color: #241D17;
+  color: #FAF1E4;
+  border-color: rgba(255, 255, 255, 0.12);
 }
 
 html.dark .text-darkbrown {
-  color: #FAF1E4 !important;
+  color: #FAF1E4;
 }
 
 html.dark .text-darkbrown\/70,
 html.dark .text-darkbrown\/80,
 html.dark .text-darkbrown\/65,
 html.dark .text-darkbrown\/60,
-html.dark .text-darkbrown\/50,
-html.dark .text-darkbrown\/40 {
-  color: rgba(250, 241, 228, 0.72) !important;
+html.dark .text-darkbrown\/50 {
+  color: rgba(250, 241, 228, 0.72);
 }
 
 html.dark .border-darkbrown\/10,
 html.dark .border-darkbrown\/15,
-html.dark .border-darkbrown\/20,
-html.dark .border-darkbrown\/25 {
-  border-color: rgba(255, 255, 255, 0.14) !important;
+html.dark .border-darkbrown\/20 {
+  border-color: rgba(255, 255, 255, 0.14);
 }
 
 html.dark .card-warm {
-  background-color: #241D17 !important;
-  border-color: rgba(255, 255, 255, 0.12) !important;
+  background-color: #241D17;
+  border-color: rgba(255, 255, 255, 0.12);
 }
 
 html.dark input:not([type="checkbox"]):not([type="radio"]),
 html.dark select,
 html.dark textarea {
-  background-color: #1B1511 !important;
-  color: #FAF1E4 !important;
-  border-color: rgba(255, 255, 255, 0.18) !important;
-}
-
-html.dark .bg-cream\/30,
-html.dark .bg-cream\/40,
-html.dark .bg-cream\/50,
-html.dark .bg-cream\/60,
-html.dark .bg-cream\/70 {
-  background-color: rgba(255, 255, 255, 0.06) !important;
-}
-
-html.dark .bg-teal-light {
-  background-color: rgba(31, 122, 107, 0.22) !important;
-  color: #8DE0D2 !important;
+  background-color: #1B1511;
+  color: #FAF1E4;
+  border-color: rgba(255, 255, 255, 0.18);
 }

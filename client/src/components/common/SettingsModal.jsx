@@ -10,6 +10,7 @@ export default function SettingsModal() {
   const { 
     theme, 
     setTheme, 
+    toggleTheme,
     micPermission, 
     setMicPermission, 
     cameraPermission, 
@@ -42,6 +43,16 @@ export default function SettingsModal() {
       stopCamTest();
     }
   }, [isSettingsModalOpen]);
+
+  // Ensure camera feed attaches to test video element
+  useEffect(() => {
+    if (isTestingCam && testVideoRef.current && camStreamRef.current) {
+      if (testVideoRef.current.srcObject !== camStreamRef.current) {
+        testVideoRef.current.srcObject = camStreamRef.current;
+      }
+      testVideoRef.current.play().catch(e => console.warn("Cam test play catch:", e));
+    }
+  }, [isTestingCam]);
 
   // Microphone Hardware Test
   const startMicTest = async () => {
@@ -87,7 +98,6 @@ export default function SettingsModal() {
       }
     } catch (err) {
       console.warn("Real mic note, falling back to simulated test:", err.message);
-      // Simulated mic meter animation for sandbox or headless environments
       let simVol = 20;
       const interval = setInterval(() => {
         simVol = Math.floor(Math.random() * 65) + 20;
@@ -119,7 +129,7 @@ export default function SettingsModal() {
     setMicVolume(0);
   };
 
-  // Camera Hardware Test
+  // Camera Hardware Test with dual-try constraints
   const startCamTest = async () => {
     if (cameraPermission === 'not_allowed') {
       setCamTestStatus("⚠️ कैमरा सेटिंग्स में 'बंद (Not Allowed)' है। टेस्ट करने हेतु पहले ऊपर से Allow करें।");
@@ -130,21 +140,38 @@ export default function SettingsModal() {
     setIsTestingCam(true);
 
     try {
-      if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-        const stream = await navigator.mediaDevices.getUserMedia({
-          video: { width: { ideal: 480 }, height: { ideal: 360 } }
-        });
-        camStreamRef.current = stream;
-        if (testVideoRef.current) {
-          testVideoRef.current.srcObject = stream;
-        }
-        setCamTestStatus("✓ कैमरा सक्रिय है! नीचे लाइव प्रिव्यू देखें।");
-      } else {
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
         throw new Error("getUserMedia not supported");
       }
+
+      if (camStreamRef.current) {
+        camStreamRef.current.getTracks().forEach(t => t.stop());
+        camStreamRef.current = null;
+      }
+
+      let stream;
+      try {
+        stream = await navigator.mediaDevices.getUserMedia({
+          video: { width: { ideal: 640 }, height: { ideal: 480 } }
+        });
+      } catch (errConstraint) {
+        stream = await navigator.mediaDevices.getUserMedia({ video: true });
+      }
+
+      camStreamRef.current = stream;
+
+      if (testVideoRef.current) {
+        testVideoRef.current.srcObject = stream;
+        try {
+          await testVideoRef.current.play();
+        } catch (e) {
+          console.warn("Play error:", e);
+        }
+      }
+      setCamTestStatus("✓ कैमरा सक्रिय है! नीचे लाइव प्रिव्यू फीड देखें।");
     } catch (err) {
       console.warn("Real cam note, falling back to simulated preview:", err.message);
-      setCamTestStatus("✓ कैमरा टेस्ट सिमुलेशन सक्रिय है।");
+      setCamTestStatus("✓ कैमरा सिमुलेशन मोड चालू है।");
     }
   };
 
@@ -165,14 +192,14 @@ export default function SettingsModal() {
         <div className="bg-darkbrown text-cream p-4 sm:p-5 flex items-center justify-between shrink-0 border-b border-white/10">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-2xl bg-teal text-white flex items-center justify-center shadow-md">
-              <Settings className="w-5 h-5 text-softYellow animate-spin-slow" />
+              <Settings className="w-5 h-5 text-softYellow" />
             </div>
             <div>
               <h2 className="font-black text-base sm:text-lg text-white leading-tight">
                 सेटिंग्स एवं अनुमतियाँ (Settings & Permissions)
               </h2>
               <p className="text-xs text-cream/70 mt-0.5">
-                वेबसाइट थीम (Dark/Light) एवं माइक/कैमरा हार्डवेयर नियंत्रण
+                वेबसाइट मोड (Dark / Light) एवं माइक व कैमरा हार्डवेयर नियंत्रण
               </p>
             </div>
           </div>
@@ -187,76 +214,61 @@ export default function SettingsModal() {
 
         {/* Modal Body */}
         <div className="p-4 sm:p-6 overflow-y-auto space-y-6">
-          {/* SECTION 1: DISPLAY THEME (Dark Mode / Light Mode) */}
+          {/* SECTION 1: DISPLAY THEME WITH TOGGLE SWITCH */}
           <div className="space-y-3">
-            <div className="flex items-center justify-between">
-              <div>
-                <h3 className="font-black text-sm text-darkbrown flex items-center gap-1.5">
-                  <Sun className="w-4 h-4 text-terracotta" />
-                  <span>वेबसाइट डिस्प्ले मोड (Website Theme)</span>
-                </h3>
-                <p className="text-xs text-darkbrown/65">
-                  अपनी पसंद के अनुसार दिन (लाइट) या रात (डार्क) मोड चुनें
-                </p>
-              </div>
-              <span className="text-[11px] font-extrabold px-2.5 py-0.5 rounded-full bg-softYellow/60 text-darkbrown">
-                {theme === 'dark' ? 'डार्क मोड सक्रिय' : 'लाइट मोड सक्रिय'}
-              </span>
+            <div>
+              <h3 className="font-black text-sm text-darkbrown flex items-center gap-1.5">
+                <Sun className="w-4 h-4 text-terracotta" />
+                <span>वेबसाइट मोड (Dark & Light Mode Toggle Switch)</span>
+              </h3>
+              <p className="text-xs text-darkbrown/65 mt-0.5">
+                नीचे दिए गए टॉगल स्विच से दिन (लाइट) या रात (डार्क) मोड बदलें
+              </p>
             </div>
 
-            {/* Light / Dark Mode Cards */}
-            <div className="grid grid-cols-2 gap-3">
-              {/* Light Theme Option */}
-              <button
-                type="button"
-                onClick={() => setTheme('light')}
-                className={`p-3.5 rounded-2xl border-2 text-left transition flex flex-col justify-between space-y-3 ${
-                  theme === 'light'
-                    ? 'border-terracotta bg-cream shadow-sm ring-2 ring-terracotta/20'
-                    : 'border-darkbrown/15 bg-white hover:border-darkbrown/30'
-                }`}
-              >
-                <div className="flex items-center justify-between">
-                  <div className="w-9 h-9 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center">
-                    <Sun className="w-5 h-5" />
-                  </div>
-                  {theme === 'light' && (
-                    <span className="w-5 h-5 rounded-full bg-terracotta text-white flex items-center justify-center text-xs">
-                      ✓
-                    </span>
-                  )}
+            {/* Prominent Toggle Switch Card */}
+            <div className="p-4 rounded-3xl bg-cream/50 border border-darkbrown/12 flex items-center justify-between gap-4">
+              <div className="flex items-center gap-3">
+                <div className={`w-11 h-11 rounded-2xl flex items-center justify-center ${
+                  theme === 'dark' ? 'bg-darkbrown text-softYellow' : 'bg-amber-100 text-amber-700'
+                }`}>
+                  {theme === 'dark' ? <Moon className="w-5 h-5" /> : <Sun className="w-5 h-5" />}
                 </div>
                 <div>
-                  <div className="font-black text-xs sm:text-sm text-darkbrown">लाइट मोड (Light)</div>
-                  <div className="text-[10px] text-darkbrown/65 mt-0.5">क्लासिक क्रीम व टेराकोटा</div>
+                  <div className="font-black text-xs sm:text-sm text-darkbrown flex items-center gap-2">
+                    <span>{theme === 'dark' ? 'डार्क मोड (Dark Mode)' : 'लाइट मोड (Light Mode)'}</span>
+                    <span className={`px-2 py-0.5 rounded-full text-[10px] font-black ${
+                      theme === 'dark' ? 'bg-teal text-white' : 'bg-amber-200 text-amber-900'
+                    }`}>
+                      {theme === 'dark' ? 'Active: Dark' : 'Active: Light (मूल रंग)'}
+                    </span>
+                  </div>
+                  <div className="text-[11px] text-darkbrown/65 mt-0.5">
+                    {theme === 'dark' ? 'आँखों हेतु सुगम रात्रि मोड' : 'क्लासिक मूल रंग (Original Colors)'}
+                  </div>
                 </div>
-              </button>
+              </div>
 
-              {/* Dark Theme Option */}
-              <button
-                type="button"
-                onClick={() => setTheme('dark')}
-                className={`p-3.5 rounded-2xl border-2 text-left transition flex flex-col justify-between space-y-3 ${
-                  theme === 'dark'
-                    ? 'border-teal bg-darkbrown text-cream shadow-sm ring-2 ring-teal/30'
-                    : 'border-darkbrown/15 bg-darkbrown/90 text-cream hover:border-teal'
-                }`}
-              >
-                <div className="flex items-center justify-between">
-                  <div className="w-9 h-9 rounded-xl bg-teal/30 text-softYellow flex items-center justify-center">
-                    <Moon className="w-5 h-5" />
-                  </div>
-                  {theme === 'dark' && (
-                    <span className="w-5 h-5 rounded-full bg-teal text-white flex items-center justify-center text-xs">
-                      ✓
-                    </span>
-                  )}
-                </div>
-                <div>
-                  <div className="font-black text-xs sm:text-sm text-white">डार्क मोड (Dark)</div>
-                  <div className="text-[10px] text-cream/70 mt-0.5">आंखों हेतु सुगम व बैटरी बचत</div>
-                </div>
-              </button>
+              {/* iOS / Material Style Theme Toggle Switch */}
+              <div className="flex items-center gap-2 shrink-0">
+                <span className="text-[11px] font-black text-darkbrown/70">{theme === 'dark' ? 'डार्क' : 'लाइट'}</span>
+                <button
+                  type="button"
+                  role="switch"
+                  aria-checked={theme === 'dark'}
+                  onClick={toggleTheme}
+                  className={`relative inline-flex h-7 w-13 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
+                    theme === 'dark' ? 'bg-teal' : 'bg-darkbrown/30'
+                  }`}
+                  aria-label="Toggle Website Dark/Light Theme"
+                >
+                  <span
+                    className={`pointer-events-none inline-block h-6 w-6 transform rounded-full bg-white shadow-md ring-0 transition duration-200 ease-in-out ${
+                      theme === 'dark' ? 'translate-x-6' : 'translate-x-0'
+                    }`}
+                  />
+                </button>
+              </div>
             </div>
           </div>
 
@@ -267,9 +279,9 @@ export default function SettingsModal() {
             <div>
               <h3 className="font-black text-sm text-darkbrown flex items-center gap-1.5">
                 <Shield className="w-4 h-4 text-teal" />
-                <span>हार्डवेयर अनुमतियाँ (Hardware Permissions)</span>
+                <span>हार्डवेयर अनुमतियाँ (Hardware Permissions: Allow / Not Allow)</span>
               </h3>
-              <p className="text-xs text-darkbrown/65">
+              <p className="text-xs text-darkbrown/65 mt-0.5">
                 माइक और कैमरा की अनुमति को अपनी इच्छानुसार चालू (Allow) या बंद (Not Allow) करें
               </p>
             </div>
@@ -448,21 +460,21 @@ export default function SettingsModal() {
                   )}
                 </div>
 
-                {/* Live Camera Viewfinder */}
-                {isTestingCam && (
-                  <div className="relative rounded-2xl overflow-hidden aspect-video bg-black flex items-center justify-center border border-darkbrown/15 animate-in fade-in">
-                    <video
-                      ref={testVideoRef}
-                      autoPlay
-                      playsInline
-                      muted
-                      className="w-full h-full object-cover"
-                    />
-                    <div className="absolute top-2 left-2 px-2 py-0.5 rounded-full bg-black/60 text-softYellow text-[10px] font-mono font-bold">
-                      CAMERA FEED TEST · ACTIVE
-                    </div>
+                {/* Live Camera Viewfinder (Always in DOM so ref is never null) */}
+                <div className={`relative rounded-2xl overflow-hidden aspect-video bg-black flex items-center justify-center border border-darkbrown/15 ${
+                  isTestingCam ? 'block' : 'hidden'
+                }`}>
+                  <video
+                    ref={testVideoRef}
+                    autoPlay
+                    playsInline
+                    muted
+                    className="w-full h-full object-cover"
+                  />
+                  <div className="absolute top-2 left-2 px-2 py-0.5 rounded-full bg-black/60 text-softYellow text-[10px] font-mono font-bold">
+                    CAMERA FEED TEST · ACTIVE
                   </div>
-                )}
+                </div>
 
                 {camTestStatus && (
                   <div className="text-[11px] font-semibold text-teal pt-1">
