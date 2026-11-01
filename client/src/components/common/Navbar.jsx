@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { MapPin, Globe, ChevronDown, Check, Mic, Home, ClipboardList, Box, CheckSquare, PhoneCall } from 'lucide-react';
+import { MapPin, Globe, ChevronDown, Check, Mic, Home, ClipboardList, Box, CheckSquare, PhoneCall, Bot, Sparkles } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { useLanguage } from '../../contexts/LanguageContext';
 import BrandLogo from './BrandLogo';
 import KycBadge from './KycBadge';
 
-export default function Navbar({ onOpenVoiceRecorder }) {
+export default function Navbar({ onOpenVoiceRecorder, onOpenAssistant }) {
   const { user, switchRole, openAuthModal } = useAuth();
   const { language, currentLangObj, setIsLangModalOpen, t } = useLanguage();
   const location = useLocation();
@@ -83,6 +83,20 @@ export default function Navbar({ onOpenVoiceRecorder }) {
             >
               <Mic className="w-3.5 h-3.5 stroke-[2.5] animate-pulse" />
               <span>Voice</span>
+            </button>
+          )}
+
+          {/* AI Assistant Trigger */}
+          {onOpenAssistant && (
+            <button
+              onClick={onOpenAssistant}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-teal hover:bg-teal-hover text-white text-xs font-extrabold shadow-sm transition"
+              title="Open AI Sahayak (AI सहायक साथी)"
+              aria-label="AI Assistant"
+            >
+              <Bot className="w-3.5 h-3.5 stroke-[2.5]" />
+              <span className="hidden sm:inline">AI Sahayak</span>
+              <span className="sm:hidden">AI</span>
             </button>
           )}
 

@@ -17,15 +17,42 @@ import VolunteerAssistPage from './pages/VolunteerAssistPage';
 
 function AppContent() {
   const [isVoiceRecorderOpen, setIsVoiceRecorderOpen] = useState(false);
+  const [isAssistantOpen, setIsAssistantOpen] = useState(false);
 
   return (
     <div className="min-h-screen bg-cream text-darkbrown flex flex-col font-sans selection:bg-terracotta selection:text-white">
-      <Navbar onOpenVoiceRecorder={() => setIsVoiceRecorderOpen(true)} />
+      <Navbar 
+        onOpenVoiceRecorder={() => setIsVoiceRecorderOpen(true)} 
+        onOpenAssistant={() => setIsAssistantOpen(true)}
+      />
       <main className="flex-1">
         <Routes>
-          <Route path="/" element={<HomeDashboard onOpenVoiceRecorder={() => setIsVoiceRecorderOpen(true)} />} />
-          <Route path="/requests" element={<HomeDashboard onOpenVoiceRecorder={() => setIsVoiceRecorderOpen(true)} />} />
-          <Route path="/new-request" element={<NewRequestPage onOpenVoiceRecorder={() => setIsVoiceRecorderOpen(true)} />} />
+          <Route 
+            path="/" 
+            element={
+              <HomeDashboard 
+                onOpenVoiceRecorder={() => setIsVoiceRecorderOpen(true)} 
+                onOpenAssistant={() => setIsAssistantOpen(true)}
+              />
+            } 
+          />
+          <Route 
+            path="/requests" 
+            element={
+              <HomeDashboard 
+                onOpenVoiceRecorder={() => setIsVoiceRecorderOpen(true)} 
+                onOpenAssistant={() => setIsAssistantOpen(true)}
+              />
+            } 
+          />
+          <Route 
+            path="/new-request" 
+            element={
+              <NewRequestPage 
+                onOpenVoiceRecorder={() => setIsVoiceRecorderOpen(true)} 
+              />
+            } 
+          />
           <Route path="/requests/:id/status" element={<TrackStatusPage />} />
           <Route path="/borrow-return" element={<BorrowReturnPage />} />
           <Route path="/verifier" element={<VerifierDashboard />} />
@@ -41,7 +68,11 @@ function AppContent() {
         onClose={() => setIsVoiceRecorderOpen(false)} 
       />
       {/* 24/7 AI Setu Sahayak Assistant Widget */}
-      <AIAssistantWidget />
+      <AIAssistantWidget 
+        isOpen={isAssistantOpen} 
+        onClose={() => setIsAssistantOpen(false)} 
+        onOpen={() => setIsAssistantOpen(true)}
+      />
     </div>
   );
 }

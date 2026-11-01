@@ -2,16 +2,29 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { 
   Bot, Sparkles, X, Send, Mic, MicOff, Volume2, VolumeX, ArrowRight, 
-  MessageSquare, HelpCircle, Heart, PhoneCall, BookOpen, Utensils, Cpu, ShieldCheck
+  MessageSquare, HelpCircle, Heart, PhoneCall, BookOpen, Utensils, Cpu, ShieldCheck, Play
 } from 'lucide-react';
 import BrandLogo from '../common/BrandLogo';
 import { useLanguage } from '../../contexts/LanguageContext';
 
-export default function AIAssistantWidget() {
+export default function AIAssistantWidget({ isOpen: propIsOpen, onClose: propOnClose, onOpen: propOnOpen }) {
   const navigate = useNavigate();
-  const { language, t } = useLanguage();
+  const { language, currentSpeechLang, currentDialect, t } = useLanguage();
 
-  const [isOpen, setIsOpen] = useState(false);
+  const [internalOpen, setInternalOpen] = useState(false);
+  const isOpen = propIsOpen !== undefined ? propIsOpen : internalOpen;
+
+  const handleOpen = () => {
+    if (propOnOpen) propOnOpen();
+    else setInternalOpen(true);
+  };
+
+  const handleClose = () => {
+    handleStopTTS();
+    if (propOnClose) propOnClose();
+    else setInternalOpen(false);
+  };
+
   const [inputMessage, setInputMessage] = useState('');
   const [isListening, setIsListening] = useState(false);
   const [speechError, setSpeechError] = useState(null);
@@ -25,12 +38,12 @@ export default function AIAssistantWidget() {
     {
       id: 'msg_welcome',
       sender: 'assistant',
-      text: "नमस्ते! मैं 'सेतु साथी' (Setu Sahayak) हूँ — ZarooratSetu का AI सहायक। बांदा और REC Banda क्षेत्र में आवश्यक संसाधनों (किताबें, कैलकुलेटर, बर्तन, टूल्स) या इमरजेंसी रक्त सहायता के बारे में मुझसे पूछें या नीचे दिए विकल्पों पर टैप करें।",
+      text: "नमस्ते! मैं 'सेतु साथी' (Setu Sahayak) हूँ — ZarooratSetu का AI सहायक। बांदा और REC Banda क्षेत्र में आवश्यक संसाधनों (किताबें, कैलकुलेटर, बर्तन, टूल्स) या आपातकालीन रक्त सहायता के बारे में मुझसे पूछें या नीचे दिए विकल्पों पर टैप करें।",
       suggestions: [
-        "🩸 मुझे इमरजेंसी ब्लड या मेडिकल हेल्प चाहिए",
+        "🩸 मुझे इमरजेंसी ब्लड या मेडिकल सहायता चाहिए",
         "📚 Casio कैलकुलेटर या B.Tech बुक्स उधार लेनी हैं",
         "🍲 शादी/कार्यक्रम के लिए 50L पतीला और थाली सेट",
-        "📞 बिना इंटरनेट मिस्ड कॉल से कैसे मदद लें?"
+        "📞 बिना इंटरनेट मिस्ड कॉल से कैसे सहायता लें?"
       ],
       time: "Just now"
     }
@@ -56,7 +69,7 @@ export default function AIAssistantWidget() {
     try {
       const cleanText = text.replace(/[*_#]/g, '');
       const utterance = new SpeechSynthesisUtterance(cleanText);
-      utterance.lang = language === 'en' ? 'en-IN' : 'hi-IN';
+      utterance.lang = currentSpeechLang || 'hi-IN';
       utterance.rate = 0.95;
 
       utterance.onstart = () => setIsSpeakingTTS(true);
@@ -92,7 +105,7 @@ export default function AIAssistantWidget() {
     try {
       const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
       const recognition = new SpeechRecognition();
-      recognition.lang = language === 'en' ? 'en-IN' : 'hi-IN';
+      recognition.lang = currentSpeechLang || 'hi-IN';
       recognition.interimResults = false;
       recognition.maxAlternatives = 1;
 
@@ -105,6 +118,8 @@ export default function AIAssistantWidget() {
         const transcript = event.results[0][0].transcript;
         setInputMessage(transcript);
         setIsListening(false);
+        // Automatically send after voice capture
+        handleSendMessage(transcript);
       };
 
       recognition.onerror = () => {
@@ -121,6 +136,57 @@ export default function AIAssistantWidget() {
       setSpeechError("Could not start microphone.");
       setIsListening(false);
     }
+  };
+
+  // Smart local conversational responder
+  const getSmartLocalResponse = (query) => {
+    const text = (query || '').toLowerCase();
+
+    if (text.includes('blood') || text.includes('khoon') || text.includes('ब्लड') || text.includes('खून') || text.includes('hospital') || text.includes('अस्पताल') || text.includes('dawa') || text.includes('emergency')) {
+      return {
+        reply: "यदि आपको आपातकालीन रक्त (जैसे B+, O+ आदि) या जीवनरक्षक चिकित्सा सहायता चाहिए, तो जिला अस्पताल बांदा (District Hospital) और सिविल लाइन्स नेटवर्क में पंजीकृत दाताओं से तुरंत संपर्क किया जा सकता है। आप तुरंत 'Emergency' श्रेणी में अनुरोध दर्ज करें।",
+        suggestions: ["आपातकालीन रक्त अनुरोध दर्ज करें", "जिला अस्पताल बांदा हेल्पलाइन क्या है?"],
+        actionLink: { label: "तत्काल आपातकालीन अनुरोध दर्ज करें", path: "/new-request", state: { prefilled: { category: "Medical", urgency: "Urgent" } } }
+      };
+    }
+
+    if (text.includes('calculator') || text.includes('कैलकुलेटर') || text.includes('casio') || text.includes('book') || text.includes('kitab') || text.includes('किताब') || text.includes('exam') || text.includes('परीक्षा')) {
+      return {
+        reply: "REC Banda मेकर क्लब और छात्र स्वयंसेवकों द्वारा Casio fx-991EX साइंटिफिक कैलकुलेटर, B.Tech इंजीनियरिंग बुक्स (Sem 1-4), UPPSC सिविल सेवा नोट्स और मिनी-ड्राफ्टर पूरी तरह निःशुल्क उधार उपलब्ध हैं।",
+        suggestions: ["Casio fx-991EX कैलकुलेटर देखना है", "इंजीनियरिंग बुक्स सेट उधार लेना है"],
+        actionLink: { label: "पढ़ाई सामग्री कैटलॉग खोलें", path: "/borrow-return", state: { activeCategory: "Study Material" } }
+      };
+    }
+
+    if (text.includes('patila') || text.includes('पतीला') || text.includes('bartan') || text.includes('बर्तन') || text.includes('thali') || text.includes('थाली') || text.includes('kadhai') || text.includes('शादी')) {
+      return {
+        reply: "पारिवारिक व सामुदायिक आयोजनों के लिए बांदा कम्युनिटी किचन द्वारा 50 लीटर का बड़ा एल्युमीनियम पतीला (देग), 50 थाली-कटोरी-गिलास सेट, भारी कड़ाही और 25L पानी का कैंपर उधार उपलब्ध है। प्रयोग के बाद स्वच्छ करके वापस करें।",
+        suggestions: ["50L बड़ा पतीला उधार कैसे लें?", "50 थाली सेट उपलब्ध है क्या?"],
+        actionLink: { label: "पारिवारिक बर्तन कैटलॉग देखें", path: "/borrow-return", state: { activeCategory: "Family Utensils" } }
+      };
+    }
+
+    if (text.includes('solar') || text.includes('सोलर') || text.includes('लालटेन') || text.includes('tool') || text.includes('multimeter') || text.includes('उपकरण')) {
+      return {
+        reply: "इलेक्ट्रॉनिक्स व टूल्स पूल में सोल्डरिंग स्टेशन, डिजिटल मल्टीमीटर, 20 घंटे बैकअप वाली सोलर इमरजेंसी लालटेन, नेबुलाइज़र मशीन और पोर्टेबल फुल एचडी प्रोजेक्टर उपलब्ध हैं।",
+        suggestions: ["सोलर इमरजेंसी लालटेन देखना है", "डिजिटल मल्टीमीटर व सोल्डरिंग किट"],
+        actionLink: { label: "इलेक्ट्रॉनिक्स व टूल्स देखें", path: "/borrow-return", state: { activeCategory: "Electronics" } }
+      };
+    }
+
+    if (text.includes('offline') || text.includes('missed') || text.includes('call') || text.includes('sms') || text.includes('internet') || text.includes('मिस्ड') || text.includes('कॉल') || text.includes('इंटरनेट')) {
+      return {
+        reply: "जिन नागरिकों के पास स्मार्टफ़ोन या इंटरनेट नहीं है, वे टोल-फ्री 1800-ZAROORAT पर एक मिस्ड कॉल या एसएमएस दे सकते हैं। हमारा ऑटोमेटेड वेबहुक टिकट जनरेट करता है और बांदा के स्थानीय स्वयंसेवक उन्हें कॉल-बैक करके ज़रूरत दर्ज करते हैं।",
+        suggestions: ["स्वयंसेवक सहायता डेस्क खोलें", "टोल-फ्री नंबर क्या है?"],
+        actionLink: { label: "ऑफलाइन सहायता डेस्क खोलें", path: "/volunteer-assist" }
+      };
+    }
+
+    return {
+      reply: "नमस्ते! मैं 'सेतु साथी' (Setu Sahayak) हूँ — ZarooratSetu का AI सहायक। REC Banda और आस-पास के क्षेत्रों में आवश्यक सामग्री (किताबें, कैलकुलेटर, बर्तन, टूल्स, रक्त) के लिए आप सीधे नई ज़रूरत दर्ज कर सकते हैं या कैटलॉग देख सकते हैं।",
+      suggestions: ["नई ज़रूरत दर्ज करें", "सामग्री कैटलॉग देखें", "ऑफलाइन 1800-ZAROORAT"],
+      actionLink: { label: "नई ज़रूरत दर्ज करें", path: "/new-request" }
+    };
   };
 
   // Send message to backend or local AI Assistant service
@@ -150,8 +216,10 @@ export default function AIAssistantWidget() {
         })
       });
 
+      if (!response.ok) throw new Error("API route not reachable");
       const data = await response.json();
-      if (data.success) {
+
+      if (data && data.success) {
         const assistantMsg = {
           id: `ast_${Date.now()}`,
           sender: 'assistant',
@@ -165,21 +233,22 @@ export default function AIAssistantWidget() {
           speakText(data.reply);
         }
       } else {
-        throw new Error(data.error || "Could not reach assistant");
+        throw new Error(data?.error || "AI reply error");
       }
     } catch (err) {
-      // Offline fallback
-      const fallbackMsg = {
+      // Instant intelligent fallback
+      const localResp = getSmartLocalResponse(text);
+      const assistantMsg = {
         id: `ast_${Date.now()}`,
         sender: 'assistant',
-        text: "नमस्ते! ZarooratSetu में आवश्यक सामग्री (किताबें, कैलकुलेटर, बर्तन, मेडिकल एड) REC Banda व बांदा क्षेत्र में उपलब्ध हैं। आप सीधे नई ज़रूरत दर्ज कर सकते हैं या कैटलॉग देख सकते हैं।",
-        suggestions: ["नई ज़रूरत दर्ज करें", "सामग्री कैटलॉग देखें", "ऑफलाइन 1800-ZAROORAT"],
-        actionLink: { label: "नई ज़रूरत दर्ज करें", path: "/new-request" },
+        text: localResp.reply,
+        suggestions: localResp.suggestions || [],
+        actionLink: localResp.actionLink || null,
         time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
       };
-      setMessages(prev => [...prev, fallbackMsg]);
+      setMessages(prev => [...prev, assistantMsg]);
       if (ttsEnabled) {
-        speakText(fallbackMsg.text);
+        speakText(localResp.reply);
       }
     } finally {
       setLoading(false);
@@ -192,7 +261,7 @@ export default function AIAssistantWidget() {
       {!isOpen && (
         <div className="fixed bottom-20 md:bottom-6 right-4 sm:right-6 z-50">
           <button
-            onClick={() => setIsOpen(true)}
+            onClick={handleOpen}
             className="flex items-center gap-2.5 px-4 py-3 rounded-full bg-gradient-to-r from-terracotta to-terracotta-hover text-white shadow-2xl hover:scale-105 active:scale-95 transition border-2 border-white/20 group"
             title="Open ZarooratSetu AI Assistant (सेतु साथी)"
             aria-label="AI Assistant"
@@ -206,7 +275,7 @@ export default function AIAssistantWidget() {
                 AI सेतु साथी
               </div>
               <div className="text-[9px] text-softYellow font-bold mt-0.5">
-                24/7 Sahayak
+                24/7 Sahayak (Run)
               </div>
             </div>
           </button>
@@ -215,7 +284,7 @@ export default function AIAssistantWidget() {
 
       {/* CHAT PANEL MODAL / DRAWER */}
       {isOpen && (
-        <div className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50 w-[95vw] sm:w-[420px] max-h-[85vh] sm:max-h-[640px] flex flex-col bg-white rounded-3xl shadow-[0_12px_48px_rgba(43,27,16,0.35)] border border-darkbrown/15 overflow-hidden animate-in fade-in slide-in-from-bottom-5">
+        <div className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50 w-[95vw] sm:w-[440px] max-h-[85vh] sm:max-h-[640px] flex flex-col bg-white rounded-3xl shadow-[0_12px_48px_rgba(43,27,16,0.35)] border border-darkbrown/15 overflow-hidden animate-in fade-in slide-in-from-bottom-5">
           {/* Header */}
           <div className="bg-darkbrown text-cream p-4 flex items-center justify-between shrink-0 border-b border-white/10">
             <div className="flex items-center gap-3">
@@ -227,11 +296,11 @@ export default function AIAssistantWidget() {
                 <h3 className="font-black text-sm text-white flex items-center gap-1.5">
                   <span>सेतु साथी (Setu Sahayak)</span>
                   <span className="px-2 py-0.2 rounded-full bg-softYellow/20 text-softYellow text-[9px] font-extrabold border border-softYellow/30">
-                    AI
+                    AI Live
                   </span>
                 </h3>
                 <p className="text-[10px] text-cream/70 font-semibold">
-                  ZarooratSetu Assistant · REC Banda
+                  24/7 Voice & Chat Assistant · REC Banda
                 </p>
               </div>
             </div>
@@ -246,17 +315,14 @@ export default function AIAssistantWidget() {
                 className={`p-1.5 rounded-xl transition ${
                   ttsEnabled ? 'text-softYellow hover:bg-white/10' : 'text-cream/40 hover:bg-white/10'
                 }`}
-                title={ttsEnabled ? "Voice voice readout enabled (बोलकर सुनाएगा)" : "Voice voice readout disabled"}
+                title={ttsEnabled ? "Voice readout enabled (बोलकर सुनाएगा)" : "Voice readout disabled"}
               >
                 {ttsEnabled ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4" />}
               </button>
 
               {/* Close Button */}
               <button
-                onClick={() => {
-                  handleStopTTS();
-                  setIsOpen(false);
-                }}
+                onClick={handleClose}
                 className="p-1.5 rounded-xl text-cream/70 hover:text-white hover:bg-white/10 transition"
               >
                 <X className="w-5 h-5" />
@@ -315,8 +381,7 @@ export default function AIAssistantWidget() {
                     <div className="pt-1.5 border-t border-darkbrown/10">
                       <button
                         onClick={() => {
-                          setIsOpen(false);
-                          handleStopTTS();
+                          handleClose();
                           navigate(msg.actionLink.path, { state: msg.actionLink.state });
                         }}
                         className="w-full py-2 px-3 rounded-xl bg-teal hover:bg-teal-hover text-white font-extrabold text-[11px] shadow-sm transition flex items-center justify-center gap-1.5"
@@ -361,9 +426,9 @@ export default function AIAssistantWidget() {
             ))}
 
             {loading && (
-              <div className="flex items-center gap-2 text-xs text-darkbrown/60 p-2 bg-white rounded-2xl border border-darkbrown/10 w-fit">
-                <Sparkles className="w-3.5 h-3.5 text-terracotta animate-spin" />
-                <span>सेतु साथी सोच रहा है...</span>
+              <div className="flex items-center gap-2 text-xs text-darkbrown/60 p-2.5 bg-white rounded-2xl border border-darkbrown/10 w-fit">
+                <Sparkles className="w-4 h-4 text-terracotta animate-spin" />
+                <span className="font-semibold">सेतु साथी सोच रहा है...</span>
               </div>
             )}
 
@@ -372,7 +437,7 @@ export default function AIAssistantWidget() {
 
           {/* Speech error indicator */}
           {speechError && (
-            <div className="px-3 py-1 bg-red-100 text-red-800 text-[10px] font-semibold border-t border-red-200">
+            <div className="px-3 py-1 bg-amber-100 text-amber-900 text-[10px] font-semibold border-t border-amber-200">
               {speechError}
             </div>
           )}
