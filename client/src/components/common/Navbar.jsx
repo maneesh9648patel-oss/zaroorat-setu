@@ -1,14 +1,16 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { MapPin, Globe, ChevronDown, Check, Mic, Home, ClipboardList, Box, CheckSquare, PhoneCall, Bot, Sparkles, Camera } from 'lucide-react';
+import { MapPin, Globe, ChevronDown, Check, Mic, Home, ClipboardList, Box, CheckSquare, PhoneCall, Bot, Sparkles, Camera, Settings, Sun, Moon } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { useLanguage } from '../../contexts/LanguageContext';
+import { useSettings } from '../../contexts/SettingsContext';
 import BrandLogo from './BrandLogo';
 import KycBadge from './KycBadge';
 
 export default function Navbar({ onOpenVoiceRecorder, onOpenAssistant, onOpenLens }) {
   const { user, switchRole, openAuthModal } = useAuth();
   const { language, currentLangObj, setIsLangModalOpen, t } = useLanguage();
+  const { theme, toggleTheme, openSettings } = useSettings();
   const location = useLocation();
   const [roleMenuOpen, setRoleMenuOpen] = useState(false);
 
@@ -123,6 +125,30 @@ export default function Navbar({ onOpenVoiceRecorder, onOpenAssistant, onOpenLen
           >
             <Globe className="w-3.5 h-3.5 text-softYellow" />
             <span>{currentLangObj?.label || 'भाषा'}</span>
+          </button>
+
+          {/* Quick Theme Toggle (Dark / Light Mode) */}
+          <button
+            onClick={toggleTheme}
+            className="p-2 rounded-full bg-white/10 hover:bg-white/20 text-softYellow hover:text-white transition border border-white/10"
+            title={theme === 'dark' ? "लाइट मोड पर स्विच करें (Switch to Light)" : "डार्क मोड पर स्विच करें (Switch to Dark)"}
+            aria-label="Toggle Theme"
+          >
+            {theme === 'dark' ? (
+              <Sun className="w-3.5 h-3.5" />
+            ) : (
+              <Moon className="w-3.5 h-3.5" />
+            )}
+          </button>
+
+          {/* Settings Modal Trigger (Theme, Mic & Camera Permissions) */}
+          <button
+            onClick={openSettings}
+            className="p-2 rounded-full bg-white/10 hover:bg-white/20 text-cream/80 hover:text-white transition border border-white/10"
+            title="सेटिंग्स (वेबसाइट मोड, माइक व कैमरा अनुमति)"
+            aria-label="Settings"
+          >
+            <Settings className="w-3.5 h-3.5" />
           </button>
 
           {/* Persona Switcher Dropdown */}

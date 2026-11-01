@@ -2,12 +2,14 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { 
   Camera, Sparkles, Scan, Check, X, Shield, RefreshCw, ArrowRight, 
-  Upload, Play, AlertCircle, Eye, CheckCircle2, DollarSign, Layers
+  Upload, Play, AlertCircle, Eye, CheckCircle2, DollarSign, Layers, Settings
 } from 'lucide-react';
 import { useLanguage } from '../../contexts/LanguageContext';
+import { useSettings } from '../../contexts/SettingsContext';
 
 export default function AILensModal({ isOpen, onClose, onApplyToLend }) {
   const { t } = useLanguage();
+  const { cameraPermission, openSettings } = useSettings();
   const navigate = useNavigate();
 
   const [activeTab, setActiveTab] = useState('camera'); // 'camera' | 'demo'
@@ -85,6 +87,13 @@ export default function AILensModal({ isOpen, onClose, onApplyToLend }) {
 
   const startCamera = async () => {
     setCameraError(null);
+
+    if (cameraPermission === 'not_allowed') {
+      setCameraError("⚠️ कैमरा अनुमति सेटिंग्स में 'Not Allowed' (प्रतिबंधित) है। कैमरा चलाने हेतु सेटिंग्स में Allow करें, या नीचे दिए गए 1-Click AI Lens सिम्युलेटर से टेस्ट करें।");
+      setCameraActive(false);
+      return;
+    }
+
     try {
       if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
         const stream = await navigator.mediaDevices.getUserMedia({
@@ -216,6 +225,25 @@ export default function AILensModal({ isOpen, onClose, onApplyToLend }) {
               </div>
             </div>
           </div>
+
+          {cameraError && (
+            <div className="p-3.5 rounded-2xl bg-amber-50 border border-amber-200 text-amber-900 text-xs flex items-center justify-between gap-2.5 font-medium animate-in fade-in">
+              <div className="flex items-start gap-2.5">
+                <AlertCircle className="w-4 h-4 shrink-0 mt-0.5 text-amber-700" />
+                <span>{cameraError}</span>
+              </div>
+              {cameraPermission === 'not_allowed' && (
+                <button
+                  type="button"
+                  onClick={openSettings}
+                  className="px-2.5 py-1 rounded-xl bg-amber-700 text-white text-[11px] font-bold shrink-0 hover:bg-amber-800 transition flex items-center gap-1"
+                >
+                  <Settings className="w-3 h-3" />
+                  <span>सेटिंग्स</span>
+                </button>
+              )}
+            </div>
+          )}
 
           {/* Trigger Scan Button */}
           <div className="flex flex-wrap items-center justify-center gap-3">

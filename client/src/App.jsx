@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { BrowserRouter, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import { LanguageProvider } from './contexts/LanguageContext';
 import { AuthProvider } from './contexts/AuthContext';
+import { SettingsProvider } from './contexts/SettingsContext';
 import Navbar from './components/common/Navbar';
 import BottomNav from './components/common/BottomNav';
 import AuthKYCModal from './components/auth/AuthKYCModal';
@@ -9,6 +10,7 @@ import RegionalLanguageModal from './components/common/RegionalLanguageModal';
 import VoiceRecorderModal from './components/voice/VoiceRecorderModal';
 import AIAssistantWidget from './components/assistant/AIAssistantWidget';
 import AILensModal from './components/lens/AILensModal';
+import SettingsModal from './components/common/SettingsModal';
 import HomeDashboard from './pages/HomeDashboard';
 import NewRequestPage from './pages/NewRequestPage';
 import TrackStatusPage from './pages/TrackStatusPage';
@@ -101,18 +103,22 @@ function AppContent() {
         onClose={() => setIsLensOpen(false)}
         onApplyToLend={handleApplyLensItem}
       />
+      {/* Settings Modal (Theme Dark/Light & Hardware Permissions) */}
+      <SettingsModal />
     </div>
   );
 }
 
 export default function App() {
   return (
-    <LanguageProvider>
-      <AuthProvider>
-        <BrowserRouter>
-          <AppContent />
-        </BrowserRouter>
-      </AuthProvider>
-    </LanguageProvider>
+    <SettingsProvider>
+      <LanguageProvider>
+        <AuthProvider>
+          <BrowserRouter>
+            <AppContent />
+          </BrowserRouter>
+        </AuthProvider>
+      </LanguageProvider>
+    </SettingsProvider>
   );
 }

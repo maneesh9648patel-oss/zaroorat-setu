@@ -1,11 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Mic, Square, Play, Pause, Sparkles, Check, X, Volume2, AlertCircle, RefreshCw, Radio } from 'lucide-react';
+import { Mic, Square, Play, Pause, Sparkles, Check, X, Volume2, AlertCircle, RefreshCw, Radio, Settings } from 'lucide-react';
 import { useLanguage } from '../../contexts/LanguageContext';
+import { useSettings } from '../../contexts/SettingsContext';
 import { api } from '../../services/api';
 
 export default function VoiceRecorderModal({ isOpen, onClose, onApplyExtracted }) {
   const { t, language, currentSpeechLang, currentDialect } = useLanguage();
+  const { micPermission, openSettings } = useSettings();
   const navigate = useNavigate();
 
   const [isRecording, setIsRecording] = useState(false);
@@ -42,6 +44,11 @@ export default function VoiceRecorderModal({ isOpen, onClose, onApplyExtracted }
     setTranscript('');
     setRecordDuration(0);
     setIsSimulating(false);
+
+    if (micPermission === 'not_allowed') {
+      setErrorNotice("⚠️ माइक्रोफ़ोन अनुमति सेटिंग्स में 'Not Allowed' (प्रतिबंधित) है। बोलकर रिकॉर्ड करने के लिए सेटिंग्स में Allow करें, या नीचे 'Live Demo' चलाएँ।");
+      return;
+    }
 
     if (!('webkitSpeechRecognition' in window || 'SpeechRecognition' in window)) {
       setErrorNotice("Speech recognition is not supported in this browser. Running live demo simulation instead.");
@@ -336,9 +343,21 @@ export default function VoiceRecorderModal({ isOpen, onClose, onApplyExtracted }
           </div>
 
           {errorNotice && (
-            <div className="p-3.5 rounded-2xl bg-amber-50 border border-amber-200 text-amber-900 text-xs flex items-start gap-2.5 font-medium">
-              <AlertCircle className="w-4 h-4 shrink-0 mt-0.5 text-amber-700" />
-              <span>{errorNotice}</span>
+            <div className="p-3.5 rounded-2xl bg-amber-50 border border-amber-200 text-amber-900 text-xs flex items-center justify-between gap-2.5 font-medium">
+              <div className="flex items-start gap-2.5">
+                <AlertCircle className="w-4 h-4 shrink-0 mt-0.5 text-amber-700" />
+                <span>{errorNotice}</span>
+              </div>
+              {micPermission === 'not_allowed' && (
+                <button
+                  type="button"
+                  onClick={openSettings}
+                  className="px-2.5 py-1 rounded-xl bg-amber-700 text-white text-[11px] font-bold shrink-0 hover:bg-amber-800 transition flex items-center gap-1"
+                >
+                  <Settings className="w-3 h-3" />
+                  <span>सेटिंग्स</span>
+                </button>
+              )}
             </div>
           )}
 
