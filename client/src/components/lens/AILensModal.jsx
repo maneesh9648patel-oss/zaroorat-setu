@@ -3,10 +3,16 @@ import { useNavigate } from 'react-router-dom';
 import { 
   Camera, Sparkles, Scan, Check, X, Shield, RefreshCw, ArrowRight, 
   Upload, Play, AlertCircle, Eye, CheckCircle2, DollarSign, Layers, Settings,
-  RotateCw, Aperture
+  RotateCw, Aperture, ExternalLink, Smartphone
 } from 'lucide-react';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useSettings } from '../../contexts/SettingsContext';
+import { 
+  getCrossBrowserCameraStream, 
+  attachStreamToVideoElement, 
+  isSecureContextEnvironment, 
+  PUBLIC_HTTPS_URL 
+} from '../../services/crossBrowserMedia';
 
 export default function AILensModal({ isOpen, onClose, onApplyToLend }) {
   const { t } = useLanguage();
@@ -22,6 +28,7 @@ export default function AILensModal({ isOpen, onClose, onApplyToLend }) {
 
   const videoRef = useRef(null);
   const streamRef = useRef(null);
+  const nativeFileInputRef = useRef(null);
 
   // Pre-configured AI Lens Scenarios for instant demonstration
   const demoObjects = [
@@ -88,13 +95,10 @@ export default function AILensModal({ isOpen, onClose, onApplyToLend }) {
     };
   }, [isOpen]);
 
-  // Ensure video element gets stream attached once rendered
+  // Keep stream attached to video element across any re-render
   useEffect(() => {
     if (cameraActive && videoRef.current && streamRef.current) {
-      if (videoRef.current.srcObject !== streamRef.current) {
-        videoRef.current.srcObject = streamRef.current;
-      }
-      videoRef.current.play().catch(e => console.warn("Video play promise error:", e));
+      attachStreamToVideoElement(videoRef.current, streamRef.current);
     }
   }, [cameraActive]);
 
@@ -102,7 +106,7 @@ export default function AILensModal({ isOpen, onClose, onApplyToLend }) {
     setCameraError(null);
 
     if (cameraPermission === 'not_allowed') {
-      setCameraError("⚠️ कैमरा अनुमति सेटिंग्स में 'Not Allowed' (प्रतिबंधित) है। कैमरा चलाने हेतु सेटिंग्स में Allow करें, या नीचे दिए गए 1-Click AI Lens सिम्युलेटर से टेस्ट करें।");
+      setCameraError("⚠️ कैमरा अनुमति सेटिंग्स में 'Not Allowed' (प्रतिबंधित) है। सेटिंग्स में Allow करें या नीचे 'डिवाइस कैमरा' या 'डेमो टेस्ट' से जांचें।");
       setCameraActive(false);
       return;
     }
@@ -110,51 +114,29 @@ export default function AILensModal({ isOpen, onClose, onApplyToLend }) {
     const currentFacing = overrideFacing || facingMode;
 
     try {
-      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-        throw new Error("Webcam not available in this browser environment.");
-      }
-
       // Stop previous stream if running
       if (streamRef.current) {
-        streamRef.current.getTracks().forEach(track => track.stop());
+        streamRef.current.getTracks().forEach(t => t.stop());
         streamRef.current = null;
       }
 
-      let stream;
-      try {
-        // Dual-try: first try with ideal facing mode
-        stream = await navigator.mediaDevices.getUserMedia({
-          video: {
-            facingMode: { ideal: currentFacing },
-            width: { ideal: 1280 },
-            height: { ideal: 720 }
-          },
-          audio: false
-        });
-      } catch (errConstraint) {
-        console.warn("Dual camera constraint fallback:", errConstraint);
-        // Fallback to any camera available (e.g. laptop webcam)
-        stream = await navigator.mediaDevices.getUserMedia({
-          video: true,
-          audio: false
-        });
-      }
-
+      // Universal cross-browser multi-tier stream resolution
+      const stream = await getCrossBrowserCameraStream(currentFacing);
       streamRef.current = stream;
       setCameraActive(true);
 
       if (videoRef.current) {
-        videoRef.current.srcObject = stream;
-        try {
-          await videoRef.current.play();
-        } catch (playErr) {
-          console.warn("Camera play promise:", playErr);
-        }
+        attachStreamToVideoElement(videoRef.current, stream);
       }
     } catch (err) {
-      console.warn("Camera access note:", err.message);
+      console.warn("Cross-browser camera notice:", err.message);
       setCameraActive(false);
-      setCameraError("कैमरा एक्सेस नहीं हो सका (अनुमति नहीं मिली या कैमरा व्यस्त है)। आप नीचे 'ऑटो डेमो टेस्ट' या 'वस्तु स्कैन करें' से टेस्ट कर सकते हैं।");
+
+      if (!isSecureContextEnvironment()) {
+        setCameraError("⚠️ ब्राउज़र सुरक्षा नीति: कैमरा केवल HTTPS सुरक्षित लिंक या Localhost पर चलता है। नीचे दिए गए HTTPS लिंक या डिवाइस कैमरे का उपयोग करें।");
+      } else {
+        setCameraError("कैमरा अनुमति नहीं मिली या कैमरा किसी अन्य ऐप द्वारा उपयोग में है। आप नीचे 'डिवाइस कैमरा' या 'ऑटो डेमो' का उपयोग कर सकते हैं।");
+      }
     }
   };
 
@@ -202,8 +184,28 @@ export default function AILensModal({ isOpen, onClose, onApplyToLend }) {
       }
     }
 
-    // Fallback scan if camera is simulated
     handlePerformScan();
+  };
+
+  // Native phone camera input fallback (100% works on every mobile browser)
+  const handleNativeFileCapture = (e) => {
+    const file = e.target.files && e.target.files[0];
+    if (!file) return;
+
+    const previewUrl = URL.createObjectURL(file);
+    setCapturedImage(previewUrl);
+    setCameraActive(false);
+
+    setIsScanning(true);
+    setScanResult(null);
+    setTimeout(() => {
+      setIsScanning(false);
+      const matched = {
+        ...demoObjects[Math.floor(Math.random() * demoObjects.length)],
+        imagePreview: previewUrl
+      };
+      setScanResult(matched);
+    }, 1200);
   };
 
   // Perform AI Visual Scan (Simulation or Demo Object)
@@ -242,7 +244,7 @@ export default function AILensModal({ isOpen, onClose, onApplyToLend }) {
               <h2 className="font-black text-base sm:text-lg text-white leading-tight flex items-center gap-2">
                 <span>AI Lens Camera (एआई लेंस स्कैनर)</span>
                 <span className="px-2 py-0.2 rounded-full bg-softYellow/20 text-softYellow text-[10px] font-extrabold border border-softYellow/30">
-                  Live Visual Inspector
+                  Universal Browser Ready
                 </span>
               </h2>
               <p className="text-xs text-cream/70 mt-0.5">
@@ -284,25 +286,46 @@ export default function AILensModal({ isOpen, onClose, onApplyToLend }) {
                 </div>
                 <div className="font-extrabold text-sm text-white">AI Visual Scanner Ready</div>
                 <div className="text-xs text-cream/70 max-w-sm leading-relaxed">
-                  वस्तु को कैमरे के सामने रखें या नीचे दिए गए किसी भी उदाहरण पर टैप करें।
+                  वस्तु को कैमरे के सामने रखें या नीचे दिए गए किसी भी विकल्प से स्कैन करें।
                 </div>
-                <button
-                  type="button"
-                  onClick={() => startCamera()}
-                  className="px-4 py-2 rounded-xl bg-teal text-white text-xs font-black shadow-md hover:bg-teal-hover transition flex items-center gap-1.5 mt-2"
-                >
-                  <Camera className="w-3.5 h-3.5" />
-                  <span>कैमरा चालू करें (Start Camera)</span>
-                </button>
+                <div className="flex items-center gap-2 pt-1">
+                  <button
+                    type="button"
+                    onClick={() => startCamera()}
+                    className="px-4 py-2 rounded-xl bg-teal text-white text-xs font-black shadow-md hover:bg-teal-hover transition flex items-center gap-1.5"
+                  >
+                    <Camera className="w-3.5 h-3.5" />
+                    <span>कैमरा चालू करें</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => nativeFileInputRef.current?.click()}
+                    className="px-4 py-2 rounded-xl bg-terracotta text-white text-xs font-black shadow-md hover:bg-terracotta-hover transition flex items-center gap-1.5"
+                  >
+                    <Smartphone className="w-3.5 h-3.5" />
+                    <span>डिवाइस कैमरा</span>
+                  </button>
+                </div>
               </div>
             )}
+
+            {/* Hidden native camera capture input for 100% browser fallback */}
+            <input
+              ref={nativeFileInputRef}
+              type="file"
+              accept="image/*"
+              capture="environment"
+              onChange={handleNativeFileCapture}
+              className="hidden"
+            />
 
             {/* Futuristic Scanning Beam & Reticle Overlay */}
             <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-4">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-1.5 text-[10px] font-mono font-bold text-softYellow/90 bg-black/50 px-2.5 py-1 rounded-full backdrop-blur-xs">
                   <span className="w-2 h-2 rounded-full bg-teal animate-ping" />
-                  <span>AI LENS HUD v3.0 · {cameraActive ? 'LIVE CAMERA' : 'SIMULATION'}</span>
+                  <span>AI LENS HUD · {cameraActive ? 'LIVE WEBCAM' : capturedImage ? 'FRAME CAPTURED' : 'UNIVERSAL'}</span>
                 </div>
 
                 {cameraActive && (
@@ -342,32 +365,43 @@ export default function AILensModal({ isOpen, onClose, onApplyToLend }) {
 
           {/* Camera Error / Permission Notice */}
           {cameraError && (
-            <div className="p-3.5 rounded-2xl bg-amber-50 border border-amber-200 text-amber-900 text-xs flex items-center justify-between gap-2.5 font-medium animate-in fade-in">
+            <div className="p-3.5 rounded-2xl bg-amber-50 border border-amber-200 text-amber-900 text-xs flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 font-medium animate-in fade-in">
               <div className="flex items-start gap-2.5">
                 <AlertCircle className="w-4 h-4 shrink-0 mt-0.5 text-amber-700" />
                 <span>{cameraError}</span>
               </div>
-              {cameraPermission === 'not_allowed' && (
-                <button
-                  type="button"
-                  onClick={openSettings}
-                  className="px-2.5 py-1 rounded-xl bg-amber-700 text-white text-[11px] font-bold shrink-0 hover:bg-amber-800 transition flex items-center gap-1"
-                >
-                  <Settings className="w-3 h-3" />
-                  <span>सेटिंग्स</span>
-                </button>
-              )}
+              <div className="flex items-center gap-2 shrink-0">
+                {!isSecureContextEnvironment() && (
+                  <a
+                    href={PUBLIC_HTTPS_URL}
+                    className="px-2.5 py-1 rounded-xl bg-teal text-white text-[11px] font-bold hover:bg-teal-hover transition flex items-center gap-1"
+                  >
+                    <ExternalLink className="w-3 h-3" />
+                    <span>HTTPS खोलें</span>
+                  </a>
+                )}
+                {cameraPermission === 'not_allowed' && (
+                  <button
+                    type="button"
+                    onClick={openSettings}
+                    className="px-2.5 py-1 rounded-xl bg-amber-700 text-white text-[11px] font-bold hover:bg-amber-800 transition flex items-center gap-1"
+                  >
+                    <Settings className="w-3 h-3" />
+                    <span>सेटिंग्स</span>
+                  </button>
+                )}
+              </div>
             </div>
           )}
 
           {/* Trigger Scan Buttons */}
-          <div className="flex flex-wrap items-center justify-center gap-3">
+          <div className="flex flex-wrap items-center justify-center gap-2.5">
             {cameraActive && !capturedImage ? (
               <button
                 type="button"
                 onClick={handleCaptureSnapshot}
                 disabled={isScanning}
-                className="px-6 py-3.5 rounded-2xl bg-gradient-to-r from-teal to-teal-hover text-white font-black text-xs sm:text-sm shadow-md transition flex items-center gap-2 tap-target"
+                className="px-5 py-3 rounded-2xl bg-gradient-to-r from-teal to-teal-hover text-white font-black text-xs sm:text-sm shadow-md transition flex items-center gap-2 tap-target"
               >
                 <Aperture className="w-4 h-4 text-softYellow" />
                 <span>फोटो खींचें व स्कैन करें (Capture & Scan)</span>
@@ -380,18 +414,29 @@ export default function AILensModal({ isOpen, onClose, onApplyToLend }) {
                   handlePerformScan();
                 }}
                 disabled={isScanning}
-                className="px-6 py-3.5 rounded-2xl bg-terracotta hover:bg-terracotta-hover text-white font-black text-xs sm:text-sm shadow-md transition flex items-center gap-2 tap-target"
+                className="px-5 py-3 rounded-2xl bg-terracotta hover:bg-terracotta-hover text-white font-black text-xs sm:text-sm shadow-md transition flex items-center gap-2 tap-target"
               >
                 <Scan className="w-4 h-4" />
-                <span>{isScanning ? 'स्कैन हो रहा है...' : capturedImage ? 'पुनः स्कैन करें (Rescan)' : 'वस्तु स्कैन करें (Scan Object)'}</span>
+                <span>{isScanning ? 'स्कैन हो रहा है...' : capturedImage ? 'पुनः स्कैन करें' : 'वस्तु स्कैन करें (Scan Object)'}</span>
               </button>
             )}
+
+            {/* Native Mobile Camera Snap Button */}
+            <button
+              type="button"
+              onClick={() => nativeFileInputRef.current?.click()}
+              className="px-4 py-3 rounded-2xl bg-darkbrown text-white font-black text-xs sm:text-sm shadow-sm transition flex items-center gap-1.5"
+              title="फोन के मूल कैमरा ऐप से फोटो खींचें"
+            >
+              <Smartphone className="w-4 h-4 text-softYellow" />
+              <span>डिवाइस कैमरा</span>
+            </button>
 
             {!cameraActive && (
               <button
                 type="button"
                 onClick={() => startCamera()}
-                className="px-4 py-3.5 rounded-2xl bg-teal hover:bg-teal-hover text-white font-black text-xs sm:text-sm shadow-sm transition flex items-center gap-1.5"
+                className="px-4 py-3 rounded-2xl bg-teal hover:bg-teal-hover text-white font-black text-xs sm:text-sm shadow-sm transition flex items-center gap-1.5"
               >
                 <Camera className="w-4 h-4 text-softYellow" />
                 <span>कैमरा कनेक्ट करें</span>
@@ -405,7 +450,7 @@ export default function AILensModal({ isOpen, onClose, onApplyToLend }) {
                 setCapturedImage(null);
                 handlePerformScan(random);
               }}
-              className="px-4 py-3.5 rounded-2xl bg-cream hover:bg-cream-dark text-darkbrown font-black text-xs sm:text-sm border border-darkbrown/15 transition flex items-center gap-2"
+              className="px-4 py-3 rounded-2xl bg-cream hover:bg-cream-dark text-darkbrown font-black text-xs sm:text-sm border border-darkbrown/15 transition flex items-center gap-1.5"
             >
               <Sparkles className="w-4 h-4 text-teal" />
               <span>ऑटो डेमो टेस्ट</span>
