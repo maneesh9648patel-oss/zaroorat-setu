@@ -3,88 +3,205 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 const SettingsContext = createContext();
 
 export function SettingsProvider({ children }) {
-  // Theme: 'light' | 'dark'
-  const [theme, setTheme] = useState(() => {
-    return localStorage.getItem('zaroorat_theme') || 'light';
+  // 1. Display / Theme: default false (Light mode original website colors)
+  const [darkMode, setDarkMode] = useState(() => {
+    return localStorage.getItem('zaroorat_theme') === 'dark';
   });
 
-  // Hardware permissions: 'allowed' | 'not_allowed'
+  // 2. Hardware permissions (Boolean switches)
   const [micPermission, setMicPermissionState] = useState(() => {
-    return localStorage.getItem('zaroorat_mic_perm') || 'allowed';
+    const stored = localStorage.getItem('zaroorat_mic_perm');
+    return stored === null ? true : stored === 'true' || stored === 'allowed';
   });
 
   const [cameraPermission, setCameraPermissionState] = useState(() => {
-    return localStorage.getItem('zaroorat_cam_perm') || 'allowed';
+    const stored = localStorage.getItem('zaroorat_cam_perm');
+    return stored === null ? true : stored === 'true' || stored === 'allowed';
+  });
+
+  // 3. Audio & Voice Sound Output
+  const [soundOutput, setSoundOutput] = useState(() => {
+    const stored = localStorage.getItem('zaroorat_sound_output');
+    return stored === null ? true : stored === 'true';
+  });
+
+  // 4. Accessibility & Performance
+  const [largeFont, setLargeFont] = useState(() => {
+    return localStorage.getItem('zaroorat_large_font') === 'true';
+  });
+
+  const [reduceMotion, setReduceMotion] = useState(() => {
+    return localStorage.getItem('zaroorat_reduce_motion') === 'true';
+  });
+
+  // 5. Notifications & Alerts
+  const [urgentAlerts, setUrgentAlerts] = useState(() => {
+    const stored = localStorage.getItem('zaroorat_urgent_alerts');
+    return stored === null ? true : stored === 'true';
+  });
+
+  const [returnReminders, setReturnReminders] = useState(() => {
+    const stored = localStorage.getItem('zaroorat_return_reminders');
+    return stored === null ? true : stored === 'true';
+  });
+
+  // 6. Privacy & Location
+  const [maskPhone, setMaskPhone] = useState(() => {
+    const stored = localStorage.getItem('zaroorat_mask_phone');
+    return stored === null ? true : stored === 'true';
+  });
+
+  const [autoLocation, setAutoLocation] = useState(() => {
+    const stored = localStorage.getItem('zaroorat_auto_location');
+    return stored === null ? true : stored === 'true';
   });
 
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
 
-  // Apply theme to HTML root element
+  // Sync Dark Mode with Document Element
   useEffect(() => {
-    localStorage.setItem('zaroorat_theme', theme);
-    const root = document.documentElement;
-    if (theme === 'dark') {
-      root.classList.add('dark');
+    localStorage.setItem('zaroorat_theme', darkMode ? 'dark' : 'light');
+    if (darkMode) {
+      document.documentElement.classList.add('dark');
     } else {
-      root.classList.remove('dark');
+      document.documentElement.classList.remove('dark');
     }
-  }, [theme]);
+  }, [darkMode]);
 
-  // Persist microphone permission setting
+  // Sync Large Font
+  useEffect(() => {
+    localStorage.setItem('zaroorat_large_font', String(largeFont));
+    if (largeFont) {
+      document.documentElement.classList.add('large-text');
+    } else {
+      document.documentElement.classList.remove('large-text');
+    }
+  }, [largeFont]);
+
+  // Sync Hardware permissions
   const setMicPermission = (val) => {
     setMicPermissionState(val);
-    localStorage.setItem('zaroorat_mic_perm', val);
+    localStorage.setItem('zaroorat_mic_perm', String(val));
   };
 
   const toggleMicPermission = () => {
-    const next = micPermission === 'allowed' ? 'not_allowed' : 'allowed';
-    setMicPermission(next);
+    setMicPermission(!micPermission);
   };
 
-  // Persist camera permission setting
   const setCameraPermission = (val) => {
     setCameraPermissionState(val);
-    localStorage.setItem('zaroorat_cam_perm', val);
+    localStorage.setItem('zaroorat_cam_perm', String(val));
   };
 
   const toggleCameraPermission = () => {
-    const next = cameraPermission === 'allowed' ? 'not_allowed' : 'allowed';
-    setCameraPermission(next);
+    setCameraPermission(!cameraPermission);
   };
 
-  const toggleTheme = () => {
-    setTheme(prev => (prev === 'light' ? 'dark' : 'light'));
+  const toggleDarkMode = () => {
+    setDarkMode(prev => !prev);
+  };
+
+  const toggleSoundOutput = () => {
+    const next = !soundOutput;
+    setSoundOutput(next);
+    localStorage.setItem('zaroorat_sound_output', String(next));
+  };
+
+  const toggleLargeFont = () => {
+    setLargeFont(prev => !prev);
+  };
+
+  const toggleReduceMotion = () => {
+    const next = !reduceMotion;
+    setReduceMotion(next);
+    localStorage.setItem('zaroorat_reduce_motion', String(next));
+  };
+
+  const toggleUrgentAlerts = () => {
+    const next = !urgentAlerts;
+    setUrgentAlerts(next);
+    localStorage.setItem('zaroorat_urgent_alerts', String(next));
+  };
+
+  const toggleReturnReminders = () => {
+    const next = !returnReminders;
+    setReturnReminders(next);
+    localStorage.setItem('zaroorat_return_reminders', String(next));
+  };
+
+  const toggleMaskPhone = () => {
+    const next = !maskPhone;
+    setMaskPhone(next);
+    localStorage.setItem('zaroorat_mask_phone', String(next));
+  };
+
+  const toggleAutoLocation = () => {
+    const next = !autoLocation;
+    setAutoLocation(next);
+    localStorage.setItem('zaroorat_auto_location', String(next));
   };
 
   const openSettings = () => setIsSettingsModalOpen(true);
   const closeSettings = () => setIsSettingsModalOpen(false);
 
-  const resetSettings = () => {
-    setTheme('light');
-    setMicPermission('allowed');
-    setCameraPermission('allowed');
+  // Restore 100% original defaults
+  const resetToOriginal = () => {
+    setDarkMode(false);
+    setMicPermission(true);
+    setCameraPermission(true);
+    setSoundOutput(true);
+    setLargeFont(false);
+    setReduceMotion(false);
+    setUrgentAlerts(true);
+    setReturnReminders(true);
+    setMaskPhone(true);
+    setAutoLocation(true);
     localStorage.removeItem('zaroorat_theme');
     localStorage.removeItem('zaroorat_mic_perm');
     localStorage.removeItem('zaroorat_cam_perm');
+    localStorage.removeItem('zaroorat_sound_output');
+    localStorage.removeItem('zaroorat_large_font');
+    localStorage.removeItem('zaroorat_reduce_motion');
+    document.documentElement.classList.remove('dark');
+    document.documentElement.classList.remove('large-text');
   };
 
   return (
     <SettingsContext.Provider
       value={{
-        theme,
-        setTheme,
-        toggleTheme,
-        micPermission,
+        theme: darkMode ? 'dark' : 'light',
+        darkMode,
+        setDarkMode,
+        toggleDarkMode,
+        toggleTheme: toggleDarkMode,
+        micPermission: micPermission ? 'allowed' : 'not_allowed',
+        isMicAllowed: micPermission,
         setMicPermission,
         toggleMicPermission,
-        cameraPermission,
+        cameraPermission: cameraPermission ? 'allowed' : 'not_allowed',
+        isCameraAllowed: cameraPermission,
         setCameraPermission,
         toggleCameraPermission,
+        soundOutput,
+        toggleSoundOutput,
+        largeFont,
+        toggleLargeFont,
+        reduceMotion,
+        toggleReduceMotion,
+        urgentAlerts,
+        toggleUrgentAlerts,
+        returnReminders,
+        toggleReturnReminders,
+        maskPhone,
+        toggleMaskPhone,
+        autoLocation,
+        toggleAutoLocation,
         isSettingsModalOpen,
         setIsSettingsModalOpen,
         openSettings,
         closeSettings,
-        resetSettings
+        resetSettings: resetToOriginal,
+        resetToOriginal
       }}
     >
       {children}

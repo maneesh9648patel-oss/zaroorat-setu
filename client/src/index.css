@@ -7,22 +7,25 @@
     background-color: #FAF1E4;
     color: #2B1B10;
     font-family: 'Nunito', system-ui, sans-serif;
-    transition: background-color 0.25s ease, color 0.25s ease;
   }
 
   html.dark body {
-    background-color: #140F0B;
+    background-color: #17120E;
     color: #FAF1E4;
   }
 }
 
-/* Original custom rounded cards and warm shadows */
+/* Custom rounded cards and warm shadows - 100% original */
 .card-warm {
   background-color: #FFFFFF;
   border-radius: 1.25rem;
   border: 1px solid rgba(43, 27, 16, 0.08);
   box-shadow: 0 4px 12px -2px rgba(43, 27, 16, 0.05);
-  transition: background-color 0.25s ease, border-color 0.25s ease;
+}
+
+html.dark .card-warm {
+  background-color: #241D17;
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .tap-target {
@@ -41,45 +44,7 @@
   animation: voicePulse 1.6s infinite ease-in-out;
 }
 
-/* Clean Dark Mode (Strictly applies when user toggles dark switch) */
-html.dark .bg-cream {
-  background-color: #1A1410;
-  color: #FAF1E4;
-}
-
-html.dark .bg-white {
-  background-color: #241D17;
-  color: #FAF1E4;
-  border-color: rgba(255, 255, 255, 0.12);
-}
-
-html.dark .text-darkbrown {
-  color: #FAF1E4;
-}
-
-html.dark .text-darkbrown\/70,
-html.dark .text-darkbrown\/80,
-html.dark .text-darkbrown\/65,
-html.dark .text-darkbrown\/60,
-html.dark .text-darkbrown\/50 {
-  color: rgba(250, 241, 228, 0.72);
-}
-
-html.dark .border-darkbrown\/10,
-html.dark .border-darkbrown\/15,
-html.dark .border-darkbrown\/20 {
-  border-color: rgba(255, 255, 255, 0.14);
-}
-
-html.dark .card-warm {
-  background-color: #241D17;
-  border-color: rgba(255, 255, 255, 0.12);
-}
-
-html.dark input:not([type="checkbox"]):not([type="radio"]),
-html.dark select,
-html.dark textarea {
-  background-color: #1B1511;
-  color: #FAF1E4;
-  border-color: rgba(255, 255, 255, 0.18);
+/* Large Font Accessibility Mode */
+html.large-text {
+  font-size: 110%;
 }

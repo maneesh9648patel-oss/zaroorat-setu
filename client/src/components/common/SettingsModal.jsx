@@ -1,25 +1,89 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { 
   X, Settings, Sun, Moon, Mic, MicOff, Camera, CameraOff, 
-  Check, AlertCircle, RotateCcw, Shield, Volume2, Video, Sparkles, Smartphone
+  Check, AlertCircle, RotateCcw, Shield, Volume2, Video, 
+  Bell, Eye, Zap, MapPin, Lock, Smartphone, Radio, Sliders
 } from 'lucide-react';
 import { useSettings } from '../../contexts/SettingsContext';
 import { useLanguage } from '../../contexts/LanguageContext';
 
+function SettingSwitchRow({ icon: Icon, iconBg, iconColor, title, subtitle, checked, onChange, badge }) {
+  return (
+    <div className="flex items-center justify-between gap-3 p-3.5 rounded-2xl bg-cream/50 border border-darkbrown/10 hover:border-darkbrown/20 transition">
+      <div className="flex items-center gap-3">
+        <div className={`w-10 h-10 rounded-2xl flex items-center justify-center shrink-0 ${iconBg || 'bg-white'} ${iconColor || 'text-darkbrown'} border border-darkbrown/10 shadow-xs`}>
+          <Icon className="w-5 h-5" />
+        </div>
+        <div>
+          <div className="font-black text-xs sm:text-sm text-darkbrown flex items-center gap-2">
+            <span>{title}</span>
+            {badge && (
+              <span className={`px-2 py-0.2 rounded-full text-[10px] font-black ${
+                checked ? 'bg-teal-light text-teal border border-teal/20' : 'bg-darkbrown/10 text-darkbrown/60'
+              }`}>
+                {badge}
+              </span>
+            )}
+          </div>
+          {subtitle && (
+            <div className="text-[11px] text-darkbrown/65 mt-0.5 leading-tight">
+              {subtitle}
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Modern iOS-Style Animated Pill Toggle Switch */}
+      <button
+        type="button"
+        role="switch"
+        aria-checked={checked}
+        onClick={onChange}
+        className={`relative inline-flex h-6.5 w-12 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
+          checked ? 'bg-teal' : 'bg-darkbrown/30'
+        }`}
+        aria-label={title}
+      >
+        <span
+          className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow-md ring-0 transition duration-200 ease-in-out ${
+            checked ? 'translate-x-5.5' : 'translate-x-0'
+          }`}
+        />
+      </button>
+    </div>
+  );
+}
+
 export default function SettingsModal() {
   const { 
-    theme, 
-    setTheme, 
-    toggleTheme,
-    micPermission, 
-    setMicPermission, 
-    cameraPermission, 
-    setCameraPermission, 
+    theme,
+    darkMode, 
+    toggleDarkMode,
+    isMicAllowed, 
+    toggleMicPermission, 
+    isCameraAllowed, 
+    toggleCameraPermission, 
+    soundOutput,
+    toggleSoundOutput,
+    largeFont,
+    toggleLargeFont,
+    reduceMotion,
+    toggleReduceMotion,
+    urgentAlerts,
+    toggleUrgentAlerts,
+    returnReminders,
+    toggleReturnReminders,
+    maskPhone,
+    toggleMaskPhone,
+    autoLocation,
+    toggleAutoLocation,
     isSettingsModalOpen, 
     closeSettings, 
-    resetSettings 
+    resetToOriginal 
   } = useSettings();
   const { t } = useLanguage();
+
+  const [activeCategory, setActiveCategory] = useState('all'); // 'all' | 'media' | 'display' | 'privacy'
 
   // Hardware live test states
   const [isTestingMic, setIsTestingMic] = useState(false);
@@ -56,8 +120,8 @@ export default function SettingsModal() {
 
   // Microphone Hardware Test
   const startMicTest = async () => {
-    if (micPermission === 'not_allowed') {
-      setMicTestStatus("⚠️ माइक्रोफ़ोन सेटिंग्स में 'बंद (Not Allowed)' है। टेस्ट करने हेतु पहले ऊपर से Allow करें।");
+    if (!isMicAllowed) {
+      setMicTestStatus("⚠️ माइक्रोफ़ोन सेटिंग्स में 'बंद' है। टेस्ट करने हेतु पहले ऊपर दिए गए स्विच से चालू (Allow) करें।");
       return;
     }
 
@@ -98,9 +162,9 @@ export default function SettingsModal() {
       }
     } catch (err) {
       console.warn("Real mic note, falling back to simulated test:", err.message);
-      let simVol = 20;
+      let simVol = 25;
       const interval = setInterval(() => {
-        simVol = Math.floor(Math.random() * 65) + 20;
+        simVol = Math.floor(Math.random() * 60) + 20;
         setMicVolume(simVol);
       }, 150);
       micAnimRef.current = interval;
@@ -131,8 +195,8 @@ export default function SettingsModal() {
 
   // Camera Hardware Test with dual-try constraints
   const startCamTest = async () => {
-    if (cameraPermission === 'not_allowed') {
-      setCamTestStatus("⚠️ कैमरा सेटिंग्स में 'बंद (Not Allowed)' है। टेस्ट करने हेतु पहले ऊपर से Allow करें।");
+    if (!isCameraAllowed) {
+      setCamTestStatus("⚠️ कैमरा सेटिंग्स में 'बंद' है। टेस्ट करने हेतु पहले ऊपर दिए गए स्विच से चालू (Allow) करें।");
       return;
     }
 
@@ -192,14 +256,14 @@ export default function SettingsModal() {
         <div className="bg-darkbrown text-cream p-4 sm:p-5 flex items-center justify-between shrink-0 border-b border-white/10">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-2xl bg-teal text-white flex items-center justify-center shadow-md">
-              <Settings className="w-5 h-5 text-softYellow" />
+              <Sliders className="w-5 h-5 text-softYellow" />
             </div>
             <div>
               <h2 className="font-black text-base sm:text-lg text-white leading-tight">
-                सेटिंग्स एवं अनुमतियाँ (Settings & Permissions)
+                वेबसाइट सेटिंग्स (Website Settings Switches)
               </h2>
               <p className="text-xs text-cream/70 mt-0.5">
-                वेबसाइट मोड (Dark / Light) एवं माइक व कैमरा हार्डवेयर नियंत्रण
+                माइक, कैमरा, डार्क मोड, ध्वनि व अन्य आवश्यक नियंत्रण टॉगल
               </p>
             </div>
           </div>
@@ -212,140 +276,59 @@ export default function SettingsModal() {
           </button>
         </div>
 
+        {/* Category Tabs */}
+        <div className="flex items-center gap-1.5 px-4 sm:px-6 pt-3 pb-1 border-b border-darkbrown/10 overflow-x-auto no-scrollbar shrink-0 text-xs">
+          {[
+            { id: 'all', label: 'सभी सेटिंग्स (All)' },
+            { id: 'media', label: 'माइक व कैमरा (Media)' },
+            { id: 'display', label: 'डिस्प्ले व मोड (Display)' },
+            { id: 'privacy', label: 'सुरक्षा व अलर्ट (Privacy)' }
+          ].map((tab) => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveCategory(tab.id)}
+              className={`px-3 py-1.5 rounded-full font-bold whitespace-nowrap transition ${
+                activeCategory === tab.id
+                  ? 'bg-darkbrown text-white shadow-xs'
+                  : 'bg-cream/60 text-darkbrown/70 hover:bg-cream'
+              }`}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </div>
+
         {/* Modal Body */}
-        <div className="p-4 sm:p-6 overflow-y-auto space-y-6">
-          {/* SECTION 1: DISPLAY THEME WITH TOGGLE SWITCH */}
-          <div className="space-y-3">
-            <div>
-              <h3 className="font-black text-sm text-darkbrown flex items-center gap-1.5">
-                <Sun className="w-4 h-4 text-terracotta" />
-                <span>वेबसाइट मोड (Dark & Light Mode Toggle Switch)</span>
-              </h3>
-              <p className="text-xs text-darkbrown/65 mt-0.5">
-                नीचे दिए गए टॉगल स्विच से दिन (लाइट) या रात (डार्क) मोड बदलें
-              </p>
-            </div>
-
-            {/* Prominent Toggle Switch Card */}
-            <div className="p-4 rounded-3xl bg-cream/50 border border-darkbrown/12 flex items-center justify-between gap-4">
-              <div className="flex items-center gap-3">
-                <div className={`w-11 h-11 rounded-2xl flex items-center justify-center ${
-                  theme === 'dark' ? 'bg-darkbrown text-softYellow' : 'bg-amber-100 text-amber-700'
-                }`}>
-                  {theme === 'dark' ? <Moon className="w-5 h-5" /> : <Sun className="w-5 h-5" />}
-                </div>
-                <div>
-                  <div className="font-black text-xs sm:text-sm text-darkbrown flex items-center gap-2">
-                    <span>{theme === 'dark' ? 'डार्क मोड (Dark Mode)' : 'लाइट मोड (Light Mode)'}</span>
-                    <span className={`px-2 py-0.5 rounded-full text-[10px] font-black ${
-                      theme === 'dark' ? 'bg-teal text-white' : 'bg-amber-200 text-amber-900'
-                    }`}>
-                      {theme === 'dark' ? 'Active: Dark' : 'Active: Light (मूल रंग)'}
-                    </span>
-                  </div>
-                  <div className="text-[11px] text-darkbrown/65 mt-0.5">
-                    {theme === 'dark' ? 'आँखों हेतु सुगम रात्रि मोड' : 'क्लासिक मूल रंग (Original Colors)'}
-                  </div>
-                </div>
+        <div className="p-4 sm:p-6 overflow-y-auto space-y-5">
+          {/* 1. MEDIA & HARDWARE SWITCHES */}
+          {(activeCategory === 'all' || activeCategory === 'media') && (
+            <div className="space-y-3">
+              <div className="text-xs font-black text-darkbrown/80 uppercase tracking-wider flex items-center gap-1.5">
+                <Video className="w-4 h-4 text-teal" />
+                <span>हार्डवेयर व मीडिया अनुमतियाँ (Hardware Switches):</span>
               </div>
 
-              {/* iOS / Material Style Theme Toggle Switch */}
-              <div className="flex items-center gap-2 shrink-0">
-                <span className="text-[11px] font-black text-darkbrown/70">{theme === 'dark' ? 'डार्क' : 'लाइट'}</span>
-                <button
-                  type="button"
-                  role="switch"
-                  aria-checked={theme === 'dark'}
-                  onClick={toggleTheme}
-                  className={`relative inline-flex h-7 w-13 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
-                    theme === 'dark' ? 'bg-teal' : 'bg-darkbrown/30'
-                  }`}
-                  aria-label="Toggle Website Dark/Light Theme"
-                >
-                  <span
-                    className={`pointer-events-none inline-block h-6 w-6 transform rounded-full bg-white shadow-md ring-0 transition duration-200 ease-in-out ${
-                      theme === 'dark' ? 'translate-x-6' : 'translate-x-0'
-                    }`}
-                  />
-                </button>
-              </div>
-            </div>
-          </div>
+              {/* Microphone Switch */}
+              <div className="space-y-2">
+                <SettingSwitchRow
+                  icon={isMicAllowed ? Mic : MicOff}
+                  iconBg={isMicAllowed ? "bg-teal-light" : "bg-red-50"}
+                  iconColor={isMicAllowed ? "text-teal" : "text-red-600"}
+                  title="माइक्रोफ़ोन अनुमति (Microphone Switch)"
+                  subtitle="AI Voice Recorder व बोलकर आवश्यकता दर्ज करने हेतु"
+                  checked={isMicAllowed}
+                  onChange={toggleMicPermission}
+                  badge={isMicAllowed ? "चालू (Allowed)" : "बंद (Blocked)"}
+                />
 
-          <div className="border-t border-darkbrown/10" />
-
-          {/* SECTION 2: HARDWARE PERMISSIONS (MIC & CAMERA) */}
-          <div className="space-y-4">
-            <div>
-              <h3 className="font-black text-sm text-darkbrown flex items-center gap-1.5">
-                <Shield className="w-4 h-4 text-teal" />
-                <span>हार्डवेयर अनुमतियाँ (Hardware Permissions: Allow / Not Allow)</span>
-              </h3>
-              <p className="text-xs text-darkbrown/65 mt-0.5">
-                माइक और कैमरा की अनुमति को अपनी इच्छानुसार चालू (Allow) या बंद (Not Allow) करें
-              </p>
-            </div>
-
-            {/* 1. MICROPHONE PERMISSION CARD */}
-            <div className="p-4 rounded-3xl bg-cream/50 border border-darkbrown/12 space-y-3">
-              <div className="flex items-center justify-between gap-3">
-                <div className="flex items-center gap-3">
-                  <div className={`w-11 h-11 rounded-2xl flex items-center justify-center text-white ${
-                    micPermission === 'allowed' ? 'bg-teal shadow-xs' : 'bg-red-600'
-                  }`}>
-                    {micPermission === 'allowed' ? (
-                      <Mic className="w-5 h-5" />
-                    ) : (
-                      <MicOff className="w-5 h-5" />
-                    )}
-                  </div>
-                  <div>
-                    <div className="font-black text-xs sm:text-sm text-darkbrown flex items-center gap-2">
-                      <span>माइक्रोफ़ोन (Microphone)</span>
-                      <span className={`px-2 py-0.5 rounded-full text-[10px] font-black ${
-                        micPermission === 'allowed'
-                          ? 'bg-teal-light text-teal border border-teal/20'
-                          : 'bg-red-100 text-red-700 border border-red-200'
-                      }`}>
-                        {micPermission === 'allowed' ? 'स्वीकृत (Allowed)' : 'प्रतिबंधित (Not Allowed)'}
-                      </span>
-                    </div>
-                    <div className="text-[11px] text-darkbrown/65 mt-0.5">
-                      AI Voice Recorder और बोलकर फॉर्म भरने हेतु प्रयुक्त
-                    </div>
-                  </div>
-                </div>
-
-                {/* Allow / Disallow Toggle Switch */}
-                <button
-                  type="button"
-                  onClick={() => {
-                    const next = micPermission === 'allowed' ? 'not_allowed' : 'allowed';
-                    setMicPermission(next);
-                    if (next === 'not_allowed') stopMicTest();
-                  }}
-                  className={`relative inline-flex h-7 w-13 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
-                    micPermission === 'allowed' ? 'bg-teal' : 'bg-darkbrown/30'
-                  }`}
-                  aria-label="Toggle Microphone Permission"
-                >
-                  <span
-                    className={`pointer-events-none inline-block h-6 w-6 transform rounded-full bg-white shadow-md ring-0 transition duration-200 ease-in-out ${
-                      micPermission === 'allowed' ? 'translate-x-6' : 'translate-x-0'
-                    }`}
-                  />
-                </button>
-              </div>
-
-              {/* Mic Test Controls */}
-              <div className="bg-white p-3 rounded-2xl border border-darkbrown/10 space-y-2">
-                <div className="flex items-center justify-between">
-                  <span className="text-[11px] font-bold text-darkbrown/80">माइक की कार्यप्रणाली जांचें:</span>
+                {/* Mic Test Drawer */}
+                <div className="bg-cream/30 p-2.5 rounded-2xl border border-darkbrown/10 flex items-center justify-between text-xs">
+                  <span className="font-bold text-darkbrown/75">माइक जांच:</span>
                   {!isTestingMic ? (
                     <button
                       type="button"
                       onClick={startMicTest}
-                      className="px-3 py-1 rounded-xl bg-teal hover:bg-teal-hover text-white text-[11px] font-extrabold transition flex items-center gap-1"
+                      className="px-3 py-1 rounded-xl bg-teal text-white text-[11px] font-extrabold hover:bg-teal-hover transition flex items-center gap-1"
                     >
                       <Volume2 className="w-3.5 h-3.5" />
                       <span>माइक टेस्ट करें</span>
@@ -354,97 +337,51 @@ export default function SettingsModal() {
                     <button
                       type="button"
                       onClick={stopMicTest}
-                      className="px-3 py-1 rounded-xl bg-red-600 hover:bg-red-700 text-white text-[11px] font-extrabold transition flex items-center gap-1"
+                      className="px-3 py-1 rounded-xl bg-red-600 text-white text-[11px] font-extrabold hover:bg-red-700 transition"
                     >
-                      <span>टेस्ट रोकें</span>
+                      <span>रोकें</span>
                     </button>
                   )}
                 </div>
 
-                {/* Live Volume Meter Bar */}
                 {isTestingMic && (
-                  <div className="space-y-1 pt-1 animate-in fade-in">
-                    <div className="flex items-center justify-between text-[10px] font-bold text-darkbrown/60">
-                      <span>ध्वनि स्तर (Volume Level):</span>
+                  <div className="p-3 rounded-2xl bg-white border border-teal/30 space-y-1.5 animate-in fade-in">
+                    <div className="flex items-center justify-between text-[11px] font-bold text-darkbrown">
+                      <span>माइक ध्वनि स्तर:</span>
                       <span className="text-teal font-black">{micVolume}%</span>
                     </div>
-                    <div className="w-full h-3 rounded-full bg-cream overflow-hidden border border-darkbrown/10">
+                    <div className="w-full h-3 rounded-full bg-cream overflow-hidden">
                       <div
                         className="h-full bg-gradient-to-r from-teal to-terracotta transition-all duration-75 rounded-full"
-                        style={{ width: `${Math.max(5, micVolume)}%` }}
+                        style={{ width: `${Math.max(6, micVolume)}%` }}
                       />
                     </div>
-                  </div>
-                )}
-
-                {micTestStatus && (
-                  <div className="text-[11px] font-semibold text-teal pt-1">
-                    {micTestStatus}
+                    {micTestStatus && <div className="text-[10px] text-teal font-semibold">{micTestStatus}</div>}
                   </div>
                 )}
               </div>
-            </div>
 
-            {/* 2. CAMERA PERMISSION CARD */}
-            <div className="p-4 rounded-3xl bg-cream/50 border border-darkbrown/12 space-y-3">
-              <div className="flex items-center justify-between gap-3">
-                <div className="flex items-center gap-3">
-                  <div className={`w-11 h-11 rounded-2xl flex items-center justify-center text-white ${
-                    cameraPermission === 'allowed' ? 'bg-terracotta shadow-xs' : 'bg-red-600'
-                  }`}>
-                    {cameraPermission === 'allowed' ? (
-                      <Camera className="w-5 h-5" />
-                    ) : (
-                      <CameraOff className="w-5 h-5" />
-                    )}
-                  </div>
-                  <div>
-                    <div className="font-black text-xs sm:text-sm text-darkbrown flex items-center gap-2">
-                      <span>कैमरा (Camera)</span>
-                      <span className={`px-2 py-0.5 rounded-full text-[10px] font-black ${
-                        cameraPermission === 'allowed'
-                          ? 'bg-teal-light text-teal border border-teal/20'
-                          : 'bg-red-100 text-red-700 border border-red-200'
-                      }`}>
-                        {cameraPermission === 'allowed' ? 'स्वीकृत (Allowed)' : 'प्रतिबंधित (Not Allowed)'}
-                      </span>
-                    </div>
-                    <div className="text-[11px] text-darkbrown/65 mt-0.5">
-                      AI Lens स्कैनर एवं सामान की फोटो/वीडियो खींचने हेतु
-                    </div>
-                  </div>
-                </div>
+              {/* Camera Switch */}
+              <div className="space-y-2">
+                <SettingSwitchRow
+                  icon={isCameraAllowed ? Camera : CameraOff}
+                  iconBg={isCameraAllowed ? "bg-amber-50" : "bg-red-50"}
+                  iconColor={isCameraAllowed ? "text-terracotta" : "text-red-600"}
+                  title="कैमरा अनुमति (Camera Switch)"
+                  subtitle="AI Lens स्कैनर एवं सामान की फोटो/वीडियो अपलोड हेतु"
+                  checked={isCameraAllowed}
+                  onChange={toggleCameraPermission}
+                  badge={isCameraAllowed ? "चालू (Allowed)" : "बंद (Blocked)"}
+                />
 
-                {/* Allow / Disallow Toggle Switch */}
-                <button
-                  type="button"
-                  onClick={() => {
-                    const next = cameraPermission === 'allowed' ? 'not_allowed' : 'allowed';
-                    setCameraPermission(next);
-                    if (next === 'not_allowed') stopCamTest();
-                  }}
-                  className={`relative inline-flex h-7 w-13 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
-                    cameraPermission === 'allowed' ? 'bg-teal' : 'bg-darkbrown/30'
-                  }`}
-                  aria-label="Toggle Camera Permission"
-                >
-                  <span
-                    className={`pointer-events-none inline-block h-6 w-6 transform rounded-full bg-white shadow-md ring-0 transition duration-200 ease-in-out ${
-                      cameraPermission === 'allowed' ? 'translate-x-6' : 'translate-x-0'
-                    }`}
-                  />
-                </button>
-              </div>
-
-              {/* Camera Test Controls */}
-              <div className="bg-white p-3 rounded-2xl border border-darkbrown/10 space-y-2">
-                <div className="flex items-center justify-between">
-                  <span className="text-[11px] font-bold text-darkbrown/80">कैमरे की कार्यप्रणाली जांचें:</span>
+                {/* Camera Test Drawer */}
+                <div className="bg-cream/30 p-2.5 rounded-2xl border border-darkbrown/10 flex items-center justify-between text-xs">
+                  <span className="font-bold text-darkbrown/75">कैमरा जांच:</span>
                   {!isTestingCam ? (
                     <button
                       type="button"
                       onClick={startCamTest}
-                      className="px-3 py-1 rounded-xl bg-terracotta hover:bg-terracotta-hover text-white text-[11px] font-extrabold transition flex items-center gap-1"
+                      className="px-3 py-1 rounded-xl bg-terracotta text-white text-[11px] font-extrabold hover:bg-terracotta-hover transition flex items-center gap-1"
                     >
                       <Video className="w-3.5 h-3.5" />
                       <span>कैमरा टेस्ट करें</span>
@@ -453,14 +390,13 @@ export default function SettingsModal() {
                     <button
                       type="button"
                       onClick={stopCamTest}
-                      className="px-3 py-1 rounded-xl bg-red-600 hover:bg-red-700 text-white text-[11px] font-extrabold transition flex items-center gap-1"
+                      className="px-3 py-1 rounded-xl bg-red-600 text-white text-[11px] font-extrabold hover:bg-red-700 transition"
                     >
-                      <span>कैमरा बंद करें</span>
+                      <span>बंद करें</span>
                     </button>
                   )}
                 </div>
 
-                {/* Live Camera Viewfinder (Always in DOM so ref is never null) */}
                 <div className={`relative rounded-2xl overflow-hidden aspect-video bg-black flex items-center justify-center border border-darkbrown/15 ${
                   isTestingCam ? 'block' : 'hidden'
                 }`}>
@@ -472,47 +408,150 @@ export default function SettingsModal() {
                     className="w-full h-full object-cover"
                   />
                   <div className="absolute top-2 left-2 px-2 py-0.5 rounded-full bg-black/60 text-softYellow text-[10px] font-mono font-bold">
-                    CAMERA FEED TEST · ACTIVE
+                    CAMERA FEED · ACTIVE
                   </div>
                 </div>
-
-                {camTestStatus && (
-                  <div className="text-[11px] font-semibold text-teal pt-1">
-                    {camTestStatus}
-                  </div>
+                {camTestStatus && isTestingCam && (
+                  <div className="text-[11px] font-semibold text-teal">{camTestStatus}</div>
                 )}
               </div>
-            </div>
-          </div>
 
-          {/* Privacy Note & Browser Settings Tip */}
-          <div className="p-3.5 rounded-2xl bg-teal-light/50 border border-teal/20 text-[11px] text-darkbrown/75 leading-relaxed space-y-1">
-            <div className="font-extrabold text-teal flex items-center gap-1">
-              <Smartphone className="w-3.5 h-3.5" />
-              <span>ब्राउज़र सुरक्षा युक्ति (Browser Tip):</span>
+              {/* Sound Output Switch */}
+              <SettingSwitchRow
+                icon={Volume2}
+                iconBg="bg-teal-light"
+                iconColor="text-teal"
+                title="एआई आवाज़ आउटपुट (Sound & Voice Readout Switch)"
+                subtitle="AI सहायक व टेक्स्ट को बोलकर सुनाने की ध्वनि चालू/बंद"
+                checked={soundOutput}
+                onChange={toggleSoundOutput}
+                badge={soundOutput ? "आवाज़ ऑन" : "म्यूट"}
+              />
             </div>
-            <div>
-              यदि आपने ब्राउज़र में पहले कभी माइक या कैमरा ब्लॉक कर दिया हो, तो वेबसाइट के एड्रेस बार (URL) पर ताले (🔒) वाले आइकन पर क्लिक करके <strong>'Site settings'</strong> में जाकर भी अनुमति 'Allow' कर सकते हैं।
-            </div>
-          </div>
+          )}
 
-          {/* Reset Settings Button */}
-          <div className="flex items-center justify-between pt-1">
+          {/* 2. DISPLAY & THEME SWITCHES */}
+          {(activeCategory === 'all' || activeCategory === 'display') && (
+            <div className="space-y-3 pt-1">
+              <div className="text-xs font-black text-darkbrown/80 uppercase tracking-wider flex items-center gap-1.5">
+                <Sun className="w-4 h-4 text-terracotta" />
+                <span>वेबसाइट डिस्प्ले व मोड (Display & Mode Switches):</span>
+              </div>
+
+              {/* Dark / Light Mode Switch */}
+              <SettingSwitchRow
+                icon={darkMode ? Moon : Sun}
+                iconBg={darkMode ? "bg-darkbrown" : "bg-amber-100"}
+                iconColor={darkMode ? "text-softYellow" : "text-amber-700"}
+                title="डार्क मोड (Dark Mode Switch)"
+                subtitle={darkMode ? "रात्रि उपयोग व बैटरी बचत हेतु डार्क थीम सक्रिय" : "क्लासिक मूल रंग सक्रिय (Classic Original Colors)"}
+                checked={darkMode}
+                onChange={toggleDarkMode}
+                badge={darkMode ? "डार्क चालू" : "मूल लाइट रंग"}
+              />
+
+              {/* Large Font Accessibility */}
+              <SettingSwitchRow
+                icon={Eye}
+                iconBg="bg-cream"
+                iconColor="text-darkbrown"
+                title="बड़ा फ़ॉन्ट सुगमता (Large Text Accessibility)"
+                subtitle="वरिष्ठ नागरिकों व दृष्टि स्पष्टता हेतु 10% बड़ा टेक्स्ट"
+                checked={largeFont}
+                onChange={toggleLargeFont}
+                badge={largeFont ? "बड़ा टेक्स्ट" : "सामान्य"}
+              />
+
+              {/* Reduce Animations */}
+              <SettingSwitchRow
+                icon={Zap}
+                iconBg="bg-cream"
+                iconColor="text-terracotta"
+                title="सुपरफ़ास्ट मोड (Reduce Animations Switch)"
+                subtitle="एनिमेशन कम कर धीमे इंटरनेट व बैटरी पर तुरंत लोड करें"
+                checked={reduceMotion}
+                onChange={toggleReduceMotion}
+                badge={reduceMotion ? "फास्ट मोड" : "सामान्य"}
+              />
+            </div>
+          )}
+
+          {/* 3. NOTIFICATIONS & PRIVACY SWITCHES */}
+          {(activeCategory === 'all' || activeCategory === 'privacy') && (
+            <div className="space-y-3 pt-1">
+              <div className="text-xs font-black text-darkbrown/80 uppercase tracking-wider flex items-center gap-1.5">
+                <Shield className="w-4 h-4 text-teal" />
+                <span>सुरक्षा, अलर्ट व स्थान (Privacy & Notification Switches):</span>
+              </div>
+
+              {/* Emergency Need Alerts */}
+              <SettingSwitchRow
+                icon={Bell}
+                iconBg="bg-red-50"
+                iconColor="text-red-600"
+                title="आपातकालीन ज़रूरत अलर्ट (Urgent Blood/Medical Alerts)"
+                subtitle="रक्त या जीवनरक्षक ज़रूरतों पर तुरंत समुदाय सूचना"
+                checked={urgentAlerts}
+                onChange={toggleUrgentAlerts}
+                badge={urgentAlerts ? "अलर्ट ऑन" : "म्यूट"}
+              />
+
+              {/* Return & 50% Escrow Reminders */}
+              <SettingSwitchRow
+                icon={RotateCcw}
+                iconBg="bg-teal-light"
+                iconColor="text-teal"
+                title="50% धरोहर रिफंड रिमाइंडर (Escrow Return Reminder)"
+                subtitle="सामान वापसी की तारीख से 2 दिन पहले रिफंड सूचना"
+                checked={returnReminders}
+                onChange={toggleReturnReminders}
+                badge={returnReminders ? "रिमाइंडर ऑन" : "बंद"}
+              />
+
+              {/* Mask Phone Number */}
+              <SettingSwitchRow
+                icon={Lock}
+                iconBg="bg-cream"
+                iconColor="text-darkbrown"
+                title="फ़ोन नंबर प्राइवेसी (Mask Phone Number Switch)"
+                subtitle="आपका नंबर केवल सत्यापित NGO व सत्यापनकर्ता को दिखेगा"
+                checked={maskPhone}
+                onChange={toggleMaskPhone}
+                badge={maskPhone ? "सुरक्षित" : "सार्वजनिक"}
+              />
+
+              {/* Auto GPS Location */}
+              <SettingSwitchRow
+                icon={MapPin}
+                iconBg="bg-teal-light"
+                iconColor="text-teal"
+                title="बांदा स्थान स्वतः पहचान (Auto-detect Banda Location)"
+                subtitle="REC बांदा, बबेरू, अतर्रा व सिविल लाइन्स की नजदीकी दूरी गणना"
+                checked={autoLocation}
+                onChange={toggleAutoLocation}
+                badge={autoLocation ? "जीपीएस ऑन" : "मैन्युअल"}
+              />
+            </div>
+          )}
+
+          {/* RESTORE ORIGINAL DEFAULTS & DONE FOOTER */}
+          <div className="pt-3 border-t border-darkbrown/10 flex flex-col sm:flex-row items-center justify-between gap-3">
             <button
               type="button"
-              onClick={resetSettings}
-              className="text-xs text-darkbrown/60 hover:text-darkbrown flex items-center gap-1.5 font-bold transition"
+              onClick={resetToOriginal}
+              className="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-cream hover:bg-cream-dark text-darkbrown text-xs font-black border border-darkbrown/15 transition flex items-center justify-center gap-1.5"
+              title="वेबसाइट के 100% मूल रंग व डिफ़ॉल्ट सेटिंग्स वापस लाएं"
             >
-              <RotateCcw className="w-3.5 h-3.5" />
-              <span>डिफ़ॉल्ट सेटिंग्स रीसेट करें</span>
+              <RotateCcw className="w-3.5 h-3.5 text-terracotta" />
+              <span>मूल रंग व डिफ़ॉल्ट बहाल करें (Restore Defaults)</span>
             </button>
 
             <button
               type="button"
               onClick={closeSettings}
-              className="px-6 py-2.5 rounded-xl bg-teal hover:bg-teal-hover text-white font-extrabold text-xs shadow-sm transition"
+              className="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-teal hover:bg-teal-hover text-white text-xs font-black shadow-sm transition text-center"
             >
-              पूर्ण (Done)
+              सेटिंग्स सहेजें (Save & Close)
             </button>
           </div>
         </div>
