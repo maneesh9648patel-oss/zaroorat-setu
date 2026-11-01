@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Welcome to FormSaathi — Smart Scholarship & Document Assistant</title>
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body style="background-color: #f8fafc;">
+
+<div class="welcome-container">
+  <div class="welcome-split">
+    <!-- Left Hero Info Pane -->
+    <div class="welcome-info-pane">
+      <div>
+        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 2.5rem;">
+          <div class="brand-logo-icon" style="width: 44px; height: 44px; font-size: 1.3rem;">
+            <i class="fa-solid fa-graduation-cap"></i>
+          </div>
+          <div style="font-size: 1.5rem; font-weight: 800; letter-spacing: -0.02em; color: #fff;">
+            FormSaathi<span style="color: #5eead4;">.in</span>
+          </div>
+        </div>
+
+        <h1 style="font-size: 2.25rem; font-weight: 800; line-height: 1.25; margin-bottom: 1rem;">
+          Your Smart Scholarship & Government Document Assistant
+        </h1>
+        <p style="font-size: 1.05rem; opacity: 0.9; line-height: 1.6; margin-bottom: 2.5rem;">
+          Simplifying scholarship checklists, eligibility evaluation, and official government portal guidance for Indian students across all education levels.
+        </p>
+
+        <div style="display: flex; flex-direction: column; gap: 1.25rem;">
+          <div style="display: flex; gap: 1rem; align-items: flex-start;">
+            <div style="background: rgba(255,255,255,0.2); width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+              <i class="fa-solid fa-clipboard-check"></i>
+            </div>
+            <div>
+              <div style="font-weight: 700; font-size: 0.95rem;">Tailored Document Checklists</div>
+              <div style="font-size: 0.85rem; opacity: 0.85;">Understand exactly what documents your course and scheme need.</div>
+            </div>
+          </div>
+
+          <div style="display: flex; gap: 1rem; align-items: flex-start;">
+            <div style="background: rgba(255,255,255,0.2); width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+              <i class="fa-solid fa-user-check"></i>
+            </div>
+            <div>
+              <div style="font-weight: 700; font-size: 0.95rem;">Rule-Based Eligibility Checker</div>
+              <div style="font-size: 0.85rem; opacity: 0.85;">Check marks, family income limits, and eligibility before applying.</div>
+            </div>
+          </div>
+
+          <div style="display: flex; gap: 1rem; align-items: flex-start;">
+            <div style="background: rgba(255,255,255,0.2); width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+              <i class="fa-solid fa-lock"></i>
+            </div>
+            <div>
+              <div style="font-weight: 700; font-size: 0.95rem;">Private & Safe Storage</div>
+              <div style="font-size: 0.85rem; opacity: 0.85;">Organize your files locally without exposure through public web links.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="padding-top: 2rem; border-top: 1px solid rgba(255,255,255,0.2); font-size: 0.8rem; opacity: 0.8;">
+        <i class="fa-solid fa-shield-halved"></i> <strong>Student Privacy Promise:</strong> FormSaathi never asks for passwords, Aadhaar numbers, OTPs, or bank account credentials.
+      </div>
+    </div>
+
+    <!-- Right Setup Form Pane -->
+    <div class="welcome-form-pane">
+      <div style="margin-bottom: 2rem;">
+        <span class="badge badge-primary" style="margin-bottom: 0.75rem;">
+          <i class="fa-solid fa-id-card"></i> Student Onboarding
+        </span>
+        <h2 style="font-size: 1.75rem; font-weight: 800; color: var(--gray-900); margin-bottom: 0.35rem;">
+          Welcome to FormSaathi<span style="color: var(--teal-600);">.in</span>
+        </h2>
+        <p style="color: var(--gray-500); font-size: 0.95rem;">
+          Please enter your academic details to personalize your document checklist and dashboard.
+        </p>
+      </div>
+
+      <!-- Flash Messages -->
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          <div class="flash-container">
+            {% for category, message in messages %}
+              <div class="alert alert-{{ category }}">
+                <i class="fa-solid fa-circle-exclamation"></i>
+                <span>{{ message }}</span>
+              </div>
+            {% endfor %}
+          </div>
+        {% endif %}
+      {% endwith %}
+
+      <form action="{{ url_for('welcome_setup') }}" method="POST">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+        <div class="grid-2">
+          <!-- Student Full Name -->
+          <div class="form-group">
+            <label class="form-label" for="full_name">
+              Student's Full Name <span class="required">*</span>
+            </label>
+            <input 
+              type="text" 
+              name="full_name" 
+              id="full_name" 
+              class="form-control" 
+              placeholder="e.g. Rahul Sharma" 
+              value="{{ form_data.get('full_name', '') }}" 
+              required
+            >
+          </div>
+
+          <!-- Email Address -->
+          <div class="form-group">
+            <label class="form-label" for="email">
+              Email Address <span class="required">*</span>
+            </label>
+            <input 
+              type="email" 
+              name="email" 
+              id="email" 
+              class="form-control" 
+              placeholder="e.g. student@college.edu.in" 
+              value="{{ form_data.get('email', '') }}" 
+              required
+            >
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <!-- Class or Course -->
+          <div class="form-group">
+            <label class="form-label" for="classCourseSelect">
+              Class or Course <span class="required">*</span>
+            </label>
+            <select name="class_course" id="classCourseSelect" class="form-control" required>
+              <option value="" disabled {% if not form_data.get('class_course') %}selected{% endif %}>Select Course / Education Level</option>
+              <option value="School (Class 9-10)" {% if form_data.get('class_course') == 'School (Class 9-10)' %}selected{% endif %}>School (Class 9 - 10)</option>
+              <option value="School (Class 11-12)" {% if form_data.get('class_course') == 'School (Class 11-12)' %}selected{% endif %}>School (Class 11 - 12)</option>
+              <option value="Diploma / Polytechnic" {% if form_data.get('class_course') == 'Diploma / Polytechnic' %}selected{% endif %}>Diploma / Polytechnic</option>
+              <option value="Undergraduate (B.Tech / B.Sc / B.Com / B.A / MBBS)" {% if form_data.get('class_course') == 'Undergraduate (B.Tech / B.Sc / B.Com / B.A / MBBS)' or not form_data.get('class_course') %}selected{% endif %}>Undergraduate (B.Tech / B.Sc / B.Com / B.A / MBBS / etc.)</option>
+              <option value="Postgraduate (M.Tech / M.Sc / M.Com / M.A / MBA)" {% if form_data.get('class_course') == 'Postgraduate (M.Tech / M.Sc / M.Com / M.A / MBA)' %}selected{% endif %}>Postgraduate (M.Tech / M.Sc / M.Com / M.A / MBA / etc.)</option>
+              <option value="PhD / Doctoral Research" {% if form_data.get('class_course') == 'PhD / Doctoral Research' %}selected{% endif %}>PhD / Doctoral Research</option>
+              <option value="Other" {% if form_data.get('class_course') == 'Other' %}selected{% endif %}>Other (Specify)</option>
+            </select>
+          </div>
+
+          <!-- Academic Year -->
+          <div class="form-group">
+            <label class="form-label" for="academic_year">
+              Academic Year <span class="required">*</span>
+            </label>
+            <select name="academic_year" id="academic_year" class="form-control" required>
+              <option value="2026-2027" {% if form_data.get('academic_year') == '2026-2027' or not form_data.get('academic_year') %}selected{% endif %}>2026 - 2027 (Current)</option>
+              <option value="2025-2026" {% if form_data.get('academic_year') == '2025-2026' %}selected{% endif %}>2025 - 2026</option>
+              <option value="2027-2028" {% if form_data.get('academic_year') == '2027-2028' %}selected{% endif %}>2027 - 2028</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Custom Course Input (conditionally visible) -->
+        <div class="form-group" id="customCourseGroup" style="display: none;">
+          <label class="form-label" for="course_custom">
+            Specify Your Course / Program <span class="required">*</span>
+          </label>
+          <input 
+            type="text" 
+            name="course_custom" 
+            id="course_custom" 
+            class="form-control" 
+            placeholder="e.g. Integrated Law / B.Voc" 
+            value="{{ form_data.get('course_custom', '') }}"
+          >
+        </div>
+
+        <!-- College or University Name -->
+        <div class="form-group">
+          <label class="form-label" for="institution_name">
+            College / University / School Name <span class="required">*</span>
+          </label>
+          <input 
+            type="text" 
+            name="institution_name" 
+            id="institution_name" 
+            class="form-control" 
+            placeholder="e.g. National Institute of Technology / Delhi University" 
+            value="{{ form_data.get('institution_name', '') }}" 
+            required
+          >
+        </div>
+
+        <!-- Scholarship Type or Scheme Interest -->
+        <div class="form-group">
+          <label class="form-label" for="scholarship_interest">
+            Target Scholarship or Scheme <span class="required">*</span>
+          </label>
+          <select name="scholarship_interest" id="scholarship_interest" class="form-control" required>
+            <option value="" disabled {% if not form_data.get('scholarship_interest') %}selected{% endif %}>Select Target Scheme</option>
+            <option value="Central Sector Scheme of Scholarships (NSP CSSS)" {% if form_data.get('scholarship_interest') == 'Central Sector Scheme of Scholarships (NSP CSSS)' or not form_data.get('scholarship_interest') %}selected{% endif %}>Central Sector Scheme of Scholarships (NSP CSSS)</option>
+            <option value="Post Matric Scholarship for SC Students" {% if form_data.get('scholarship_interest') == 'Post Matric Scholarship for SC Students' %}selected{% endif %}>Post Matric Scholarship for SC Students</option>
+            <option value="Post Matric Scholarship for OBC / EBC Students" {% if form_data.get('scholarship_interest') == 'Post Matric Scholarship for OBC / EBC Students' %}selected{% endif %}>Post Matric Scholarship for OBC / EBC Students</option>
+            <option value="AICTE Pragati Scholarship for Girl Students" {% if form_data.get('scholarship_interest') == 'AICTE Pragati Scholarship for Girl Students' %}selected{% endif %}>AICTE Pragati Scholarship for Girl Students</option>
+            <option value="UGC Ishan Uday Scholarship for North Eastern Region" {% if form_data.get('scholarship_interest') == 'UGC Ishan Uday Scholarship for North Eastern Region' %}selected{% endif %}>UGC Ishan Uday Scholarship for North Eastern Region</option>
+            <option value="DST INSPIRE Scholarship for Higher Education" {% if form_data.get('scholarship_interest') == 'DST INSPIRE Scholarship for Higher Education' %}selected{% endif %}>DST INSPIRE Scholarship for Higher Education</option>
+            <option value="State Government Post-Matric Scholarship" {% if form_data.get('scholarship_interest') == 'State Government Post-Matric Scholarship' %}selected{% endif %}>State Government Post-Matric Scholarship</option>
+            <option value="Private / CSR Merit & Need Scholarships (Tata / Reliance)" {% if form_data.get('scholarship_interest') == 'Private / CSR Merit & Need Scholarships (Tata / Reliance)' %}selected{% endif %}>Private / CSR Merit & Need Scholarships (Tata / Reliance)</option>
+            <option value="Exploring All Applicable Schemes" {% if form_data.get('scholarship_interest') == 'Exploring All Applicable Schemes' %}selected{% endif %}>Exploring All Applicable Schemes</option>
+          </select>
+          <div class="form-help">You can explore and evaluate multiple schemes anytime inside FormSaathi.</div>
+        </div>
+
+        <div class="grid-2">
+          <!-- State of Domicile -->
+          <div class="form-group">
+            <label class="form-label" for="state">
+              State of Domicile (Optional)
+            </label>
+            <select name="state" id="state" class="form-control">
+              <option value="All India" {% if form_data.get('state') == 'All India' or not form_data.get('state') %}selected{% endif %}>All India / Unspecified</option>
+              <option value="Uttar Pradesh">Uttar Pradesh</option>
+              <option value="Maharashtra">Maharashtra</option>
+              <option value="Karnataka">Karnataka</option>
+              <option value="West Bengal">West Bengal</option>
+              <option value="Bihar">Bihar</option>
+              <option value="Rajasthan">Rajasthan</option>
+              <option value="Madhya Pradesh">Madhya Pradesh</option>
+              <option value="Tamil Nadu">Tamil Nadu</option>
+              <option value="Delhi">Delhi</option>
+              <option value="Assam">Assam</option>
+              <option value="Other States">Other States / UTs</option>
+            </select>
+          </div>
+
+          <!-- Social Category -->
+          <div class="form-group">
+            <label class="form-label" for="category">
+              Social Category (Optional)
+            </label>
+            <select name="category" id="category" class="form-control">
+              <option value="General" {% if form_data.get('category') == 'General' or not form_data.get('category') %}selected{% endif %}>General / Unreserved</option>
+              <option value="OBC">OBC (Other Backward Classes)</option>
+              <option value="SC">SC (Scheduled Caste)</option>
+              <option value="ST">ST (Scheduled Tribe)</option>
+              <option value="EWS">EWS (Economically Weaker Section)</option>
+            </select>
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-lg" style="width: 100%; margin-top: 1rem;">
+          <span>Continue to FormSaathi.in</span>
+          <i class="fa-solid fa-arrow-right"></i>
+        </button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>

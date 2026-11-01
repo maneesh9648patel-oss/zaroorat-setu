@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Profile — FormSaathi{% endblock %}
+{% block page_title %}Edit Student Profile{% endblock %}
+
+{% block content %}
+<div class="card" style="max-width: 750px; margin: 0 auto;">
+  <div class="card-header">
+    <div class="card-title">
+      <i class="fa-solid fa-user-pen" style="color: var(--primary-600);"></i>
+      <span>Update Profile Information</span>
+    </div>
+    <a href="{{ url_for('dashboard') }}" class="btn btn-sm btn-secondary">
+      Back to Dashboard
+    </a>
+  </div>
+
+  <form action="{{ url_for('edit_profile') }}" method="POST">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+    <div class="grid-2">
+      <div class="form-group">
+        <label class="form-label" for="full_name">Student Full Name <span class="required">*</span></label>
+        <input type="text" name="full_name" id="full_name" class="form-control" value="{{ student.full_name }}" required>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="email">Email Address</label>
+        <input type="email" id="email" class="form-control" value="{{ student.email }}" disabled style="background: var(--gray-100); cursor: not-allowed;">
+        <div class="form-help">Email is bound to this profile record.</div>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="form-group">
+        <label class="form-label" for="class_course">Class or Course Level <span class="required">*</span></label>
+        <select name="class_course" id="classCourseSelect" class="form-control" required>
+          <option value="School (Class 9-10)" {% if 'Class 9-10' in student.class_course %}selected{% endif %}>School (Class 9 - 10)</option>
+          <option value="School (Class 11-12)" {% if 'Class 11-12' in student.class_course %}selected{% endif %}>School (Class 11 - 12)</option>
+          <option value="Diploma / Polytechnic" {% if 'Diploma' in student.class_course %}selected{% endif %}>Diploma / Polytechnic</option>
+          <option value="Undergraduate" {% if 'Undergraduate' in student.class_course %}selected{% endif %}>Undergraduate (Degree)</option>
+          <option value="Postgraduate" {% if 'Postgraduate' in student.class_course %}selected{% endif %}>Postgraduate (Master's)</option>
+          <option value="PhD / Doctoral Research" {% if 'PhD' in student.class_course %}selected{% endif %}>PhD / Doctoral Research</option>
+          <option value="Other" {% if student.class_course == 'Other' %}selected{% endif %}>Other</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="academic_year">Academic Year</label>
+        <input type="text" name="academic_year" id="academic_year" class="form-control" value="{{ student.academic_year }}" required>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label" for="institution_name">College / University / School Name <span class="required">*</span></label>
+      <input type="text" name="institution_name" id="institution_name" class="form-control" value="{{ student.institution_name }}" required>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label" for="scholarship_interest">Target Scholarship Scheme <span class="required">*</span></label>
+      <input type="text" name="scholarship_interest" id="scholarship_interest" class="form-control" value="{{ student.scholarship_interest }}" required>
+    </div>
+
+    <div class="grid-2">
+      <div class="form-group">
+        <label class="form-label" for="state">State of Domicile</label>
+        <input type="text" name="state" id="state" class="form-control" value="{{ student.state }}">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="category">Category</label>
+        <select name="category" id="category" class="form-control">
+          <option value="General" {% if student.category == 'General' %}selected{% endif %}>General</option>
+          <option value="OBC" {% if student.category == 'OBC' %}selected{% endif %}>OBC</option>
+          <option value="SC" {% if student.category == 'SC' %}selected{% endif %}>SC</option>
+          <option value="ST" {% if student.category == 'ST' %}selected{% endif %}>ST</option>
+          <option value="EWS" {% if student.category == 'EWS' %}selected{% endif %}>EWS</option>
+        </select>
+      </div>
+    </div>
+
+    <div style="display: flex; justify-content: flex-end; gap: 0.75rem; margin-top: 1.5rem; padding-top: 1.25rem; border-top: 1px solid var(--gray-200);">
+      <a href="{{ url_for('dashboard') }}" class="btn btn-secondary">
+        Cancel
+      </a>
+      <button type="submit" class="btn btn-primary">
+        <i class="fa-solid fa-floppy-disk"></i> Save Profile Changes
+      </button>
+    </div>
+  </form>
+</div>
+{% endblock %}

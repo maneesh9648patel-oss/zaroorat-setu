@@ -1,0 +1,32 @@
+{
+  "name": "ZarooratSetu - The Right Support for Every Need",
+  "short_name": "ZarooratSetu",
+  "description": "An inclusive, low-cost community network that connects people who need essential resources with verified individuals and organizations, starting with the most urgent needs.",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#FAF8FF",
+  "theme_color": "#C6F432",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "./assets/images/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "./assets/images/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "./assets/images/logo.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ],
+  "categories": ["utilities", "lifestyle", "social"],
+  "lang": "en",
+  "dir": "ltr"
+}

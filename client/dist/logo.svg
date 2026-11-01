@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
+  <defs>
+    <filter id="hard-shadow" x="0" y="0" width="120%" height="120%" filterUnits="userSpaceOnUse">
+      <feOffset dx="16" dy="16" />
+      <feColorMatrix type="matrix" values="0 0 0 0 0.078   0 0 0 0 0.063   0 0 0 0 0.122  0 0 0 1 0" />
+      <feBlend in="SourceGraphic" in2="shadow" mode="normal" />
+    </filter>
+  </defs>
+
+  <!-- Hard Offset Shadow -->
+  <rect x="46" y="46" width="420" height="420" rx="84" fill="#14101F" />
+
+  <!-- App Icon Base Lime Container -->
+  <rect x="30" y="30" width="420" height="420" rx="84" fill="#C6F432" stroke="#14101F" stroke-width="18" />
+
+  <!-- Bridge Pillars / Foundations (Violet #6C3BFF) -->
+  <rect x="80" y="270" width="48" height="110" rx="14" fill="#6C3BFF" stroke="#14101F" stroke-width="14" />
+  <rect x="352" y="270" width="48" height="110" rx="14" fill="#6C3BFF" stroke="#14101F" stroke-width="14" />
+
+  <!-- Bridge Arch (Setu) Violet #6C3BFF -->
+  <path d="M 80 320 C 110 160, 370 160, 400 320 C 350 200, 130 200, 80 320 Z" fill="#6C3BFF" stroke="#14101F" stroke-width="14" stroke-linejoin="round" />
+
+  <!-- Bridge Deck Beam (Coral #FF5C7A) -->
+  <rect x="65" y="280" width="350" height="46" rx="16" fill="#FF5C7A" stroke="#14101F" stroke-width="14" />
+  
+  <!-- Bridge Deck Grip Details -->
+  <line x1="120" y1="294" x2="120" y2="312" stroke="#14101F" stroke-width="8" stroke-linecap="round" />
+  <line x1="160" y1="294" x2="160" y2="312" stroke="#14101F" stroke-width="8" stroke-linecap="round" />
+  <line x1="200" y1="294" x2="200" y2="312" stroke="#14101F" stroke-width="8" stroke-linecap="round" />
+  <line x1="240" y1="294" x2="240" y2="312" stroke="#14101F" stroke-width="8" stroke-linecap="round" />
+  <line x1="280" y1="294" x2="280" y2="312" stroke="#14101F" stroke-width="8" stroke-linecap="round" />
+  <line x1="320" y1="294" x2="320" y2="312" stroke="#14101F" stroke-width="8" stroke-linecap="round" />
+  <line x1="360" y1="294" x2="360" y2="312" stroke="#14101F" stroke-width="8" stroke-linecap="round" />
+
+  <!-- Central White Heart Under Arch -->
+  <g transform="translate(0, -10)">
+    <!-- Heart drop shadow -->
+    <path d="M 240 250 C 240 250, 168 190, 168 138 C 168 108, 192 90, 218 90 C 232 90, 240 98, 240 98 C 240 98, 248 90, 262 90 C 288 90, 312 108, 312 138 C 312 190, 240 250, 240 250 Z" fill="#14101F" transform="translate(6, 6)" />
+    <!-- White Heart -->
+    <path d="M 240 250 C 240 250, 168 190, 168 138 C 168 108, 192 90, 218 90 C 232 90, 240 98, 240 98 C 240 98, 248 90, 262 90 C 288 90, 312 108, 312 138 C 312 190, 240 250, 240 250 Z" fill="#FFFFFF" stroke="#14101F" stroke-width="12" stroke-linejoin="round" />
+  </g>
+</svg>

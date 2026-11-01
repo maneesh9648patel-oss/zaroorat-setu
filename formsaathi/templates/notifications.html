@@ -1,0 +1,149 @@
+{% extends "base.html" %}
+
+{% block title %}Notifications — FormSaathi Announcements & Reminders{% endblock %}
+{% block page_title %}Notifications Center{% endblock %}
+
+{% block content %}
+<div style="margin-bottom: 1.5rem; display: flex; align-items: flex-start; justify-content: space-between; flex-wrap: wrap; gap: 1rem;">
+  <div>
+    <h2 style="font-size: 1.5rem; font-weight: 800; color: var(--gray-900); margin-bottom: 0.25rem;">
+      Announcements, Deadlines & Document Reminders
+    </h2>
+    <p style="color: var(--gray-500); font-size: 0.9rem;">
+      Keep track of essential portal timelines, verification circulars, and document readiness alerts.
+    </p>
+  </div>
+
+  <div style="display: flex; gap: 0.5rem;">
+    <form action="{{ url_for('mark_all_notifications_read') }}" method="POST" style="margin: 0;">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <button type="submit" class="btn btn-secondary btn-sm">
+        <i class="fa-solid fa-check-double"></i> Mark All as Read
+      </button>
+    </form>
+  </div>
+</div>
+
+<!-- Transparency Note on Demonstration Data -->
+<div class="alert alert-info" style="margin-bottom: 1.5rem;">
+  <i class="fa-solid fa-circle-info"></i>
+  <div style="font-size: 0.88rem; line-height: 1.5;">
+    <strong>Verification Transparency:</strong> Official timeline dates vary annually per ministry. Items tagged as <strong>Sample / Demonstration</strong> represent standard historical schedule patterns to help you prepare in advance. Only confirmed official gazette releases are labeled <strong>Confirmed</strong>.
+  </div>
+</div>
+
+<!-- Filter Tabs -->
+<div class="card" style="padding: 0.75rem 1rem; margin-bottom: 1.5rem;">
+  <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+    <a href="{{ url_for('notifications', filter='all') }}" 
+       class="btn btn-sm {% if current_tab == 'all' %}btn-primary{% else %}btn-secondary{% endif %}">
+      All Notifications
+    </a>
+    <a href="{{ url_for('notifications', filter='unread') }}" 
+       class="btn btn-sm {% if current_tab == 'unread' %}btn-primary{% else %}btn-secondary{% endif %}">
+      Unread
+      {% if unread_notifications_count > 0 %}
+        <span class="badge badge-danger" style="margin-left: 0.35rem; padding: 0.1rem 0.35rem; font-size: 0.65rem;">
+          {{ unread_notifications_count }}
+        </span>
+      {% endif %}
+    </a>
+    <a href="{{ url_for('notifications', filter='read') }}" 
+       class="btn btn-sm {% if current_tab == 'read' %}btn-primary{% else %}btn-secondary{% endif %}">
+      Read
+    </a>
+  </div>
+</div>
+
+<!-- Notifications Feed -->
+<div style="display: flex; flex-direction: column; gap: 1rem;">
+  {% for notif in notifications %}
+    <div class="card" id="notif-card-{{ notif.id }}" style="margin-bottom: 0; {% if notif.is_read %}opacity: 0.85; background: var(--gray-50);{% else %}border-left: 4px solid var(--primary-600);{% endif %}">
+      <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; flex-wrap: wrap;">
+        <div style="display: flex; gap: 1rem; flex: 1; min-width: 250px;">
+          <!-- Category Icon -->
+          <div style="width: 42px; height: 42px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; flex-shrink: 0;
+            {% if notif.category == 'announcement' %}background: var(--primary-100); color: var(--primary-700);
+            {% elif notif.category == 'deadline' %}background: var(--danger-100); color: var(--danger-700);
+            {% elif notif.category == 'reminder' %}background: var(--warning-100); color: var(--warning-700);
+            {% else %}background: var(--teal-100); color: var(--teal-700);{% endif %}">
+            {% if notif.category == 'announcement' %}
+              <i class="fa-solid fa-bullhorn"></i>
+            {% elif notif.category == 'deadline' %}
+              <i class="fa-solid fa-calendar-xmark"></i>
+            {% elif notif.category == 'reminder' %}
+              <i class="fa-solid fa-bell"></i>
+            {% else %}
+              <i class="fa-solid fa-newspaper"></i>
+            {% endif %}
+          </div>
+
+          <div>
+            <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 0.25rem;">
+              <h3 style="font-size: 1.05rem; font-weight: 700; color: var(--gray-900);">
+                {{ notif.title }}
+              </h3>
+
+              {% if notif.is_demo %}
+                <span class="badge badge-warning">
+                  <i class="fa-solid fa-flask"></i> Demonstration Notice
+                </span>
+              {% else %}
+                <span class="badge badge-success">
+                  <i class="fa-solid fa-circle-check"></i> Confirmed Official
+                </span>
+              {% endif %}
+
+              <span class="badge badge-gray" style="text-transform: capitalize;">
+                {{ notif.category }}
+              </span>
+            </div>
+
+            <p style="font-size: 0.88rem; color: var(--gray-700); line-height: 1.55; margin-bottom: 0.5rem;">
+              {{ notif.message }}
+            </p>
+
+            <div style="font-size: 0.75rem; color: var(--gray-400);">
+              <i class="fa-regular fa-calendar" style="margin-right: 0.25rem;"></i> Date: {{ notif.published_date }}
+            </div>
+          </div>
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 0.5rem; flex-shrink: 0;">
+          {% if notif.link_url %}
+            <a href="{{ notif.link_url }}" {% if 'http' in notif.link_url %}target="_blank" rel="noopener noreferrer"{% endif %} class="btn btn-sm btn-secondary">
+              <i class="fa-solid fa-arrow-up-right-from-square"></i> Open Link
+            </a>
+          {% endif %}
+
+          <button 
+            type="button" 
+            class="btn btn-sm btn-secondary btn-toggle-notif" 
+            data-id="{{ notif.id }}"
+            title="Toggle read status"
+          >
+            {% if notif.is_read %}
+              <i class="fa-solid fa-envelope"></i> Mark Unread
+            {% else %}
+              <i class="fa-solid fa-envelope-open"></i> Mark Read
+            {% endif %}
+          </button>
+        </div>
+      </div>
+    </div>
+  {% else %}
+    <div class="empty-state">
+      <div class="empty-state-icon">
+        <i class="fa-solid fa-bell-slash"></i>
+      </div>
+      <h3 class="empty-state-title">No notifications found</h3>
+      <p class="empty-state-desc">
+        You are all caught up! There are no notifications in this tab right now.
+      </p>
+      <a href="{{ url_for('notifications', filter='all') }}" class="btn btn-primary">
+        View All Notifications
+      </a>
+    </div>
+  {% endfor %}
+</div>
+{% endblock %}

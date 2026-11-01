@@ -1,0 +1,218 @@
+{% extends "base.html" %}
+
+{% block title %}Documents Need — FormSaathi Checklist{% endblock %}
+{% block page_title %}Required Documents Checklist{% endblock %}
+
+{% block content %}
+<div style="margin-bottom: 1.5rem; display: flex; align-items: flex-start; justify-content: space-between; flex-wrap: wrap; gap: 1rem;">
+  <div>
+    <h2 style="font-size: 1.5rem; font-weight: 800; color: var(--gray-900); margin-bottom: 0.25rem;">
+      Personalized Document Checklist
+    </h2>
+    <p style="color: var(--gray-500); font-size: 0.9rem;">
+      Customized for <strong>{{ student.class_course }}</strong> • Scheme: <strong>{{ student.scholarship_interest }}</strong>
+    </p>
+  </div>
+
+  <div style="display: flex; gap: 0.5rem;" class="btn-print-hide">
+    <button onclick="window.print()" class="btn btn-secondary">
+      <i class="fa-solid fa-print"></i> Print Checklist
+    </button>
+    <a href="{{ url_for('my_documents') }}" class="btn btn-primary">
+      <i class="fa-solid fa-cloud-arrow-up"></i> Upload Documents
+    </a>
+  </div>
+</div>
+
+<!-- Progress Gauge Card -->
+<div class="card" style="margin-bottom: 1.5rem;">
+  <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem; flex-wrap: wrap; gap: 0.5rem;">
+    <div style="font-size: 0.95rem; font-weight: 700; color: var(--gray-800);">
+      <i class="fa-solid fa-chart-line" style="color: var(--primary-600); margin-right: 0.35rem;"></i>
+      Document Readiness Progress
+    </div>
+    <div style="font-size: 0.9rem; font-weight: 700; color: var(--primary-700);">
+      <span id="checklistPercentLabel">{{ checklist_stats.percent }}%</span> Ready
+      (<span id="checklistReadyCount">{{ checklist_stats.ready }}</span> of <span id="checklistTotalCount">{{ checklist_stats.total }}</span> items)
+    </div>
+  </div>
+
+  <div class="progress-bar-bg">
+    <div class="progress-bar-fill" id="checklistProgressBar" style="width: {{ checklist_stats.percent }}%;"></div>
+  </div>
+
+  <div style="display: flex; gap: 1.5rem; margin-top: 0.75rem; font-size: 0.8rem; color: var(--gray-600); flex-wrap: wrap;">
+    <div><i class="fa-solid fa-circle" style="color: var(--success-600); font-size: 0.65rem;"></i> Ready: <strong>{{ checklist_stats.ready }}</strong></div>
+    <div><i class="fa-solid fa-circle" style="color: var(--warning-600); font-size: 0.65rem;"></i> Pending: <strong id="checklistPendingCount">{{ checklist_stats.pending }}</strong></div>
+    <div><i class="fa-solid fa-circle" style="color: var(--gray-400); font-size: 0.65rem;"></i> Total Defined: <strong>{{ checklist_stats.total }}</strong></div>
+  </div>
+</div>
+
+<!-- Filter Bar -->
+<div class="card btn-print-hide" style="padding: 1rem 1.25rem; margin-bottom: 1.5rem;">
+  <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;">
+    <!-- Category Filter -->
+    <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
+      <span style="font-size: 0.82rem; font-weight: 700; color: var(--gray-600);">Category:</span>
+      <a href="{{ url_for('documents_need', category='All', status=current_status) }}" 
+         class="btn btn-sm {% if current_category == 'All' %}btn-primary{% else %}btn-secondary{% endif %}">
+        All
+      </a>
+      {% for cat in categories %}
+        <a href="{{ url_for('documents_need', category=cat, status=current_status) }}" 
+           class="btn btn-sm {% if current_category == cat %}btn-primary{% else %}btn-secondary{% endif %}">
+          {{ cat }}
+        </a>
+      {% endfor %}
+    </div>
+
+    <!-- Status Filter -->
+    <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
+      <span style="font-size: 0.82rem; font-weight: 700; color: var(--gray-600);">Status:</span>
+      <a href="{{ url_for('documents_need', category=current_category, status='All') }}" 
+         class="btn btn-sm {% if current_status == 'All' %}btn-primary{% else %}btn-secondary{% endif %}">
+        All
+      </a>
+      <a href="{{ url_for('documents_need', category=current_category, status='Ready') }}" 
+         class="btn btn-sm {% if current_status == 'Ready' %}btn-primary{% else %}btn-secondary{% endif %}">
+        Ready
+      </a>
+      <a href="{{ url_for('documents_need', category=current_category, status='Pending') }}" 
+         class="btn btn-sm {% if current_status == 'Pending' %}btn-primary{% else %}btn-secondary{% endif %}">
+        Pending
+      </a>
+      <a href="{{ url_for('documents_need', category=current_category, status='Not_Applicable') }}" 
+         class="btn btn-sm {% if current_status == 'Not_Applicable' %}btn-primary{% else %}btn-secondary{% endif %}">
+        N/A
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- Notice regarding scheme-dependent docs -->
+<div class="alert alert-info btn-print-hide" style="margin-bottom: 1.5rem;">
+  <i class="fa-solid fa-circle-info"></i>
+  <div>
+    <strong>Advisory Note:</strong> Not every scholarship requires every document. Mandatory documents are required across almost all applications, while optional or scheme-dependent documents apply specifically to reservation categories, state domiciles, or need-based income criteria.
+  </div>
+</div>
+
+<!-- Checklist Items List -->
+<div class="checklist-items-container">
+  {% for item in checklist_items %}
+    <div class="checklist-card status-{{ item.status }}" id="checklist-card-{{ item.id }}">
+      <div class="checklist-card-top">
+        <div class="checklist-title-area">
+          <div class="checklist-title">
+            {{ item.title }}
+          </div>
+          <div class="checklist-badges">
+            <span class="badge badge-gray">{{ item.category }}</span>
+
+            {% if item.is_mandatory == 1 %}
+              <span class="badge badge-danger">
+                <i class="fa-solid fa-asterisk" style="font-size: 0.6rem;"></i> Mandatory
+              </span>
+            {% else %}
+              <span class="badge badge-warning">
+                <i class="fa-solid fa-code-branch" style="font-size: 0.7rem;"></i> Scheme-Dependent / Optional
+              </span>
+            {% endif %}
+
+            {% if item.status == 'ready' %}
+              <span class="badge badge-success"><i class="fa-solid fa-check"></i> Ready</span>
+            {% elif item.status == 'pending' %}
+              <span class="badge badge-warning"><i class="fa-solid fa-clock"></i> Pending</span>
+            {% else %}
+              <span class="badge badge-gray"><i class="fa-solid fa-ban"></i> Not Applicable</span>
+            {% endif %}
+          </div>
+        </div>
+
+        <!-- Status Button Selector -->
+        <div class="status-button-group btn-print-hide">
+          <button 
+            type="button" 
+            class="status-btn {% if item.status == 'ready' %}active-ready{% endif %}" 
+            data-item-id="{{ item.id }}" 
+            data-status="ready"
+            title="Mark this document as Ready"
+          >
+            <i class="fa-solid fa-check"></i> Ready
+          </button>
+
+          <button 
+            type="button" 
+            class="status-btn {% if item.status == 'pending' %}active-pending{% endif %}" 
+            data-item-id="{{ item.id }}" 
+            data-status="pending"
+            title="Mark this document as Pending"
+          >
+            <i class="fa-solid fa-clock"></i> Pending
+          </button>
+
+          <button 
+            type="button" 
+            class="status-btn {% if item.status == 'not_applicable' %}active-na{% endif %}" 
+            data-item-id="{{ item.id }}" 
+            data-status="not_applicable"
+            title="Mark this document as Not Applicable for you"
+          >
+            <i class="fa-solid fa-minus"></i> N/A
+          </button>
+        </div>
+      </div>
+
+      <!-- Why needed explanation -->
+      <div class="checklist-why">
+        <strong>Why is this document needed?</strong> {{ item.why_needed }}
+      </div>
+
+      <!-- Official verification or portal link -->
+      <div class="checklist-actions">
+        <div style="font-size: 0.8rem; color: var(--gray-600);">
+          {% if item.official_portal_url %}
+            <i class="fa-solid fa-link" style="color: var(--teal-600); margin-right: 0.25rem;"></i>
+            Official Verification Portal: 
+            <a href="{{ item.official_portal_url }}" target="_blank" rel="noopener noreferrer" style="font-weight: 600; text-decoration: underline;">
+              {{ item.official_portal_name or 'Visit Portal' }} <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 0.7rem;"></i>
+            </a>
+          {% else %}
+            <i class="fa-solid fa-building-columns" style="color: var(--gray-400); margin-right: 0.25rem;"></i>
+            Issued by: School / College Administration or Local Competent Authority
+          {% endif %}
+        </div>
+
+        <div class="btn-print-hide">
+          <a href="{{ url_for('my_documents') }}" class="btn btn-sm btn-secondary" title="Upload this file to My Documents">
+            <i class="fa-solid fa-cloud-arrow-up"></i> Upload File
+          </a>
+        </div>
+      </div>
+    </div>
+  {% else %}
+    <div class="empty-state">
+      <div class="empty-state-icon">
+        <i class="fa-solid fa-filter-circle-xmark"></i>
+      </div>
+      <h3 class="empty-state-title">No documents match your filter</h3>
+      <p class="empty-state-desc">
+        Try resetting the category or status filter to see all tailored document requirements.
+      </p>
+      <a href="{{ url_for('documents_need') }}" class="btn btn-primary">
+        Reset All Filters
+      </a>
+    </div>
+  {% endfor %}
+</div>
+
+<!-- Checklist Reset Link -->
+<div style="margin-top: 1.5rem; text-align: center;" class="btn-print-hide">
+  <form action="{{ url_for('reset_checklist') }}" method="POST" onsubmit="return confirm('Do you want to reset all checklist items back to Pending status?');" style="display: inline-block;">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <button type="submit" class="btn btn-sm btn-secondary" style="color: var(--gray-500);">
+      <i class="fa-solid fa-rotate-left"></i> Reset All Items to Pending
+    </button>
+  </form>
+</div>
+{% endblock %}

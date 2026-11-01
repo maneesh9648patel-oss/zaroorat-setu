@@ -1,0 +1,291 @@
+{% extends "base.html" %}
+
+{% block title %}Eligibility Checker — FormSaathi Advisory Tool{% endblock %}
+{% block page_title %}Scholarship Eligibility Checker{% endblock %}
+
+{% block content %}
+<div style="margin-bottom: 1.5rem;">
+  <h2 style="font-size: 1.5rem; font-weight: 800; color: var(--gray-900); margin-bottom: 0.25rem;">
+    Scholarship Eligibility Advisory Checker
+  </h2>
+  <p style="color: var(--gray-500); font-size: 0.9rem;">
+    Test your academic qualification, annual family income, category, and domicile against configured rules before applying on official portals.
+  </p>
+</div>
+
+<!-- Legal & Advisory Disclaimer Banner -->
+<div class="alert alert-warning" style="margin-bottom: 1.5rem;">
+  <i class="fa-solid fa-triangle-exclamation"></i>
+  <div style="font-size: 0.88rem; line-height: 1.5;">
+    <strong>Mandatory Advisory Disclaimer:</strong> FormSaathi does not guarantee scholarship approval or award. This evaluation is an advisory comparison based solely on user-provided inputs against officially documented scheme guidelines. The final decision of eligibility, quota allotment, and disbursement belongs solely to the respective sanctioning government ministry or awarding authority.
+  </div>
+</div>
+
+<!-- Evaluation Form & Past History -->
+<div class="grid-2">
+  <!-- Interactive Form Card -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">
+        <i class="fa-solid fa-user-check" style="color: var(--primary-600);"></i>
+        <span>Enter Eligibility Parameters</span>
+      </div>
+    </div>
+
+    <form action="{{ url_for('process_eligibility_check') }}" method="POST">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+      <!-- Select Scheme -->
+      <div class="form-group">
+        <label class="form-label" for="scheme_id">
+          Select Scholarship Scheme <span class="required">*</span>
+        </label>
+        <select name="scheme_id" id="scheme_id" class="form-control" required>
+          <option value="" disabled {% if not form_data or not form_data.get('scheme_id') %}selected{% endif %}>Choose Scheme to Test</option>
+          {% for sch in schemes %}
+            <option value="{{ sch.id }}" {% if form_data and form_data.get('scheme_id')|string == sch.id|string %}selected{% endif %}>
+              [{{ sch.provider_type }}] {{ sch.name }}
+            </option>
+          {% endfor %}
+        </select>
+        <div class="form-help">Schemes with verified central and state guidelines.</div>
+      </div>
+
+      <!-- Class or Course -->
+      <div class="form-group">
+        <label class="form-label" for="class_course">
+          Current Class / Course Level <span class="required">*</span>
+        </label>
+        <select name="class_course" id="class_course" class="form-control" required>
+          <option value="School (Class 9-10)" {% if form_data and form_data.get('class_course') == 'School (Class 9-10)' %}selected{% endif %}>School (Class 9 - 10)</option>
+          <option value="School (Class 11-12)" {% if form_data and form_data.get('class_course') == 'School (Class 11-12)' %}selected{% endif %}>School (Class 11 - 12)</option>
+          <option value="Diploma / Polytechnic" {% if form_data and form_data.get('class_course') == 'Diploma / Polytechnic' %}selected{% endif %}>Diploma / Polytechnic</option>
+          <option value="Undergraduate" {% if (form_data and form_data.get('class_course') == 'Undergraduate') or not form_data %}selected{% endif %}>Undergraduate (Degree)</option>
+          <option value="Postgraduate" {% if form_data and form_data.get('class_course') == 'Postgraduate' %}selected{% endif %}>Postgraduate (Master's)</option>
+        </select>
+      </div>
+
+      <!-- Institution Type -->
+      <div class="form-group">
+        <label class="form-label" for="institution_type">
+          Institution Type
+        </label>
+        <select name="institution_type" id="institution_type" class="form-control">
+          <option value="Government" {% if form_data and form_data.get('institution_type') == 'Government' %}selected{% endif %}>Government College / University</option>
+          <option value="Government-Aided" {% if form_data and form_data.get('institution_type') == 'Government-Aided' %}selected{% endif %}>Government-Aided Institution</option>
+          <option value="Private / Self-Financed" {% if form_data and form_data.get('institution_type') == 'Private / Self-Financed' %}selected{% endif %}>Private / Self-Financed (AICTE/UGC Approved)</option>
+        </select>
+      </div>
+
+      <div class="grid-2">
+        <!-- Academic Performance Marks % -->
+        <div class="form-group">
+          <label class="form-label" for="marks_percent">
+            Qualifying Marks (%) <span class="required">*</span>
+          </label>
+          <input 
+            type="number" 
+            name="marks_percent" 
+            id="marks_percent" 
+            step="0.1" 
+            min="0" 
+            max="100" 
+            class="form-control" 
+            placeholder="e.g. 82.5" 
+            value="{{ form_data.get('marks_percent', '') if form_data else '' }}" 
+            required
+          >
+          <div class="form-help">Percentage in 10th/12th or previous year.</div>
+        </div>
+
+        <!-- Annual Family Income -->
+        <div class="form-group">
+          <label class="form-label" for="annual_income">
+            Annual Family Income (₹) <span class="required">*</span>
+          </label>
+          <input 
+            type="number" 
+            name="annual_income" 
+            id="annual_income" 
+            min="0" 
+            step="1000" 
+            class="form-control" 
+            placeholder="e.g. 250000" 
+            value="{{ form_data.get('annual_income', '') if form_data else '' }}" 
+            required
+          >
+          <div class="form-help">Total gross income from all sources.</div>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <!-- Domicile State -->
+        <div class="form-group">
+          <label class="form-label" for="domicile_state">
+            State of Domicile
+          </label>
+          <select name="domicile_state" id="domicile_state" class="form-control">
+            <option value="All India" {% if not form_data or form_data.get('domicile_state') == 'All India' %}selected{% endif %}>All India (Central Scheme)</option>
+            <option value="Uttar Pradesh" {% if form_data and form_data.get('domicile_state') == 'Uttar Pradesh' %}selected{% endif %}>Uttar Pradesh</option>
+            <option value="Maharashtra" {% if form_data and form_data.get('domicile_state') == 'Maharashtra' %}selected{% endif %}>Maharashtra</option>
+            <option value="Karnataka" {% if form_data and form_data.get('domicile_state') == 'Karnataka' %}selected{% endif %}>Karnataka</option>
+            <option value="West Bengal" {% if form_data and form_data.get('domicile_state') == 'West Bengal' %}selected{% endif %}>West Bengal</option>
+            <option value="Bihar" {% if form_data and form_data.get('domicile_state') == 'Bihar' %}selected{% endif %}>Bihar</option>
+            <option value="Assam" {% if form_data and form_data.get('domicile_state') == 'Assam' %}selected{% endif %}>Assam (NER)</option>
+            <option value="Other States" {% if form_data and form_data.get('domicile_state') == 'Other States' %}selected{% endif %}>Other States / UTs</option>
+          </select>
+        </div>
+
+        <!-- Social Category -->
+        <div class="form-group">
+          <label class="form-label" for="category">
+            Social Category
+          </label>
+          <select name="category" id="category" class="form-control">
+            <option value="General" {% if not form_data or form_data.get('category') == 'General' %}selected{% endif %}>General / Open</option>
+            <option value="OBC" {% if form_data and form_data.get('category') == 'OBC' %}selected{% endif %}>OBC (Other Backward Classes)</option>
+            <option value="SC" {% if form_data and form_data.get('category') == 'SC' %}selected{% endif %}>SC (Scheduled Caste)</option>
+            <option value="ST" {% if form_data and form_data.get('category') == 'ST' %}selected{% endif %}>ST (Scheduled Tribe)</option>
+            <option value="EWS" {% if form_data and form_data.get('category') == 'EWS' %}selected{% endif %}>EWS (Economically Weaker Section)</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Gender -->
+      <div class="form-group">
+        <label class="form-label" for="gender">
+          Gender (Required for schemes like AICTE Pragati)
+        </label>
+        <select name="gender" id="gender" class="form-control">
+          <option value="Male" {% if form_data and form_data.get('gender') == 'Male' %}selected{% endif %}>Male</option>
+          <option value="Female" {% if form_data and form_data.get('gender') == 'Female' %}selected{% endif %}>Female</option>
+          <option value="Other" {% if form_data and form_data.get('gender') == 'Other' %}selected{% endif %}>Other</option>
+        </select>
+      </div>
+
+      <button type="submit" class="btn btn-primary btn-lg" style="width: 100%;">
+        <i class="fa-solid fa-calculator"></i> Evaluate Eligibility
+      </button>
+    </form>
+  </div>
+
+  <!-- Right Column: Result Output & Past History -->
+  <div>
+    {% if result %}
+      <!-- Result Card -->
+      <div class="card" style="border: 2px solid {% if result.status == 'eligible' %}var(--success-600){% elif result.status == 'conditional' %}var(--warning-600){% elif result.status == 'ineligible' %}var(--danger-600){% else %}var(--gray-400){% endif %};">
+        <div class="card-header">
+          <div class="card-title">
+            <i class="fa-solid fa-square-poll-vertical"></i>
+            <span>Eligibility Determination Result</span>
+          </div>
+          <span class="badge badge-{{ result.badge }}">
+            {{ result.status|upper }}
+          </span>
+        </div>
+
+        <!-- Distinct Status Banner (Matches Prompt Requirements Exactly) -->
+        <div class="alert alert-{{ result.badge }}" style="margin-bottom: 1.25rem;">
+          {% if result.status == 'eligible' %}
+            <i class="fa-solid fa-circle-check" style="font-size: 1.5rem;"></i>
+          {% elif result.status == 'conditional' %}
+            <i class="fa-solid fa-circle-exclamation" style="font-size: 1.5rem;"></i>
+          {% elif result.status == 'ineligible' %}
+            <i class="fa-solid fa-circle-xmark" style="font-size: 1.5rem;"></i>
+          {% else %}
+            <i class="fa-solid fa-circle-info" style="font-size: 1.5rem;"></i>
+          {% endif %}
+          <div>
+            <div style="font-size: 1.1rem; font-weight: 800;">
+              {{ result.text }}
+            </div>
+            <div style="font-size: 0.85rem; margin-top: 0.2rem;">
+              Scheme: <strong>{{ result.scheme.name }}</strong>
+            </div>
+          </div>
+        </div>
+
+        <!-- Condition-by-Condition Rule Breakdown -->
+        <h4 style="font-size: 0.95rem; font-weight: 700; color: var(--gray-800); margin-bottom: 0.75rem;">
+          Conditions Evaluated:
+        </h4>
+        <div style="display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 1.25rem;">
+          {% for cond in result.conditions %}
+            <div style="padding: 0.65rem 0.85rem; border-radius: 8px; border: 1px solid var(--gray-200); background: var(--gray-50); display: flex; align-items: flex-start; justify-content: space-between; gap: 0.75rem;">
+              <div>
+                <div style="font-weight: 700; font-size: 0.88rem; color: var(--gray-900);">
+                  {{ cond.rule }}
+                </div>
+                <div style="font-size: 0.8rem; color: var(--gray-600); margin-top: 0.15rem;">
+                  {{ cond.detail }}
+                </div>
+              </div>
+              <div style="flex-shrink: 0;">
+                {% if cond.status == 'PASS' %}
+                  <span class="badge badge-success"><i class="fa-solid fa-check"></i> Passed</span>
+                {% elif cond.status == 'FAIL' %}
+                  <span class="badge badge-danger"><i class="fa-solid fa-xmark"></i> Not Met</span>
+                {% elif cond.status == 'WARN' %}
+                  <span class="badge badge-warning"><i class="fa-solid fa-triangle-exclamation"></i> Check Needed</span>
+                {% else %}
+                  <span class="badge badge-gray">General Rule</span>
+                {% endif %}
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+
+        <!-- Official Scheme Link -->
+        <div style="background: var(--primary-50); border: 1px solid var(--primary-100); padding: 1rem; border-radius: 8px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.75rem;">
+          <div>
+            <div style="font-size: 0.85rem; font-weight: 700; color: var(--primary-900);">Official Scheme Source Portal:</div>
+            <div style="font-size: 0.8rem; color: var(--primary-700);">{{ result.official_url }}</div>
+          </div>
+          <a href="{{ result.official_url }}" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-sm">
+            Visit Official Portal <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 0.7rem;"></i>
+          </a>
+        </div>
+      </div>
+    {% endif %}
+
+    <!-- Past Check History Card -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">
+          <i class="fa-solid fa-clock-rotate-left" style="color: var(--gray-500);"></i>
+          <span>Recent Evaluation Records</span>
+        </div>
+      </div>
+
+      {% if past_records %}
+        <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+          {% for rec in past_records %}
+            <div style="padding: 0.75rem; border: 1px solid var(--gray-200); border-radius: 8px; background: var(--gray-50);">
+              <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.25rem;">
+                <span style="font-weight: 700; font-size: 0.88rem; color: var(--gray-900);">{{ rec.scheme_name }}</span>
+                {% if rec.result_status == 'eligible' %}
+                  <span class="badge badge-success">Eligible</span>
+                {% elif rec.result_status == 'conditional' %}
+                  <span class="badge badge-warning">Conditional</span>
+                {% elif rec.result_status == 'ineligible' %}
+                  <span class="badge badge-danger">Not Met</span>
+                {% else %}
+                  <span class="badge badge-gray">Incomplete</span>
+                {% endif %}
+              </div>
+              <div style="font-size: 0.75rem; color: var(--gray-500);">
+                Checked at: {{ rec.checked_at[:16] }}
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        <div style="text-align: center; padding: 2rem 1rem; color: var(--gray-400); font-size: 0.88rem;">
+          <i class="fa-solid fa-list-check" style="font-size: 2rem; margin-bottom: 0.5rem; display: block;"></i>
+          Run your first evaluation on the left to see saved result history here.
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}

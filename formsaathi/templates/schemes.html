@@ -1,0 +1,203 @@
+{% extends "base.html" %}
+
+{% block title %}Explore Schemes — FormSaathi Scholarship Directory{% endblock %}
+{% block page_title %}Scholarship Schemes Directory{% endblock %}
+
+{% block content %}
+<div style="margin-bottom: 1.5rem; display: flex; align-items: flex-start; justify-content: space-between; flex-wrap: wrap; gap: 1rem;">
+  <div>
+    <h2 style="font-size: 1.5rem; font-weight: 800; color: var(--gray-900); margin-bottom: 0.25rem;">
+      Explore Government & Philanthropic Scholarships
+    </h2>
+    <p style="color: var(--gray-500); font-size: 0.9rem;">
+      Search and filter verified Central, State, and Philanthropic schemes with official criteria and document checklists.
+    </p>
+  </div>
+</div>
+
+<!-- Search & Multi-Filter Bar -->
+<div class="card" style="padding: 1.25rem; margin-bottom: 1.5rem;">
+  <form method="GET" action="{{ url_for('explore_schemes') }}">
+    <div style="display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 1rem;">
+      <!-- Search Box -->
+      <div style="flex: 2; min-width: 250px;">
+        <label class="form-label" style="margin-bottom: 0.25rem;">Search Schemes</label>
+        <div style="position: relative;">
+          <i class="fa-solid fa-magnifying-glass" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--gray-400);"></i>
+          <input 
+            type="text" 
+            name="q" 
+            class="form-control" 
+            style="padding-left: 2.25rem;" 
+            placeholder="Search by name, ministry, or keywords..." 
+            value="{{ search_query }}"
+          >
+        </div>
+      </div>
+
+      <!-- Education Level Filter -->
+      <div style="flex: 1; min-width: 180px;">
+        <label class="form-label" style="margin-bottom: 0.25rem;">Education Level</label>
+        <select name="level" class="form-control">
+          <option value="All" {% if current_level == 'All' %}selected{% endif %}>All Education Levels</option>
+          <option value="School" {% if current_level == 'School' %}selected{% endif %}>School (Class 9-12)</option>
+          <option value="Diploma" {% if current_level == 'Diploma' %}selected{% endif %}>Diploma / Polytechnic</option>
+          <option value="Undergraduate" {% if current_level == 'Undergraduate' %}selected{% endif %}>Undergraduate (UG)</option>
+          <option value="Postgraduate" {% if current_level == 'Postgraduate' %}selected{% endif %}>Postgraduate (PG)</option>
+        </select>
+      </div>
+
+      <!-- Provider Type Filter -->
+      <div style="flex: 1; min-width: 180px;">
+        <label class="form-label" style="margin-bottom: 0.25rem;">Provider Type</label>
+        <select name="provider" class="form-control">
+          <option value="All" {% if current_provider == 'All' %}selected{% endif %}>All Providers</option>
+          <option value="Central Govt" {% if current_provider == 'Central Govt' %}selected{% endif %}>Central Government</option>
+          <option value="State Govt" {% if current_provider == 'State Govt' %}selected{% endif %}>State Government</option>
+          <option value="Private/CSR" {% if current_provider == 'Private/CSR' %}selected{% endif %}>Private / Philanthropic CSR</option>
+        </select>
+      </div>
+
+      <!-- Scheme Type Filter -->
+      <div style="flex: 1; min-width: 180px;">
+        <label class="form-label" style="margin-bottom: 0.25rem;">Scheme Type</label>
+        <select name="type" class="form-control">
+          <option value="All" {% if current_type == 'All' %}selected{% endif %}>All Types</option>
+          <option value="Merit-Based" {% if current_type == 'Merit-Based' %}selected{% endif %}>Merit-Based</option>
+          <option value="Need-Based" {% if current_type == 'Need-Based' %}selected{% endif %}>Need-Based</option>
+          <option value="Girls Only" {% if current_type == 'Girls Only' %}selected{% endif %}>Girls Only</option>
+          <option value="SC/ST/OBC" {% if current_type == 'SC/ST/OBC' %}selected{% endif %}>SC / ST / OBC Specific</option>
+        </select>
+      </div>
+    </div>
+
+    <div style="display: flex; justify-content: flex-end; gap: 0.5rem;">
+      {% if search_query or current_level != 'All' or current_provider != 'All' or current_type != 'All' %}
+        <a href="{{ url_for('explore_schemes') }}" class="btn btn-secondary">
+          Reset Filters
+        </a>
+      {% endif %}
+      <button type="submit" class="btn btn-primary">
+        <i class="fa-solid fa-filter"></i> Apply Filters
+      </button>
+    </div>
+  </form>
+</div>
+
+<!-- Schemes Listing Grid -->
+<div style="display: flex; flex-direction: column; gap: 1.25rem;">
+  {% for sch in schemes %}
+    <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+      <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; flex-wrap: wrap; margin-bottom: 1rem;">
+        <div style="flex: 1; min-width: 280px;">
+          <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 0.35rem;">
+            <span class="badge {% if sch.provider_type == 'Central Govt' %}badge-primary{% elif sch.provider_type == 'State Govt' %}badge-teal{% else %}badge-warning{% endif %}">
+              {{ sch.provider_type }}
+            </span>
+            <span class="badge badge-gray">{{ sch.education_level }}</span>
+            <span class="badge badge-teal">{{ sch.scheme_type }}</span>
+
+            {% if sch.is_demo %}
+              <span class="badge badge-warning">
+                <i class="fa-solid fa-flask"></i> Demonstration Record
+              </span>
+            {% else %}
+              <span class="badge badge-success">
+                <i class="fa-solid fa-check"></i> Verified Scheme
+              </span>
+            {% endif %}
+          </div>
+
+          <h3 style="font-size: 1.25rem; font-weight: 800; color: var(--gray-900); margin-bottom: 0.25rem;">
+            {{ sch.name }}
+          </h3>
+          <div style="font-size: 0.85rem; color: var(--gray-600);">
+            <i class="fa-solid fa-building-columns" style="color: var(--gray-400); margin-right: 0.25rem;"></i>
+            <strong>Authority / Ministry:</strong> {{ sch.ministry_or_dept }}
+          </div>
+        </div>
+
+        <div style="text-align: right; flex-shrink: 0;">
+          <div style="font-size: 0.78rem; font-weight: 700; color: var(--gray-500); margin-bottom: 0.25rem;">
+            Application Status:
+          </div>
+          <span class="badge badge-primary" style="font-size: 0.8rem;">
+            {{ sch.application_status }}
+          </span>
+          <div style="font-size: 0.72rem; color: var(--gray-400); margin-top: 0.35rem;">
+            Last verified: {{ sch.last_verified_date }}
+          </div>
+        </div>
+      </div>
+
+      <!-- Description -->
+      <p style="font-size: 0.9rem; color: var(--gray-700); line-height: 1.55; margin-bottom: 1.25rem;">
+        {{ sch.description }}
+      </p>
+
+      <!-- Eligibility & Document Breakdown Cards -->
+      <div class="grid-2" style="margin-bottom: 1.25rem;">
+        <!-- Eligibility Summary -->
+        <div style="padding: 1rem; border-radius: 8px; background: var(--gray-50); border: 1px solid var(--gray-200);">
+          <div style="font-size: 0.85rem; font-weight: 700; color: var(--gray-900); margin-bottom: 0.35rem; display: flex; align-items: center; gap: 0.4rem;">
+            <i class="fa-solid fa-user-check" style="color: var(--primary-600);"></i> General Eligibility Summary
+          </div>
+          <p style="font-size: 0.82rem; color: var(--gray-600); line-height: 1.5;">
+            {{ sch.general_eligibility }}
+          </p>
+          {% if sch.income_ceiling_annual and sch.income_ceiling_annual > 0 %}
+            <div style="font-size: 0.78rem; color: var(--primary-700); font-weight: 600; margin-top: 0.4rem;">
+              • Income Ceiling: Up to ₹{{ "{:,}".format(sch.income_ceiling_annual) }} per year
+            </div>
+          {% endif %}
+          {% if sch.min_marks_percent and sch.min_marks_percent > 0 %}
+            <div style="font-size: 0.78rem; color: var(--teal-700); font-weight: 600; margin-top: 0.2rem;">
+              • Min Marks: {{ sch.min_marks_percent }}% in qualifying board/exam
+            </div>
+          {% endif %}
+        </div>
+
+        <!-- Required Documents Summary -->
+        <div style="padding: 1rem; border-radius: 8px; background: var(--gray-50); border: 1px solid var(--gray-200);">
+          <div style="font-size: 0.85rem; font-weight: 700; color: var(--gray-900); margin-bottom: 0.35rem; display: flex; align-items: center; gap: 0.4rem;">
+            <i class="fa-solid fa-clipboard-list" style="color: var(--teal-600);"></i> Required Supporting Documents
+          </div>
+          <p style="font-size: 0.82rem; color: var(--gray-600); line-height: 1.5;">
+            {{ sch.required_documents }}
+          </p>
+        </div>
+      </div>
+
+      <!-- Action Footer -->
+      <div style="display: flex; align-items: center; justify-content: space-between; padding-top: 1rem; border-top: 1px solid var(--gray-100); flex-wrap: wrap; gap: 0.75rem;">
+        <div style="display: flex; gap: 0.5rem;">
+          <a href="{{ url_for('eligibility_checker') }}" class="btn btn-sm btn-secondary">
+            <i class="fa-solid fa-shield-check"></i> Test My Eligibility
+          </a>
+          <a href="{{ url_for('documents_need') }}" class="btn btn-sm btn-secondary">
+            <i class="fa-solid fa-list-check"></i> Match Checklist
+          </a>
+        </div>
+
+        <a href="{{ sch.official_url }}" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-primary">
+          <span>Official Scheme Portal</span>
+          <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 0.7rem;"></i>
+        </a>
+      </div>
+    </div>
+  {% else %}
+    <div class="empty-state">
+      <div class="empty-state-icon">
+        <i class="fa-solid fa-search"></i>
+      </div>
+      <h3 class="empty-state-title">No scholarships match your filters</h3>
+      <p class="empty-state-desc">
+        Try broadening your search keywords or setting the filters to 'All' to browse all schemes.
+      </p>
+      <a href="{{ url_for('explore_schemes') }}" class="btn btn-primary">
+        Reset All Filters
+      </a>
+    </div>
+  {% endfor %}
+</div>
+{% endblock %}

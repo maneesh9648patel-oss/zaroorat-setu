@@ -1,0 +1,143 @@
+{% extends "base.html" %}
+
+{% block title %}Government Document Services — Apply Online | FormSaathi{% endblock %}
+{% block page_title %}Government Document Services — Apply Online{% endblock %}
+
+{% block content %}
+<div style="margin-bottom: 1.5rem;">
+  <h2 style="font-size: 1.5rem; font-weight: 800; color: var(--gray-900); margin-bottom: 0.25rem;">
+    Government Document Services — Apply Online
+  </h2>
+  <p style="color: var(--gray-500); font-size: 0.9rem;">
+    Step-by-step guidance on how to obtain official Income, Caste, Domicile, and DigiLocker certificates through authorized government portals.
+  </p>
+</div>
+
+<!-- Strict Legal Notice Banner -->
+<div class="alert alert-warning" style="margin-bottom: 1.75rem;">
+  <i class="fa-solid fa-landmark-flag" style="font-size: 1.4rem;"></i>
+  <div style="font-size: 0.88rem; line-height: 1.5;">
+    <strong>Crucial Transparency Notice:</strong> FormSaathi is an independent informational and preparation platform. <strong>FormSaathi does not issue government documents or certificates directly.</strong> Actual certificate issuance, application submission, fee payment, and digital signatures are processed exclusively by authorized State and Central government portals (e-District / ServicePlus / Revenue Department) or Village Level CSC Centers. Never share confidential OTPs, passwords, or payment PINs.
+  </div>
+</div>
+
+<div class="grid-3" style="align-items: flex-start;">
+  <!-- Left Side: List of Services Selector -->
+  <div class="card" style="padding: 1rem; position: sticky; top: 80px;">
+    <div style="font-size: 0.85rem; font-weight: 700; color: var(--gray-500); text-transform: uppercase; margin-bottom: 0.75rem; padding: 0.25rem 0.5rem;">
+      Select Certificate Guide
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 0.35rem;">
+      {% for s in services %}
+        <a href="{{ url_for('government_document_services', service=s.slug) }}" 
+           class="nav-item {% if active_service and active_service.slug == s.slug %}active{% endif %}"
+           style="border-radius: 8px;">
+          <i class="fa-solid fa-file-shield"></i>
+          <span>{{ s.service_name }}</span>
+        </a>
+      {% endfor %}
+    </div>
+  </div>
+
+  <!-- Right Side: Detailed Service Guide -->
+  <div style="grid-column: span 2;">
+    {% if active_service %}
+      <div class="card">
+        <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; flex-wrap: wrap; margin-bottom: 1.25rem;">
+          <div>
+            <span class="badge badge-primary" style="margin-bottom: 0.35rem;">
+              {{ active_service.category }}
+            </span>
+            <h3 style="font-size: 1.4rem; font-weight: 800; color: var(--gray-900);">
+              {{ active_service.service_name }}
+            </h3>
+          </div>
+
+          <a href="{{ active_service.portal_url }}" target="_blank" rel="noopener noreferrer" class="btn btn-primary">
+            <span>Visit Official Portal</span>
+            <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 0.75rem;"></i>
+          </a>
+        </div>
+
+        <!-- 1. What the document is used for -->
+        <div style="margin-bottom: 1.5rem;">
+          <h4 style="font-size: 1rem; font-weight: 700; color: var(--gray-900); margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;">
+            <i class="fa-solid fa-circle-question" style="color: var(--primary-600);"></i>
+            What is this document used for?
+          </h4>
+          <p style="font-size: 0.9rem; color: var(--gray-700); line-height: 1.6; background: var(--gray-50); padding: 1rem; border-radius: 8px; border-left: 3px solid var(--primary-600);">
+            {{ active_service.purpose }}
+          </p>
+        </div>
+
+        <!-- 2. Commonly requested supporting documents -->
+        <div style="margin-bottom: 1.5rem;">
+          <h4 style="font-size: 1rem; font-weight: 700; color: var(--gray-900); margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;">
+            <i class="fa-solid fa-paperclip" style="color: var(--teal-600);"></i>
+            Commonly Requested Supporting Documents
+          </h4>
+          <div style="background: var(--teal-50); border: 1px solid var(--teal-100); padding: 1rem; border-radius: 8px; font-size: 0.9rem; color: var(--teal-700); line-height: 1.6;">
+            {{ active_service.typical_docs }}
+          </div>
+          <div style="font-size: 0.78rem; color: var(--gray-500); margin-top: 0.4rem;">
+            <i class="fa-solid fa-info-circle"></i> <em>Note: Exact supporting documents may vary slightly depending on your state revenue guidelines.</em>
+          </div>
+        </div>
+
+        <!-- 3. Step-by-step general guidance -->
+        <div style="margin-bottom: 1.5rem;">
+          <h4 style="font-size: 1rem; font-weight: 700; color: var(--gray-900); margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem;">
+            <i class="fa-solid fa-list-ol" style="color: var(--primary-700);"></i>
+            Step-by-Step Application Process
+          </h4>
+
+          <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+            {% for step in active_service.step_by_step_guide.split('\n') %}
+              {% if step.strip() %}
+                <div style="display: flex; align-items: flex-start; gap: 0.75rem; padding: 0.75rem 1rem; background: var(--gray-50); border-radius: 8px; border: 1px solid var(--gray-200);">
+                  <div style="width: 24px; height: 24px; border-radius: 50%; background: var(--primary-100); color: var(--primary-700); display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 700; flex-shrink: 0; margin-top: 2px;">
+                    <i class="fa-solid fa-check"></i>
+                  </div>
+                  <div style="font-size: 0.88rem; color: var(--gray-800); line-height: 1.5;">
+                    {{ step }}
+                  </div>
+                </div>
+              {% endif %}
+            {% endfor %}
+          </div>
+        </div>
+
+        <!-- 4. State Examples & Direct Links -->
+        <div style="margin-bottom: 1.5rem;">
+          <h4 style="font-size: 1rem; font-weight: 700; color: var(--gray-900); margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;">
+            <i class="fa-solid fa-map-location-dot" style="color: var(--warning-600);"></i>
+            State Citizen Portal Directory
+          </h4>
+          <div style="background: var(--gray-50); padding: 0.85rem 1rem; border-radius: 8px; font-size: 0.85rem; color: var(--gray-700);">
+            {{ active_service.sample_state_examples }}
+          </div>
+        </div>
+
+        <!-- 5. Fees, Processing Time & Verification Note -->
+        <div style="background: var(--warning-50); border: 1px solid var(--warning-100); padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem;">
+          <div style="font-weight: 700; font-size: 0.88rem; color: var(--warning-700); margin-bottom: 0.25rem;">
+            <i class="fa-solid fa-clock"></i> Fee & Processing Timeline Advisory:
+          </div>
+          <div style="font-size: 0.85rem; color: var(--warning-700); line-height: 1.5;">
+            {{ active_service.fee_and_processing_note }} Always confirm current fees, service timelines, and local office jurisdiction on the official portal before applying.
+          </div>
+        </div>
+
+        <!-- Bottom CTA -->
+        <div style="display: flex; justify-content: flex-end;">
+          <a href="{{ active_service.portal_url }}" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-lg">
+            <span>Visit Official Portal ({{ active_service.portal_name }})</span>
+            <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 0.8rem;"></i>
+          </a>
+        </div>
+      </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

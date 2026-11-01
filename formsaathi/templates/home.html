@@ -1,0 +1,188 @@
+{% extends "base.html" %}
+
+{% block title %}Home — FormSaathi Scholarship & Document Assistant{% endblock %}
+{% block page_title %}FormSaathi Home{% endblock %}
+
+{% block content %}
+<!-- Horizontal Scrolling Announcement Strip (Ticker) -->
+<div class="ticker-container" role="region" aria-label="Official announcements ticker">
+  <div class="ticker-label">
+    <i class="fa-solid fa-bullhorn"></i> Updates & Alerts
+  </div>
+  <div class="ticker-track">
+    <div class="ticker-content">
+      {% for ann in announcements %}
+        <span class="ticker-item">
+          {% if ann.is_demo %}
+            <span class="ticker-tag">Demo Notice</span>
+          {% else %}
+            <span class="ticker-tag verified">Confirmed</span>
+          {% endif %}
+          <strong>{{ ann.title }}:</strong> {{ ann.message[:95] }}...
+        </span>
+      {% else %}
+        <span class="ticker-item">
+          <span class="ticker-tag verified">Verified</span> Keep your Aadhaar seeded with active bank account for seamless DBT scholarship disbursement.
+        </span>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+<!-- Hero Welcome Section -->
+<div class="hero-card">
+  <div class="hero-content">
+    <div class="hero-badge">
+      <i class="fa-solid fa-sparkles"></i> Academic Year {{ student.academic_year }} Assistant
+    </div>
+    <h2 class="hero-title">
+      FormSaathi — Scholarship & Document Assistant
+    </h2>
+    <p class="hero-desc">
+      Namaste, <strong>{{ student.full_name }}</strong>! Welcome to your personalized dashboard for <strong>{{ student.class_course }}</strong> at <strong>{{ student.institution_name }}</strong>. Track required documents, evaluate criteria, organize certificates, and navigate verified official government portals with confidence.
+    </p>
+
+    <div class="hero-actions">
+      <a href="{{ url_for('documents_need') }}" class="btn btn-white">
+        <i class="fa-solid fa-list-check"></i> View Document Checklist
+      </a>
+      <a href="{{ url_for('eligibility_checker') }}" class="btn btn-teal">
+        <i class="fa-solid fa-user-check"></i> Check Scholarship Eligibility
+      </a>
+      <a href="{{ url_for('online_document_sites') }}" class="btn btn-secondary" style="background: rgba(255,255,255,0.15); border-color: rgba(255,255,255,0.3); color: #fff;">
+        <i class="fa-solid fa-globe"></i> Official Government Portals
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- Quick Actions Banner -->
+<div class="card" style="margin-bottom: 2rem;">
+  <div class="card-header">
+    <div class="card-title">
+      <i class="fa-solid fa-bolt" style="color: var(--warning-600);"></i>
+      <span>Quick Actions</span>
+    </div>
+    <span class="badge badge-primary">Shortcuts</span>
+  </div>
+  <div style="display: flex; flex-wrap: wrap; gap: 0.75rem;">
+    <a href="{{ url_for('documents_need') }}" class="btn btn-secondary">
+      <i class="fa-solid fa-clipboard-list" style="color: var(--primary-600);"></i> Check Requirements ({{ checklist_stats.ready }}/{{ checklist_stats.total }} Ready)
+    </a>
+    <a href="{{ url_for('my_documents') }}" class="btn btn-secondary">
+      <i class="fa-solid fa-cloud-arrow-up" style="color: var(--teal-600);"></i> Upload New Document
+    </a>
+    <a href="{{ url_for('eligibility_checker') }}" class="btn btn-secondary">
+      <i class="fa-solid fa-shield-check" style="color: var(--success-600);"></i> Test Eligibility Rules
+    </a>
+    <a href="{{ url_for('government_document_services') }}" class="btn btn-secondary">
+      <i class="fa-solid fa-file-contract" style="color: var(--warning-600);"></i> Apply for Income / Caste Certificate
+    </a>
+    <a href="{{ url_for('explore_schemes') }}" class="btn btn-secondary">
+      <i class="fa-solid fa-magnifying-glass" style="color: var(--primary-700);"></i> Search All Schemes ({{ schemes_count }})
+    </a>
+  </div>
+</div>
+
+<!-- 6 Core Feature Cards -->
+<div style="margin-bottom: 1.25rem;">
+  <h3 style="font-size: 1.35rem; font-weight: 800; color: var(--gray-900); margin-bottom: 0.35rem;">
+    FormSaathi Core Features
+  </h3>
+  <p style="color: var(--gray-500); font-size: 0.9rem;">
+    Everything you need to successfully prepare and apply for Indian scholarships in one unified workspace.
+  </p>
+</div>
+
+<div class="grid-3">
+  <!-- Card 1: Required Documents -->
+  <div class="feature-card">
+    <div class="feature-icon-wrapper feature-icon-blue">
+      <i class="fa-solid fa-clipboard-check"></i>
+    </div>
+    <h4 class="feature-title">Required Documents</h4>
+    <p class="feature-desc">
+      Smart checklist tailored to your course ({{ student.class_course }}). Clearly distinguishes mandatory, optional, and scheme-dependent documents with explanation notes.
+    </p>
+    <a href="{{ url_for('documents_need') }}" class="feature-link">
+      <span>Open Document Checklist</span>
+      <i class="fa-solid fa-arrow-right"></i>
+    </a>
+  </div>
+
+  <!-- Card 2: My Documents -->
+  <div class="feature-card">
+    <div class="feature-icon-wrapper feature-icon-teal">
+      <i class="fa-solid fa-folder-open"></i>
+    </div>
+    <h4 class="feature-title">My Documents</h4>
+    <p class="feature-desc">
+      Private, secure digital repository to store marksheets, identity proofs, and bonafides. Protected from public web access with file-type safety limits.
+    </p>
+    <a href="{{ url_for('my_documents') }}" class="feature-link">
+      <span>Manage Private Files</span>
+      <i class="fa-solid fa-arrow-right"></i>
+    </a>
+  </div>
+
+  <!-- Card 3: Check Eligibility -->
+  <div class="feature-card">
+    <div class="feature-icon-wrapper feature-icon-green">
+      <i class="fa-solid fa-user-check"></i>
+    </div>
+    <h4 class="feature-title">Check Eligibility</h4>
+    <p class="feature-desc">
+      Interactive advisory checker comparing your course, board marks %, family income ceiling, domicile, and category against configured scheme criteria.
+    </p>
+    <a href="{{ url_for('eligibility_checker') }}" class="feature-link">
+      <span>Run Eligibility Test</span>
+      <i class="fa-solid fa-arrow-right"></i>
+    </a>
+  </div>
+
+  <!-- Card 4: Explore Scholarships -->
+  <div class="feature-card">
+    <div class="feature-icon-wrapper feature-icon-blue">
+      <i class="fa-solid fa-graduation-cap"></i>
+    </div>
+    <h4 class="feature-title">Explore Scholarships</h4>
+    <p class="feature-desc">
+      Comprehensive database of Central, State, and Philanthropic scholarships including NSP Central Sector, Post-Matric SC/ST/OBC, and AICTE Pragati.
+    </p>
+    <a href="{{ url_for('explore_schemes') }}" class="feature-link">
+      <span>Explore Schemes Directory</span>
+      <i class="fa-solid fa-arrow-right"></i>
+    </a>
+  </div>
+
+  <!-- Card 5: Important Notifications -->
+  <div class="feature-card">
+    <div class="feature-icon-wrapper feature-icon-amber">
+      <i class="fa-solid fa-bell"></i>
+    </div>
+    <h4 class="feature-title">Important Notifications</h4>
+    <p class="feature-desc">
+      Stay informed with verified portal updates, document renewal alerts, and tentative timeline schedules. Clearly demarcated verified vs demo items.
+    </p>
+    <a href="{{ url_for('notifications') }}" class="feature-link">
+      <span>View Notifications Feed</span>
+      <i class="fa-solid fa-arrow-right"></i>
+    </a>
+  </div>
+
+  <!-- Card 6: Government Document Services -->
+  <div class="feature-card">
+    <div class="feature-icon-wrapper feature-icon-teal">
+      <i class="fa-solid fa-landmark"></i>
+    </div>
+    <h4 class="feature-title">Government Document Services</h4>
+    <p class="feature-desc">
+      Step-by-step guidance on how to obtain official Income, Caste, and Domicile certificates through State e-District portals and DigiLocker.
+    </p>
+    <a href="{{ url_for('government_document_services') }}" class="feature-link">
+      <span>Read Service Guides</span>
+      <i class="fa-solid fa-arrow-right"></i>
+    </a>
+  </div>
+</div>
+{% endblock %}

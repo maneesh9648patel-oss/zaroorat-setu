@@ -1,0 +1,285 @@
+{% extends "base.html" %}
+
+{% block title %}My Documents — FormSaathi Digital Vault{% endblock %}
+{% block page_title %}My Documents Repository{% endblock %}
+
+{% block content %}
+<div style="margin-bottom: 1.5rem; display: flex; align-items: flex-start; justify-content: space-between; flex-wrap: wrap; gap: 1rem;">
+  <div>
+    <h2 style="font-size: 1.5rem; font-weight: 800; color: var(--gray-900); margin-bottom: 0.25rem;">
+      Private Student Documents Vault
+    </h2>
+    <p style="color: var(--gray-500); font-size: 0.9rem;">
+      Safely store, organize, and preview your scholarship application documents.
+    </p>
+  </div>
+
+  <button type="button" class="btn btn-primary" onclick="document.getElementById('uploadDocModal').classList.add('open')">
+    <i class="fa-solid fa-cloud-arrow-up"></i> Upload New Document
+  </button>
+</div>
+
+<!-- Security & Privacy Banner -->
+<div class="alert alert-info" style="margin-bottom: 1.5rem;">
+  <i class="fa-solid fa-shield-halved" style="font-size: 1.2rem;"></i>
+  <div style="font-size: 0.88rem; line-height: 1.5;">
+    <strong>Protected Local Storage:</strong> All files uploaded here are stored in your private student directory and served only via authenticated session routes. They are never exposed via public static URLs. Verification statuses reflect your personal self-check for readiness and do not represent official government certification.
+  </div>
+</div>
+
+<!-- Search & Filter Controls -->
+<div class="card" style="padding: 1.25rem; margin-bottom: 1.5rem;">
+  <form method="GET" action="{{ url_for('my_documents') }}" style="display: flex; gap: 1rem; flex-wrap: wrap; align-items: center;">
+    <!-- Search Query -->
+    <div style="flex: 1; min-width: 220px;">
+      <div style="position: relative;">
+        <i class="fa-solid fa-magnifying-glass" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--gray-400);"></i>
+        <input 
+          type="text" 
+          name="q" 
+          class="form-control" 
+          style="padding-left: 2.25rem;" 
+          placeholder="Search by label or filename..." 
+          value="{{ search_query }}"
+        >
+      </div>
+    </div>
+
+    <!-- Category Dropdown -->
+    <div style="width: 220px;">
+      <select name="category" class="form-control" onchange="this.form.submit()">
+        <option value="All" {% if current_category == 'All' %}selected{% endif %}>All Categories</option>
+        {% for cat in categories %}
+          <option value="{{ cat }}" {% if current_category == cat %}selected{% endif %}>{{ cat }}</option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <div>
+      <button type="submit" class="btn btn-secondary">
+        <i class="fa-solid fa-filter"></i> Filter
+      </button>
+      {% if search_query or current_category != 'All' %}
+        <a href="{{ url_for('my_documents') }}" class="btn btn-sm btn-secondary" style="margin-left: 0.25rem;">
+          Reset
+        </a>
+      {% endif %}
+    </div>
+  </form>
+</div>
+
+<!-- Documents Table / Cards -->
+{% if documents %}
+  <div class="card" style="padding: 0; overflow: hidden;">
+    <div class="table-responsive">
+      <table class="custom-table">
+        <thead>
+          <tr>
+            <th>Document Label & Name</th>
+            <th>Category</th>
+            <th>File Size</th>
+            <th>Upload Date</th>
+            <th>Readiness Status</th>
+            <th style="text-align: right;">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for doc in documents %}
+            <tr>
+              <td>
+                <div style="display: flex; align-items: center; gap: 0.75rem;">
+                  <div style="font-size: 1.5rem; color: {% if 'pdf' in doc.mime_type %}var(--danger-600){% else %}var(--primary-600){% endif %};">
+                    {% if 'pdf' in doc.mime_type %}
+                      <i class="fa-solid fa-file-pdf"></i>
+                    {% elif 'image' in doc.mime_type %}
+                      <i class="fa-solid fa-file-image"></i>
+                    {% else %}
+                      <i class="fa-solid fa-file"></i>
+                    {% endif %}
+                  </div>
+                  <div>
+                    <div style="font-weight: 700; color: var(--gray-900);">
+                      {{ doc.custom_label }}
+                    </div>
+                    <div style="font-size: 0.75rem; color: var(--gray-400);">
+                      {{ doc.original_filename }}
+                    </div>
+                  </div>
+                </div>
+              </td>
+              <td>
+                <span class="badge badge-gray">{{ doc.doc_category }}</span>
+              </td>
+              <td>
+                <span style="font-size: 0.82rem; color: var(--gray-600);">
+                  {{ (doc.file_size / 1024)|round(1) }} KB
+                </span>
+              </td>
+              <td>
+                <span style="font-size: 0.82rem; color: var(--gray-600);">
+                  {{ doc.uploaded_at[:10] }}
+                </span>
+              </td>
+              <td>
+                {% if doc.verification_status == 'verified_by_student' %}
+                  <span class="badge badge-success">
+                    <i class="fa-solid fa-circle-check"></i> Verified by Student
+                  </span>
+                {% else %}
+                  <span class="badge badge-warning">
+                    <i class="fa-solid fa-clock"></i> Pending Self-Check
+                  </span>
+                {% endif %}
+              </td>
+              <td>
+                <div style="display: flex; align-items: center; justify-content: flex-end; gap: 0.4rem;">
+                  <!-- Preview Button -->
+                  <button 
+                    type="button" 
+                    class="btn btn-sm btn-secondary btn-preview-doc"
+                    data-url="{{ url_for('view_document', doc_id=doc.id) }}"
+                    data-download-url="{{ url_for('download_document', doc_id=doc.id) }}"
+                    data-title="{{ doc.custom_label }}"
+                    data-mime="{{ doc.mime_type }}"
+                    title="Preview Document"
+                  >
+                    <i class="fa-solid fa-eye"></i> View
+                  </button>
+
+                  <!-- Download Button -->
+                  <a href="{{ url_for('download_document', doc_id=doc.id) }}" class="btn btn-sm btn-secondary" title="Download Original File">
+                    <i class="fa-solid fa-download"></i>
+                  </a>
+
+                  <!-- Toggle Verification Status -->
+                  <form action="{{ url_for('toggle_document_status', doc_id=doc.id) }}" method="POST" style="margin: 0;">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <button type="submit" class="btn btn-sm btn-secondary" title="Toggle Verified / Pending Status">
+                      <i class="fa-solid fa-check-double"></i>
+                    </button>
+                  </form>
+
+                  <!-- Delete Button -->
+                  <form action="{{ url_for('delete_document', doc_id=doc.id) }}" method="POST" style="margin: 0;" onsubmit="return confirm('Are you sure you want to delete this document?');">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <button type="submit" class="btn btn-sm btn-secondary" style="color: var(--danger-600);" title="Delete Document">
+                      <i class="fa-solid fa-trash-can"></i>
+                    </button>
+                  </form>
+                </div>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+{% else %}
+  <div class="empty-state">
+    <div class="empty-state-icon">
+      <i class="fa-solid fa-folder-open"></i>
+    </div>
+    <h3 class="empty-state-title">No documents uploaded yet</h3>
+    <p class="empty-state-desc">
+      Upload your marksheet, bonafide letter, or identity documents to keep them organized and ready for upcoming scholarship application windows.
+    </p>
+    <button type="button" class="btn btn-primary" onclick="document.getElementById('uploadDocModal').classList.add('open')">
+      <i class="fa-solid fa-cloud-arrow-up"></i> Upload Your First Document
+    </button>
+  </div>
+{% endif %}
+
+<!-- Upload Document Modal -->
+<div class="modal-overlay" id="uploadDocModal">
+  <div class="modal-dialog">
+    <div class="modal-header">
+      <h3 class="modal-title">Upload Scholarship Document</h3>
+      <button type="button" class="modal-close" onclick="document.getElementById('uploadDocModal').classList.remove('open')">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+
+    <form action="{{ url_for('upload_document') }}" method="POST" enctype="multipart/form-data">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label" for="doc_category">
+            Document Category <span class="required">*</span>
+          </label>
+          <select name="doc_category" id="doc_category" class="form-control" required>
+            {% for cat in categories %}
+              <option value="{{ cat }}">{{ cat }}</option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="custom_label">
+            Document Label / Title <span class="required">*</span>
+          </label>
+          <input 
+            type="text" 
+            name="custom_label" 
+            id="custom_label" 
+            class="form-control" 
+            placeholder="e.g. Class 12 Final Marksheet / College Bonafide 2026" 
+            required
+          >
+          <div class="form-help">A descriptive name to identify this document easily.</div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="document_file">
+            Choose File (PDF, JPG, or PNG) <span class="required">*</span>
+          </label>
+          <input 
+            type="file" 
+            name="document_file" 
+            id="document_file" 
+            class="form-control" 
+            accept=".pdf, .jpg, .jpeg, .png" 
+            required
+          >
+          <div class="form-help">Maximum file size: 10 MB. Supported formats: PDF, JPG, PNG.</div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" onclick="document.getElementById('uploadDocModal').classList.remove('open')">
+          Cancel
+        </button>
+        <button type="submit" class="btn btn-primary">
+          <i class="fa-solid fa-upload"></i> Upload & Save
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Document Preview Modal -->
+<div class="modal-overlay" id="docPreviewModal">
+  <div class="modal-dialog" style="max-width: 800px;">
+    <div class="modal-header">
+      <h3 class="modal-title" id="docPreviewTitle">Document Preview</h3>
+      <button type="button" class="modal-close btn-modal-dismiss">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+
+    <div class="modal-body" style="padding: 0; min-height: 480px; display: flex; align-items: center; justify-content: center; background: #f1f5f9;">
+      <iframe id="docPreviewFrame" style="width: 100%; height: 500px; border: none; display: none;"></iframe>
+      <img id="docPreviewImage" style="max-width: 100%; max-height: 500px; object-fit: contain; display: none; padding: 1rem;" alt="Document Preview">
+    </div>
+
+    <div class="modal-footer">
+      <a href="#" id="docPreviewDownload" class="btn btn-secondary" download>
+        <i class="fa-solid fa-download"></i> Download File
+      </a>
+      <button type="button" class="btn btn-primary btn-modal-dismiss">
+        Close
+      </button>
+    </div>
+  </div>
+</div>
+{% endblock %}

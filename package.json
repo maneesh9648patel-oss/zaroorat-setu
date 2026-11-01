@@ -1,0 +1,25 @@
+{
+  "name": "zaroorat-setu",
+  "version": "1.0.0",
+  "description": "ZarooratSetu - Low-cost community network connecting essential resources with verified individuals and NGOs (HackFest 3.0)",
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "server": "node server/server.js",
+    "client": "npm --prefix client run dev",
+    "build": "npm --prefix client run build",
+    "test": "npm --prefix server test"
+  },
+  "keywords": [
+    "civic-tech",
+    "hackfest-3.0",
+    "community-network",
+    "rec-banda"
+  ],
+  "author": "ZarooratSetu Team",
+  "license": "MIT",
+  "devDependencies": {
+    "localtunnel": "^2.0.2"
+  }
+}

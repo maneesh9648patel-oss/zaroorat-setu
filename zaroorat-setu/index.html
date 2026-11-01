@@ -1,0 +1,1185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <title>ZarooratSetu · The Right Support for Every Need | HackFest 3.0</title>
+  
+  <!-- Meta Information for SEO & Sharing -->
+  <meta name="description" content="ZarooratSetu is an inclusive, low-cost community network connecting urgent needs with verified help. Entry for HackFest 3.0 Track 06: Civic Tech.">
+  <meta name="keywords" content="ZarooratSetu, Civic Tech, Community Resource Network, Urgency Matching, HackFest 3.0, REC Banda, Equipment Borrowing">
+  <meta name="author" content="ZarooratSetu Team">
+  <meta name="theme-color" content="#C6F432">
+
+  <!-- Open Graph / Facebook / WhatsApp / LinkedIn -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="./">
+  <meta property="og:title" content="ZarooratSetu · The Right Support for Every Need">
+  <meta property="og:description" content="An inclusive, low-cost community resource network connecting people who need essential resources with verified individuals and organizations.">
+  <meta property="og:image" content="./assets/images/og-preview.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="ZarooratSetu · The Right Support for Every Need">
+  <meta name="twitter:description" content="Inclusive, low-cost community network for urgent needs and reusable equipment sharing.">
+  <meta name="twitter:image" content="./assets/images/og-preview.png">
+
+  <!-- Favicons & PWA Manifest -->
+  <link rel="icon" type="image/svg+xml" href="./assets/images/favicon.svg">
+  <link rel="alternate icon" href="./favicon.ico">
+  <link rel="apple-touch-icon" href="./assets/images/icon-192.png">
+  <link rel="manifest" href="./manifest.json">
+
+  <!-- Google Fonts Preconnect & Stylesheet -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;500;600;700;800;900&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="./assets/css/style.css">
+
+  <!-- JSON-LD Structured Data for Civic / Hackathon Project -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "ZarooratSetu",
+    "alternateName": "zarooratsetu",
+    "headline": "The Right Support for Every Need",
+    "applicationCategory": "CivicTechApplication",
+    "operatingSystem": "All",
+    "description": "Inclusive, low-cost community resource network connecting urgent needs with verified providers.",
+    "award": "HackFest 3.0, Track 06: Open Innovation, Economic Rebuilding & Civic Tech"
+  }
+  </script>
+</head>
+<body>
+
+  <!-- ========================================================================
+       STICKY NAVBAR
+       ======================================================================== -->
+  <header class="navbar-sticky">
+    <div class="navbar-inner">
+      <div class="brand-container">
+        <!-- Official Brand Logo SVG -->
+        <a href="#hero" class="brand-logo-link" aria-label="ZarooratSetu Home">
+          <svg class="brand-logo-icon" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="ZarooratSetu Logo">
+            <!-- Hard Shadow -->
+            <rect x="46" y="46" width="420" height="420" rx="84" fill="#14101F" />
+            <!-- Lime Base -->
+            <rect x="30" y="30" width="420" height="420" rx="84" fill="#C6F432" stroke="#14101F" stroke-width="18" />
+            <!-- Violet Pillars -->
+            <rect x="80" y="270" width="48" height="110" rx="14" fill="#6C3BFF" stroke="#14101F" stroke-width="14" />
+            <rect x="352" y="270" width="48" height="110" rx="14" fill="#6C3BFF" stroke="#14101F" stroke-width="14" />
+            <!-- Violet Bridge Arch -->
+            <path d="M 80 320 C 110 160, 370 160, 400 320 C 350 200, 130 200, 80 320 Z" fill="#6C3BFF" stroke="#14101F" stroke-width="14" stroke-linejoin="round" />
+            <!-- Coral Deck -->
+            <rect x="65" y="280" width="350" height="46" rx="16" fill="#FF5C7A" stroke="#14101F" stroke-width="14" />
+            <!-- White Heart Under Arch -->
+            <g transform="translate(0, -10)">
+              <path d="M 240 250 C 240 250, 168 190, 168 138 C 168 108, 192 90, 218 90 C 232 90, 240 98, 240 98 C 240 98, 248 90, 262 90 C 288 90, 312 108, 312 138 C 312 190, 240 250, 240 250 Z" fill="#FFFFFF" stroke="#14101F" stroke-width="12" stroke-linejoin="round" />
+            </g>
+          </svg>
+        </a>
+
+        <!-- Wordmark: lowercase "zaroorat" with "setu" in a lime pill -->
+        <a href="#hero" class="brand-wordmark" aria-label="ZarooratSetu brand">
+          zaroorat<span class="brand-pill">setu</span>
+        </a>
+      </div>
+
+      <!-- Desktop Nav Links -->
+      <nav class="nav-links-desktop" aria-label="Primary Navigation">
+        <a href="#problem" class="nav-link">The Problem</a>
+        <a href="#solution" class="nav-link">Solution</a>
+        <a href="#features" class="nav-link">Why Us</a>
+        <a href="#comparison" class="nav-link">Comparison</a>
+        <a href="#prototype" class="nav-link">Prototype</a>
+        <a href="#pilot" class="nav-link">Pilot & Impact</a>
+        <a href="#responsible" class="nav-link">Ethics</a>
+        <a href="#roadmap" class="nav-link">Roadmap</a>
+      </nav>
+
+      <!-- Desktop CTA -->
+      <div class="nav-actions-desktop">
+        <a href="#prototype" class="btn btn-lime btn-sm">Try Prototype</a>
+        <a href="#join" class="btn btn-violet btn-sm">Join as Helper</a>
+      </div>
+
+      <!-- Mobile Hamburger Button -->
+      <button id="nav-hamburger-toggle" class="nav-hamburger-btn" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="mobile-nav-panel">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+
+    <!-- Mobile Slide Panel -->
+    <div id="mobile-nav-panel" class="mobile-nav-panel" role="region" aria-label="Mobile Navigation Menu">
+      <a href="#problem" class="nav-link">The Problem</a>
+      <a href="#solution" class="nav-link">How It Works</a>
+      <a href="#features" class="nav-link">What Makes It Different</a>
+      <a href="#comparison" class="nav-link">Landscape Comparison</a>
+      <a href="#prototype" class="nav-link">Live Prototype</a>
+      <a href="#pilot" class="nav-link">Pilot Plan & Impact</a>
+      <a href="#responsible" class="nav-link">Responsible Design</a>
+      <a href="#roadmap" class="nav-link">Roadmap & Team</a>
+      <a href="#join" class="btn btn-lime" style="width: 100%; margin-top: 6px;">Join as Helper &rarr;</a>
+    </div>
+  </header>
+
+  <!-- ========================================================================
+       1. HERO SECTION
+       ======================================================================== -->
+  <main>
+    <section id="hero" class="hero-section">
+      <div class="container">
+        <div class="hero-content">
+          <!-- Badge: HackFest 3.0 · Track 06 -->
+          <div class="hero-badge-row">
+            <div class="badge-hackfest">
+              <span class="pulse-dot"></span>
+              <span>HackFest 3.0 · Track 06</span>
+            </div>
+            <span class="sticker sticker-tilt-right" style="background: var(--color-lavender);">Open Innovation & Civic Tech</span>
+            <span class="sticker sticker-tilt-left" style="background: var(--color-white);">📍 Pilot: REC Banda</span>
+          </div>
+
+          <!-- Headline (Exact required copy) -->
+          <h1 class="hero-headline">
+            need it? borrow it.<br/>got extra? share it.
+          </h1>
+
+          <!-- Sub-text (Exact required copy) -->
+          <p class="hero-subtext">
+            A low-cost community network that connects people who need essential resources with verified individuals and organizations, starting with the most urgent needs.
+          </p>
+
+          <!-- Buttons (Exact required copy) -->
+          <div class="hero-cta-group">
+            <a href="#prototype" id="hero-btn-ask" class="btn btn-coral">Ask for help</a>
+            <a href="#join" id="hero-btn-offer" class="btn btn-violet">Offer help</a>
+            <a href="#prototype" id="hero-btn-try-proto" class="btn btn-lime">Try the prototype &rarr;</a>
+          </div>
+
+          <!-- Tagline quote banner (Exact required copy) -->
+          <div class="tagline-quote-banner">
+            <span>✨</span>
+            <span>“What one person holds in surplus can be another person's necessity.”</span>
+            <span>✨</span>
+          </div>
+
+          <!-- Official problem statement box with Copy button -->
+          <div class="official-problem-box">
+            <div class="problem-box-header">
+              <div class="problem-box-title">
+                <span>🎯</span> Official HackFest 3.0 Problem Statement
+              </div>
+              <button id="btn-copy-problem" class="btn btn-lavender btn-sm" aria-label="Copy problem statement to clipboard">
+                📋 Copy problem statement
+              </button>
+            </div>
+            <div id="official-problem-statement" class="problem-box-verbatim">
+              “How might we build an inclusive, low-cost community platform that connects people who need essential resources with verified individuals and organizations that can provide them, using urgency-based matching, offline request access, and reusable resource coordination?”
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================================
+         2. THE PROBLEM SECTION
+         ======================================================================== -->
+    <section id="problem" class="section-wrapper">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-badge">Real-World Scenarios</div>
+          <h2 class="section-title">The Problem</h2>
+          <p class="section-subtitle">
+            Critical everyday resource bottlenecks across students, families, and patients in Tier-2 and Tier-3 communities:
+          </p>
+        </div>
+
+        <!-- Four real-life cases as cards -->
+        <div class="cases-grid">
+          <!-- Card 1: Education -->
+          <div class="neo-card case-card case-accent-lavender">
+            <div class="case-card-header">
+              <div class="case-icon-badge">🎓</div>
+              <span class="case-category-pill" style="background: var(--color-lavender);">Education</span>
+            </div>
+            <h3 class="case-title">Student Fees & Scholarships</h3>
+            <p class="case-text">
+              A student cannot pay fees, or lacks accurate scholarship information.
+            </p>
+            <div class="case-details">
+              Crucial semester deadlines or examination fees get missed simply because authentic financial aid schemes and textbook sharing never reach the student in time.
+            </div>
+          </div>
+
+          <!-- Card 2: Medical -->
+          <div class="neo-card case-card case-accent-coral">
+            <div class="case-card-header">
+              <div class="case-icon-badge">🩺</div>
+              <span class="case-category-pill" style="background: var(--color-coral);">Medical</span>
+            </div>
+            <h3 class="case-title">Temporary Equipment Needs</h3>
+            <p class="case-text">
+              A family needs a wheelchair or medical equipment for a few days, but buying is costly.
+            </p>
+            <div class="case-details">
+              Post-operative recovery frequently requires crutches, a walker, or a wheelchair for just 2–3 weeks. Purchasing costs ₹6,000–₹15,000, while dozens sit idle in closets nearby.
+            </div>
+          </div>
+
+          <!-- Card 3: Surplus items -->
+          <div class="neo-card case-card case-accent-lime">
+            <div class="case-card-header">
+              <div class="case-icon-badge">📦</div>
+              <span class="case-category-pill" style="background: var(--color-lime);">Surplus Items</span>
+            </div>
+            <h3 class="case-title">Unused Everyday Reusables</h3>
+            <p class="case-text">
+              Extra books, clothes and household items go unused because nobody knows who needs them.
+            </p>
+            <div class="case-details">
+              Graduating students and households hold scientific calculators, drafting tools, warm blankets, and textbooks with zero trusted local channels to pass them forward.
+            </div>
+          </div>
+
+          <!-- Card 4: Emergencies -->
+          <div class="neo-card case-card case-accent-violet">
+            <div class="case-card-header">
+              <div class="case-icon-badge">🚨</div>
+              <span class="case-category-pill" style="background: var(--color-violet); color: var(--color-white);">Emergencies</span>
+            </div>
+            <h3 class="case-title">Time-Critical Contact Delays</h3>
+            <p class="case-text">
+              Blood donor, transport or local volunteer needed, but finding the right contact takes time.
+            </p>
+            <div class="case-details">
+              Informal chat groups get flooded with spam, outdated donor numbers, and forwarded rumors right when minutes matter most for patient transit and blood transfusions.
+            </div>
+          </div>
+        </div>
+
+        <!-- Highlighted statement (Exact required copy) -->
+        <div class="highlighted-statement-box">
+          <div class="highlight-star">💡</div>
+          <div class="highlight-text">
+            Connect these needs through a local, verified, priority-based network that supports donation alongside temporary lending, services and verified public-resource information.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================================
+         3. OUR SOLUTION / HOW IT WORKS (3 STEPS)
+         ======================================================================== -->
+    <section id="solution" class="section-wrapper" style="background: var(--color-white); border-top: var(--border-thick); border-bottom: var(--border-thick);">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-badge" style="background: var(--color-lime);">The Mechanism</div>
+          <h2 class="section-title">Our Solution / How It Works</h2>
+          <p class="section-subtitle">
+            A frictionless three-step loop designed for both digital-native and feature-phone users:
+          </p>
+        </div>
+
+        <div class="steps-grid">
+          <!-- Step 1 -->
+          <div class="neo-card step-card step-card-lime">
+            <div class="step-header">
+              <span class="step-number">01</span>
+              <span class="step-icon">📲</span>
+            </div>
+            <h3 class="step-title">Post a need</h3>
+            <div class="step-sub">(app, SMS or missed call)</div>
+            <p class="step-desc">
+              Submit your request through our lightweight web app, or dial a toll-free missed call or text SMS on any basic phone. Local student and civic volunteers assist in registration without internet barriers.
+            </p>
+          </div>
+
+          <!-- Step 2 -->
+          <div class="neo-card step-card step-card-coral">
+            <div class="step-header">
+              <span class="step-number">02</span>
+              <span class="step-icon">🤝</span>
+            </div>
+            <h3 class="step-title">Get verified and matched</h3>
+            <div class="step-sub">(human reviewer confirms; AI suggests priority; nearby provider found)</div>
+            <p class="step-desc">
+              Our AI Need-Priority Engine assesses severity, time constraints, and available resources. A trusted local human verifier makes the final validation, and the system connects a nearby verified helper.
+            </p>
+          </div>
+
+          <!-- Step 3 -->
+          <div class="neo-card step-card step-card-violet">
+            <div class="step-header">
+              <span class="step-number">03</span>
+              <span class="step-icon">🔄</span>
+            </div>
+            <h3 class="step-title">Receive and reuse</h3>
+            <div class="step-sub">(QR handover; borrowed items return to the network)</div>
+            <p class="step-desc">
+              Contact numbers stay masked until mutual agreement. Physical exchanges are authenticated with quick QR scans. Borrowed equipment returns via automated reminders, creating a perpetual community pool.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================================
+         4. WHAT MAKES IT GENUINELY DIFFERENT (4 FEATURES)
+         ======================================================================== -->
+    <section id="features" class="section-wrapper">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-badge">Core Innovations</div>
+          <h2 class="section-title">What Makes It Genuinely Different</h2>
+          <p class="section-subtitle">
+            Four targeted technical and operational capabilities built specifically for grassroots reliability:
+          </p>
+        </div>
+
+        <div class="features-grid">
+          <!-- Feature a -->
+          <div class="neo-card feature-card">
+            <div class="feature-top">
+              <div class="feature-icon-box" style="background: var(--color-lime);">🧠</div>
+              <span class="feature-letter">A</span>
+            </div>
+            <h3 class="feature-title">AI Need-Priority Engine</h3>
+            <p class="feature-summary">
+              Priority is suggested from urgency, severity of need, available resources and waiting time, not first-come-first-served. A human verifier makes the final decision.
+            </p>
+            <div class="feature-badge-bottom">
+              <span>⚡</span> Urgency-Weighted Triage
+            </div>
+          </div>
+
+          <!-- Feature b -->
+          <div class="neo-card feature-card">
+            <div class="feature-top">
+              <div class="feature-icon-box" style="background: var(--color-lavender);">📶</div>
+              <span class="feature-letter">B</span>
+            </div>
+            <h3 class="feature-title">Access Without Internet</h3>
+            <p class="feature-summary">
+              Feature-phone users can submit requests by missed call, SMS or assisted registration by a volunteer.
+            </p>
+            <div class="feature-badge-bottom">
+              <span>📱</span> Zero-Data Intake
+            </div>
+          </div>
+
+          <!-- Feature c -->
+          <div class="neo-card feature-card">
+            <div class="feature-top">
+              <div class="feature-icon-box" style="background: var(--color-coral);">🔁</div>
+              <span class="feature-letter">C</span>
+            </div>
+            <h3 class="feature-title">Borrow, Return, Reuse</h3>
+            <p class="feature-summary">
+              Wheelchairs, calculators, books and tools can be borrowed temporarily, with QR handover and return reminders, so one resource serves many people.
+            </p>
+            <div class="feature-badge-bottom">
+              <span>🔄</span> Circular Asset Sharing
+            </div>
+          </div>
+
+          <!-- Feature d -->
+          <div class="neo-card feature-card">
+            <div class="feature-top">
+              <div class="feature-icon-box" style="background: var(--color-violet); color: var(--color-white);">🛡️</div>
+              <span class="feature-letter">D</span>
+            </div>
+            <h3 class="feature-title">Verified Need, Verified Help</h3>
+            <p class="feature-summary">
+              Verification, duplicate detection and completed-help confirmation reduce fake and repeated requests. Personal details are shared only as needed, after both sides agree.
+            </p>
+            <div class="feature-badge-bottom">
+              <span>🔒</span> Dual-Sided Privacy Shield
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================================
+         5. DOES THIS ALREADY EXIST? (HONEST COMPARISON SECTION)
+         ======================================================================== -->
+    <section id="comparison" class="section-wrapper" style="background: var(--color-white); border-top: var(--border-thick); border-bottom: var(--border-thick);">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-badge" style="background: var(--color-coral);">Landscape Analysis</div>
+          <h2 class="section-title">Does This Already Exist?</h2>
+          <p class="section-subtitle">
+            An honest, transparent evaluation of prior art and our proposed technological combination:
+          </p>
+        </div>
+
+        <!-- Mandatory Honest Disclaimer Card -->
+        <div class="honest-disclaimer-box">
+          <div class="disclaimer-badge">⚠️ Honest Civic Assessment</div>
+          <p class="disclaimer-claim">
+            The overall concept cannot be called the world's first, and originality cannot be guaranteed without checking existing products, patents and research.
+          </p>
+          <p class="disclaimer-related">
+            Related platforms: <strong>Curaah</strong> (community health and resource coordination) and <strong>Medical Share</strong> (sharing or renting medical equipment).
+          </p>
+          <p class="disclaimer-innovation">
+            <strong>Potential innovation:</strong> The combined system — <em>low-internet access + urgency-based matching + verified reuse + transparent outcome tracking</em>. Novelty of this exact combination must be validated separately.
+          </p>
+        </div>
+
+        <!-- Clean Comparison Table -->
+        <div class="table-responsive-wrapper">
+          <table class="comparison-table" aria-label="Comparison with related platforms">
+            <thead>
+              <tr>
+                <th scope="col">Dimension / Capability</th>
+                <th scope="col">Informal WhatsApp Groups</th>
+                <th scope="col">Curaah</th>
+                <th scope="col">Medical Share</th>
+                <th scope="col" class="th-highlight">ZarooratSetu (Our Entry)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row">Access Without Internet</th>
+                <td>❌ Requires smartphone & active 4G data</td>
+                <td>❌ App / Web dashboard only</td>
+                <td>❌ Web portal only</td>
+                <td class="td-highlight">✅ Missed-call, SMS & volunteer-assisted offline intake</td>
+              </tr>
+              <tr>
+                <th scope="row">Request Prioritization</th>
+                <td>❌ First-come / flood-based chat noise</td>
+                <td>⚠️ Basic medical triage tags</td>
+                <td>❌ Commercial rental listing order</td>
+                <td class="td-highlight">✅ AI urgency score + mandatory human verifier sign-off</td>
+              </tr>
+              <tr>
+                <th scope="row">Reusable Asset Coordination</th>
+                <td>❌ Lost in unindexed chat scroll</td>
+                <td>⚠️ Primarily health service referrals</td>
+                <td>✅ Medical equipment rental focus</td>
+                <td class="td-highlight">✅ Multi-category lending (Medical, Education, Items) + QR return reminders</td>
+              </tr>
+              <tr>
+                <th scope="row">Verification & Fraud Shield</th>
+                <td>❌ Zero checks; frequent scams & repeats</td>
+                <td>⚠️ Institutional NGO checks</td>
+                <td>⚠️ Commercial vendor verification</td>
+                <td class="td-highlight">✅ Dual-sided verification + fuzzy duplicate detection</td>
+              </tr>
+              <tr>
+                <th scope="row">Privacy & Contact Masking</th>
+                <td>❌ Phone numbers publicly exposed to all</td>
+                <td>⚠️ In-app text chat</td>
+                <td>⚠️ Commercial billing contact</td>
+                <td class="td-highlight">✅ Mutual-consent masked contact details</td>
+              </tr>
+              <tr>
+                <th scope="row">Outcome & Impact Tracking</th>
+                <td>❌ Unverified outcomes</td>
+                <td>⚠️ Closed health coordination stats</td>
+                <td>❌ Rental transaction revenue</td>
+                <td class="td-highlight">✅ Open civic ledger of verified handovers & cost savings</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================================
+         6. LIVE PROTOTYPE SECTION (PHONE FRAME & WORKING SIMULATOR)
+         ======================================================================== -->
+    <section id="prototype" class="section-wrapper prototype-section">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-badge" style="background: var(--color-lime);">Interactive Sandbox</div>
+          <h2 class="section-title">Live Prototype</h2>
+          <p class="section-subtitle">
+            Explore the working front-end implementation inside this responsive mobile frame. Click through tabs or test real submissions:
+          </p>
+        </div>
+
+        <div class="prototype-layout">
+          <!-- Left Column: Controller & Explainer -->
+          <div class="prototype-meta-column">
+            <div class="neo-card prototype-controller-card">
+              <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+                <h3 style="font-size: 1.25rem; font-weight: 900;">Prototype Controller</h3>
+                <span class="sticker sticker-tilt-right" style="background: var(--color-lime); font-size: 0.72rem;">Live Front-End</span>
+              </div>
+              <p style="font-size: 0.9rem; color: #4C455C; line-height: 1.45;">
+                Jump directly into any screen of the mobile user flow. All data is managed via reactive in-memory state and sample records.
+              </p>
+
+              <!-- Prototype Screen Tabs -->
+              <div class="prototype-screen-tabs" role="tablist" aria-label="Prototype Screens">
+                <button class="proto-tab-btn" data-screen="screen-splash" role="tab">
+                  <span>⚡</span> Splash
+                </button>
+                <button class="proto-tab-btn active" data-screen="screen-home" role="tab">
+                  <span>🏠</span> Home Feed
+                </button>
+                <button class="proto-tab-btn" data-screen="screen-new-request" role="tab">
+                  <span>➕</span> New Request
+                </button>
+                <button class="proto-tab-btn" data-screen="screen-status" role="tab">
+                  <span>⏱️</span> Status & Match
+                </button>
+                <button class="proto-tab-btn" data-screen="screen-borrow-return" role="tab">
+                  <span>🔄</span> Borrow & QR
+                </button>
+              </div>
+            </div>
+
+            <!-- Prototype Guiding Cards -->
+            <div class="neo-card" style="padding: 22px;">
+              <h4 style="font-size: 1.05rem; font-weight: 800; margin-bottom: 8px; display: flex; align-items: center; gap: 8px;">
+                <span>💡</span> What Judges Can Test Right Now:
+              </h4>
+              <ul style="font-size: 0.88rem; color: #38314A; padding-left: 20px; line-height: 1.6;">
+                <li><strong>Dynamic Urgency Sorting:</strong> Urgent requests (Red) automatically rank above High and Normal requests.</li>
+                <li><strong>Submit a Custom Request:</strong> Open the "New Request" tab, submit your own need, and watch it immediately appear on top and trigger the status screen!</li>
+                <li><strong>Simulate QR Handover:</strong> Switch to "Borrow & QR" and click "Simulate Scan" to record a circular reuse check-in.</li>
+                <li><strong>Privacy Shield:</strong> Inspect the Matched Provider card to verify that phone numbers remain masked until confirmation.</li>
+              </ul>
+              <div style="font-size: 0.75rem; color: #7B7192; margin-top: 10px; font-weight: 700;">
+                Note: All names, numbers, and IDs are simulated example data for demonstration.
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Column: Neo-Brutalist Realistic Phone Frame -->
+          <div class="phone-mockup-wrapper">
+            <div class="phone-frame">
+              <div class="phone-screen">
+                <!-- Phone Top Status Bar -->
+                <div class="phone-status-bar">
+                  <span id="phone-clock">09:41</span>
+                  <div class="phone-speaker-notch"></div>
+                  <div style="display: flex; align-items: center; gap: 6px;">
+                    <span>📶</span>
+                    <span>5G</span>
+                    <span>🔋 98%</span>
+                  </div>
+                </div>
+
+                <div class="phone-app-body">
+                  <!-- ==============================================
+                       SCREEN 1: SPLASH
+                       ============================================== -->
+                  <div id="screen-splash" class="proto-screen splash-screen">
+                    <div class="splash-logo-box">
+                      <svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="46" y="46" width="420" height="420" rx="84" fill="#14101F" />
+                        <rect x="30" y="30" width="420" height="420" rx="84" fill="#C6F432" stroke="#14101F" stroke-width="18" />
+                        <rect x="80" y="270" width="48" height="110" rx="14" fill="#6C3BFF" stroke="#14101F" stroke-width="14" />
+                        <rect x="352" y="270" width="48" height="110" rx="14" fill="#6C3BFF" stroke="#14101F" stroke-width="14" />
+                        <path d="M 80 320 C 110 160, 370 160, 400 320 C 350 200, 130 200, 80 320 Z" fill="#6C3BFF" stroke="#14101F" stroke-width="14" />
+                        <rect x="65" y="280" width="350" height="46" rx="16" fill="#FF5C7A" stroke="#14101F" stroke-width="14" />
+                        <path d="M 240 240 C 240 240, 168 180, 168 128 C 168 98, 192 80, 218 80 C 232 80, 240 88, 240 88 C 240 88, 248 80, 262 80 C 288 80, 312 98, 312 128 C 312 180, 240 240, 240 240 Z" fill="#FFFFFF" stroke="#14101F" stroke-width="12" />
+                      </svg>
+                    </div>
+                    <div class="splash-title">zaroorat<span class="brand-pill">setu</span></div>
+                    <div class="splash-tagline">The Right Support for Every Need</div>
+                    <button id="btn-splash-enter" class="btn btn-lime" style="width: 100%; max-width: 220px;">
+                      Enter Prototype &rarr;
+                    </button>
+                  </div>
+
+                  <!-- ==============================================
+                       SCREEN 2: HOME
+                       ============================================== -->
+                  <div id="screen-home" class="proto-screen active">
+                    <div class="app-header-bar">
+                      <div>
+                        <div style="font-size: 0.72rem; font-weight: 700; color: #615873;">Community Network</div>
+                        <div style="font-size: 1.05rem; font-weight: 900;">Namaste, Neighbor 👋</div>
+                      </div>
+                      <div class="location-chip">
+                        <span>📍</span> Banda, UP
+                      </div>
+                    </div>
+
+                    <!-- Two Big Action Cards -->
+                    <div class="home-hero-actions">
+                      <div id="btn-home-need" class="app-big-action-card action-card-need">
+                        <span class="app-action-icon">🆘</span>
+                        <div class="app-action-title">I need help</div>
+                        <div class="app-action-sub">Post Urgent Need &rarr;</div>
+                      </div>
+                      <div id="btn-home-borrow" class="app-big-action-card action-card-borrow">
+                        <span class="app-action-icon">🔄</span>
+                        <div class="app-action-title">Borrow or lend</div>
+                        <div class="app-action-sub">Explore Surplus &rarr;</div>
+                      </div>
+                    </div>
+
+                    <!-- Filter Categories -->
+                    <div class="prototype-filter-bar">
+                      <button class="filter-chip active" data-cat="all">All Needs</button>
+                      <button class="filter-chip" data-cat="Emergency">🚨 Emergency</button>
+                      <button class="filter-chip" data-cat="Medical">🩺 Medical</button>
+                      <button class="filter-chip" data-cat="Education">🎓 Education</button>
+                      <button class="filter-chip" data-cat="Items">📦 Items</button>
+                    </div>
+
+                    <!-- Verified Requests List (Sorted by Urgency) -->
+                    <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px;">
+                      <span style="font-size: 0.78rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.04em;">
+                        Verified Requests (Urgency Sorted)
+                      </span>
+                      <span style="font-size: 0.68rem; color: #7B7192; font-weight: 700;">Example data</span>
+                    </div>
+
+                    <div id="proto-requests-feed" class="request-items-feed">
+                      <!-- Rendered dynamically by prototype.js -->
+                    </div>
+                  </div>
+
+                  <!-- ==============================================
+                       SCREEN 3: NEW REQUEST
+                       ============================================== -->
+                  <div id="screen-new-request" class="proto-screen">
+                    <div class="app-header-bar">
+                      <div>
+                        <div style="font-size: 0.72rem; font-weight: 700; color: #615873;">Assisted Submission</div>
+                        <div style="font-size: 1.05rem; font-weight: 900;">Ask for Help</div>
+                      </div>
+                      <span class="sticker" style="background: var(--color-lime); font-size: 0.7rem; padding: 2px 8px;">AI Scored</span>
+                    </div>
+
+                    <form id="proto-new-request-form">
+                      <!-- Category selection -->
+                      <div class="proto-form-group">
+                        <label class="proto-label">Need Category</label>
+                        <input type="hidden" id="proto-req-category" value="Education">
+                        <div class="category-pill-select">
+                          <div class="cat-radio-btn selected" data-category="Education">🎓 Education</div>
+                          <div class="cat-radio-btn" data-category="Medical">🩺 Medical</div>
+                          <div class="cat-radio-btn" data-category="Items">📦 Items</div>
+                          <div class="cat-radio-btn" data-category="Emergency">🚨 Emergency</div>
+                        </div>
+                      </div>
+
+                      <!-- Title -->
+                      <div class="proto-form-group">
+                        <label class="proto-label" for="proto-req-title">Resource Needed / Title</label>
+                        <input type="text" id="proto-req-title" class="proto-input" placeholder="e.g. Wheelchair for 2 weeks or Textbooks" required>
+                      </div>
+
+                      <!-- Urgency selector -->
+                      <div class="proto-form-group">
+                        <label class="proto-label">Urgency Level (AI Factor)</label>
+                        <input type="hidden" id="proto-req-urgency" value="High">
+                        <div class="urgency-selector-row">
+                          <div class="urg-radio-btn" data-urgency="Normal">Normal</div>
+                          <div class="urg-radio-btn selected" data-urgency="High">High</div>
+                          <div class="urg-radio-btn" data-urgency="Urgent">Urgent</div>
+                        </div>
+                        <div style="font-size: 0.68rem; color: #615873; margin-top: 4px;">
+                          Urgent: Critical medical risk or immediate exam/admit deadline.
+                        </div>
+                      </div>
+
+                      <!-- Description -->
+                      <div class="proto-form-group">
+                        <label class="proto-label" for="proto-req-desc">Context & Description</label>
+                        <textarea id="proto-req-desc" class="proto-textarea" placeholder="Explain the situation and how long you will need the item..." required></textarea>
+                      </div>
+
+                      <!-- Contact Name -->
+                      <div class="proto-form-group">
+                        <label class="proto-label" for="proto-req-name">Requester Name (Example)</label>
+                        <input type="text" id="proto-req-name" class="proto-input" value="Rohan Verma (Example Data)">
+                      </div>
+
+                      <!-- Offline Phone Notice -->
+                      <div class="sms-call-notice-banner">
+                        <span>☎️</span>
+                        <div>
+                          <strong>No Smartphone or 4G Data?</strong><br/>
+                          Feature-phone users can dial a missed call to <code>1800-XXX-XXXX</code> or send an SMS. REC Banda field volunteers will register your request directly.
+                        </div>
+                      </div>
+
+                      <button type="submit" class="btn btn-coral" style="width: 100%; font-size: 0.88rem;">
+                        Submit Need Request &rarr;
+                      </button>
+                    </form>
+                  </div>
+
+                  <!-- ==============================================
+                       SCREEN 4: REQUEST STATUS & TIMELINE
+                       ============================================== -->
+                  <div id="screen-status" class="proto-screen">
+                    <div class="app-header-bar">
+                      <div>
+                        <div style="font-size: 0.72rem; font-weight: 700; color: #615873;">Real-Time Tracking</div>
+                        <div style="font-size: 1.05rem; font-weight: 900;">Request Status</div>
+                      </div>
+                      <span class="sticker" style="background: var(--color-lavender); font-size: 0.7rem; padding: 2px 8px;">Live Audit</span>
+                    </div>
+
+                    <div id="proto-status-content">
+                      <!-- Rendered dynamically by prototype.js -->
+                    </div>
+                  </div>
+
+                  <!-- ==============================================
+                       SCREEN 5: BORROW & RETURN
+                       ============================================== -->
+                  <div id="screen-borrow-return" class="proto-screen">
+                    <div class="app-header-bar">
+                      <div>
+                        <div style="font-size: 0.72rem; font-weight: 700; color: #615873;">Circular Sharing</div>
+                        <div style="font-size: 1.05rem; font-weight: 900;">Borrow & Return</div>
+                      </div>
+                      <span class="sticker" style="background: var(--color-lime); font-size: 0.7rem; padding: 2px 8px;">QR Verified</span>
+                    </div>
+
+                    <div id="proto-borrow-content">
+                      <!-- Rendered dynamically by prototype.js -->
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================================
+         7. PILOT PLAN AND IMPACT (NO INVENTED STATISTICS)
+         ======================================================================== -->
+    <section id="pilot" class="section-wrapper">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-badge" style="background: var(--color-lime);">Field Validation</div>
+          <h2 class="section-title">Pilot Plan and Impact</h2>
+          <p class="section-subtitle">
+            A concrete, measurable roadmap starting at Rajkiya Engineering College (REC) Banda:
+          </p>
+        </div>
+
+        <!-- Pilot recommendation box -->
+        <div class="pilot-recommendation-box">
+          <div class="pilot-rec-title">
+            <span>📍</span> Grounded Pilot Recommendation: REC Banda
+          </div>
+          <p class="pilot-rec-text">
+            Pilot first at REC Banda and nearby areas with students, local NGOs and community volunteers. Show real requests and measure: how many requests were verified, how many were successfully fulfilled, and how much cost was saved. Working prototype and measured impact are more convincing to judges than just saying "AI-powered".
+          </p>
+        </div>
+
+        <!-- Three Metrics as Empty Placeholder Cards (Strict rule: no invented stats) -->
+        <div class="metrics-placeholder-grid">
+          <!-- Metric 1: Verified Requests -->
+          <div class="neo-card metric-placeholder-card">
+            <div>
+              <span class="metric-measured-badge">to be measured in the pilot</span>
+              <h3 class="metric-card-label">Requests Verified</h3>
+            </div>
+            <div class="metric-empty-val">--</div>
+            <p class="metric-card-desc">
+              Total incoming community requests inspected and verified by human coordinators. Target: 150+ in Month 1.
+            </p>
+          </div>
+
+          <!-- Metric 2: Successfully Fulfilled -->
+          <div class="neo-card metric-placeholder-card">
+            <div>
+              <span class="metric-measured-badge">to be measured in the pilot</span>
+              <h3 class="metric-card-label">Successfully Fulfilled</h3>
+            </div>
+            <div class="metric-empty-val">--</div>
+            <p class="metric-card-desc">
+              Requests successfully handed over with dual QR code confirmation. Target: 80%+ fulfillment rate.
+            </p>
+          </div>
+
+          <!-- Metric 3: Cost Saved -->
+          <div class="neo-card metric-placeholder-card">
+            <div>
+              <span class="metric-measured-badge">to be measured in the pilot</span>
+              <h3 class="metric-card-label">Cost Saved for Community</h3>
+            </div>
+            <div class="metric-empty-val">--</div>
+            <p class="metric-card-desc">
+              Total expenditure saved by families borrowing wheelchairs, tools, and textbooks instead of purchasing new.
+            </p>
+          </div>
+        </div>
+
+        <!-- Pilot Phased Milestones -->
+        <div class="milestones-grid">
+          <div class="milestone-card">
+            <div class="milestone-stage">Stage 01 · Campus Lending Pool</div>
+            <div class="milestone-location">REC Banda Campus & Hostels</div>
+            <p class="milestone-focus">
+              Engineering textbooks, Casio scientific calculators, mini-drafters, lab kits, and student emergency transit to Banda district hospital.
+            </p>
+          </div>
+
+          <div class="milestone-card">
+            <div class="milestone-stage">Stage 02 · Urban-Rural Extension</div>
+            <div class="milestone-location">Banda City & Atarra Tehsil</div>
+            <p class="milestone-focus">
+              Wheelchairs, crutches, post-surgery convalescent aids, winter blankets, and local youth volunteer registration hubs.
+            </p>
+          </div>
+
+          <div class="milestone-card">
+            <div class="milestone-stage">Stage 03 · Regional Civic Federation</div>
+            <div class="milestone-location">Bundelkhand University Cluster</div>
+            <p class="milestone-focus">
+              Inter-college resource exchange protocol, civil society organization registries, and municipal social welfare integration.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================================
+         8. RESPONSIBLE DESIGN
+         ======================================================================== -->
+    <section id="responsible" class="section-wrapper" style="background: var(--color-white); border-top: var(--border-thick); border-bottom: var(--border-thick);">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-badge" style="background: var(--color-violet); color: var(--color-white);">Civic Ethics</div>
+          <h2 class="section-title">Responsible Design</h2>
+          <p class="section-subtitle">
+            Safety, human accountability, and privacy protocols engineered directly into the platform:
+          </p>
+        </div>
+
+        <div class="pillars-grid">
+          <!-- Pillar 1: Privacy -->
+          <div class="neo-card pillar-card">
+            <div class="pillar-icon">🔒</div>
+            <h3 class="pillar-title">Mutual Consent Privacy</h3>
+            <p class="pillar-text">
+              Personal phone numbers and home addresses are never exposed to public feeds or web crawlers. Contact details are shared only as needed, after both sides agree.
+            </p>
+          </div>
+
+          <!-- Pillar 2: Human-in-the-Loop -->
+          <div class="neo-card pillar-card">
+            <div class="pillar-icon">👥</div>
+            <h3 class="pillar-title">Human-in-the-Loop AI</h3>
+            <p class="pillar-text">
+              The AI urgency engine suggests a priority rank based on clinical urgency and timeline, but a local human verifier makes the final decision before allocation.
+            </p>
+          </div>
+
+          <!-- Pillar 3: Fraud & Duplicate Checks -->
+          <div class="neo-card pillar-card">
+            <div class="pillar-icon">🛡️</div>
+            <h3 class="pillar-title">Fraud & Duplicate Shield</h3>
+            <p class="pillar-text">
+              Fuzzy matching, phone tokenization, and loan-cycle limits automatically flag duplicate requests and prevent hoarding without collecting intrusive personal biometrics.
+            </p>
+          </div>
+
+          <!-- Pillar 4: Accessibility -->
+          <div class="neo-card pillar-card">
+            <div class="pillar-icon">♿</div>
+            <h3 class="pillar-title">Low-Literacy & Feature Phone Access</h3>
+            <p class="pillar-text">
+              Built with high-contrast text, clear visual icons, audio voice prompts, and direct missed-call/SMS intake for users without smartphones or digital literacy.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================================
+         9. ROADMAP AND TEAM
+         ======================================================================== -->
+    <section id="roadmap" class="section-wrapper">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-badge">Execution Plan</div>
+          <h2 class="section-title">Roadmap and Team</h2>
+          <p class="section-subtitle">
+            From HackFest 3.0 prototype to sustainable community network:
+          </p>
+        </div>
+
+        <!-- 4-Phase Roadmap -->
+        <div class="roadmap-timeline">
+          <div class="neo-card roadmap-phase-card">
+            <span class="phase-tag" style="background: var(--color-lime);">Current</span>
+            <div class="phase-title">1. Prototype</div>
+            <div class="phase-status">Completed (HackFest 3.0)</div>
+            <p class="phase-desc">
+              Functional responsive prototype, PWA offline capability, urgency heuristics engine, and validated user flows.
+            </p>
+          </div>
+
+          <div class="neo-card roadmap-phase-card">
+            <span class="phase-tag" style="background: var(--color-coral);">Next Step</span>
+            <div class="phase-title">2. Pilot at REC Banda</div>
+            <div class="phase-status">Months 1 - 2</div>
+            <p class="phase-desc">
+              Onboard REC student council, dispensary hub, and test 50+ textbook and equipment borrow cycles on campus.
+            </p>
+          </div>
+
+          <div class="neo-card roadmap-phase-card">
+            <span class="phase-tag" style="background: var(--color-lavender);">Expansion</span>
+            <div class="phase-title">3. NGO Partnerships</div>
+            <div class="phase-status">Months 3 - 4</div>
+            <p class="phase-desc">
+              Partner with registered local charitable trusts, blood donor forums, and community healthcare clinics in Banda.
+            </p>
+          </div>
+
+          <div class="neo-card roadmap-phase-card">
+            <span class="phase-tag" style="background: var(--color-white);">Scale</span>
+            <div class="phase-title">4. Wider Rollout</div>
+            <div class="phase-status">Months 5+</div>
+            <p class="phase-desc">
+              Deploy across neighboring district colleges, rural health centers, and municipal citizen assistance portals.
+            </p>
+          </div>
+        </div>
+
+        <!-- Team Section with Placeholders -->
+        <div class="section-header" style="margin-bottom: 28px;">
+          <h3 style="font-size: 1.8rem; font-weight: 900;">The Team</h3>
+          <p style="font-size: 0.95rem; color: #4C455C;">HackFest 3.0 Hackathon Team Representation</p>
+        </div>
+
+        <div class="team-grid">
+          <div class="neo-card team-card">
+            <div class="team-avatar-box">💻</div>
+            <div class="team-name">[Team member name]</div>
+            <div class="team-role">[Project Lead & Full-Stack Developer]</div>
+            <p class="team-note">
+              System architecture, offline accessibility workflows, and responsive interface development.
+            </p>
+          </div>
+
+          <div class="neo-card team-card">
+            <div class="team-avatar-box" style="background: var(--color-coral);">🎨</div>
+            <div class="team-name">[Team member name]</div>
+            <div class="team-role">[Product Designer & UX Researcher]</div>
+            <p class="team-note">
+              Civic UX, neo-brutalist accessibility design, and field interview protocols.
+            </p>
+          </div>
+
+          <div class="neo-card team-card">
+            <div class="team-avatar-box" style="background: var(--color-lavender);">🤝</div>
+            <div class="team-name">[Team member name]</div>
+            <div class="team-role">[Community Coordinator & Verifier Lead]</div>
+            <p class="team-note">
+              REC Banda pilot liaison, local NGO outreach, and verification process design.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================================
+         10. JOIN / CONTACT SECTION
+         ======================================================================== -->
+    <section id="join" class="section-wrapper" style="background: var(--color-white); border-top: var(--border-thick);">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-badge" style="background: var(--color-lime);">Get Involved</div>
+          <h2 class="section-title">Join as Helper</h2>
+          <p class="section-subtitle">
+            Whether you have surplus items to lend, vehicle transit to offer, or time to verify — become a Setu:
+          </p>
+        </div>
+
+        <div class="join-container-grid">
+          <!-- Helper Sign-up Form -->
+          <div class="neo-card join-form-card">
+            <h3 style="font-size: 1.35rem; font-weight: 900; margin-bottom: 16px;">
+              Register Your Support
+            </h3>
+
+            <form id="site-helper-form">
+              <!-- Helper Role Pills -->
+              <div class="form-group-site">
+                <label class="label-site">I am registering as an:</label>
+                <div class="role-pill-options">
+                  <label class="role-pill-label active">
+                    <input type="radio" name="helper-role" value="Individual" checked style="display: none;">
+                    👤 Individual
+                  </label>
+                  <label class="role-pill-label">
+                    <input type="radio" name="helper-role" value="NGO" style="display: none;">
+                    🏢 NGO / Organization
+                  </label>
+                  <label class="role-pill-label">
+                    <input type="radio" name="helper-role" value="Volunteer" style="display: none;">
+                    🤝 Community Volunteer
+                  </label>
+                </div>
+              </div>
+
+              <!-- Full Name -->
+              <div class="form-group-site">
+                <label class="label-site" for="helper-name">Your Full Name</label>
+                <input type="text" id="helper-name" class="input-site" placeholder="e.g. Priyanshu Singh" required>
+              </div>
+
+              <!-- Mobile Number -->
+              <div class="form-group-site">
+                <label class="label-site" for="helper-phone">Mobile Number (10 digits)</label>
+                <input type="tel" id="helper-phone" class="input-site" placeholder="e.g. 9876543210" pattern="[0-9]{10}" required>
+              </div>
+
+              <!-- What can you offer -->
+              <div class="form-group-site">
+                <label class="label-site" for="helper-offer">What can you offer?</label>
+                <select id="helper-offer" class="select-site">
+                  <option value="Medical Equipment Lending">Medical Equipment Lending (Wheelchair, Crutches, Walker)</option>
+                  <option value="Educational Books & Tools">Educational Books, Calculators & Engineering Drafters</option>
+                  <option value="Emergency Transit & Blood Donor">Emergency Transit & Blood Donor Pool</option>
+                  <option value="Human Verification Volunteer">Volunteer Verifier (Human-in-the-Loop Reviewer)</option>
+                  <option value="Other Surplus Household Items">Other Surplus Household Items</option>
+                </select>
+              </div>
+
+              <!-- Location -->
+              <div class="form-group-site">
+                <label class="label-site" for="helper-location">Neighborhood / Vicinity</label>
+                <input type="text" id="helper-location" class="input-site" placeholder="e.g. REC Banda, Civil Lines, Atarra" value="REC Banda & Vicinity">
+              </div>
+
+              <button type="submit" class="btn btn-lime" style="width: 100%;">
+                Submit Registration &rarr;
+              </button>
+
+              <div id="helper-form-feedback" class="form-feedback-box" role="alert">
+                <!-- Feedback injected by app.js -->
+              </div>
+            </form>
+          </div>
+
+          <!-- Contact & Project Metadata Column -->
+          <div class="join-info-column">
+            <div class="neo-card contact-card-box">
+              <h3 style="font-size: 1.35rem; font-weight: 900; margin-bottom: 12px;">
+                Direct Inquiries & Mentorship
+              </h3>
+              <p style="font-size: 0.95rem; color: #38314A; line-height: 1.5;">
+                We are actively seeking feedback from hackathon judges, civic tech mentors, and local municipal coordinators.
+              </p>
+
+              <div class="contact-row-item">
+                <div class="contact-icon-bubble">✉️</div>
+                <div>
+                  <div style="font-size: 0.75rem; text-transform: uppercase; color: #615873;">Project Email</div>
+                  <div>[Email: contact@zarooratsetu.org]</div>
+                </div>
+              </div>
+
+              <div class="contact-row-item">
+                <div class="contact-icon-bubble">📞</div>
+                <div>
+                  <div style="font-size: 0.75rem; text-transform: uppercase; color: #615873;">Coordination Helpline</div>
+                  <div>[Phone: +91 98765 XXXXX]</div>
+                </div>
+              </div>
+
+              <div class="contact-row-item">
+                <div class="contact-icon-bubble">📍</div>
+                <div>
+                  <div style="font-size: 0.75rem; text-transform: uppercase; color: #615873;">Pilot Base</div>
+                  <div>Rajkiya Engineering College (REC), Banda, UP, India</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="neo-card" style="padding: 24px; background: var(--color-lavender-light);">
+              <div style="font-size: 1.1rem; font-weight: 900; margin-bottom: 6px;">
+                Open Innovation Principles
+              </div>
+              <p style="font-size: 0.88rem; color: #4C455C; line-height: 1.5;">
+                ZarooratSetu is built on open standards, low-bandwidth interoperability, and transparent civic governance. No user data is commercialized.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ========================================================================
+       FOOTER
+       ======================================================================== -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <div class="brand-wordmark" style="color: #FFFFFF; font-size: 1.8rem;">
+            zaroorat<span class="brand-pill" style="color: var(--color-ink);">setu</span>
+          </div>
+          <p>
+            The Right Support for Every Need. An inclusive, low-cost community network connecting urgent needs with verified local help.
+          </p>
+          <div style="margin-top: 16px;">
+            <span class="badge-hackfest" style="background: var(--color-lime); color: var(--color-ink);">
+              HackFest 3.0 · Track 06 Entry
+            </span>
+          </div>
+        </div>
+
+        <div>
+          <h4 class="footer-col-title">Navigation</h4>
+          <ul class="footer-nav-list">
+            <li><a href="#hero">Back to Top</a></li>
+            <li><a href="#problem">The Problem</a></li>
+            <li><a href="#solution">How It Works</a></li>
+            <li><a href="#features">Key Features</a></li>
+            <li><a href="#comparison">Honest Comparison</a></li>
+            <li><a href="#prototype">Live Mobile Prototype</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="footer-col-title">Pilot & Ethics</h4>
+          <ul class="footer-nav-list">
+            <li><a href="#pilot">REC Banda Pilot Plan</a></li>
+            <li><a href="#responsible">Responsible Design & Privacy</a></li>
+            <li><a href="#roadmap">Development Roadmap</a></li>
+            <li><a href="#join">Register as Helper</a></li>
+            <li><span style="color: #A39BB8; font-size: 0.85rem;">[Email: contact@zarooratsetu.org]</span></li>
+            <li><span style="color: #A39BB8; font-size: 0.85rem;">[Phone: +91 98765 XXXXX]</span></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom-bar">
+        <div>
+          &copy; 2026 ZarooratSetu. Built for HackFest 3.0 (Track 06: Open Innovation, Economic Rebuilding & Civic Tech).
+        </div>
+        <div>
+          Designed with Gen Z Neo-Brutalism & Universal Accessibility in Mind.
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="./assets/data/content.js"></script>
+  <script src="./assets/data/sample-requests.js"></script>
+  <script src="./assets/js/prototype.js"></script>
+  <script src="./assets/js/app.js"></script>
+</body>
+</html>

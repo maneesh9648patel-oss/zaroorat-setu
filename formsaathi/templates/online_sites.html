@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+
+{% block title %}Online Document Sites — FormSaathi Verified Directory{% endblock %}
+{% block page_title %}Official Government Portals Directory{% endblock %}
+
+{% block content %}
+<div style="margin-bottom: 1.5rem; display: flex; align-items: flex-start; justify-content: space-between; flex-wrap: wrap; gap: 1rem;">
+  <div>
+    <h2 style="font-size: 1.5rem; font-weight: 800; color: var(--gray-900); margin-bottom: 0.25rem;">
+      Verified Government Document & Scholarship Portals
+    </h2>
+    <p style="color: var(--gray-500); font-size: 0.9rem;">
+      Access official Central and State government citizen services for issuing and verifying certificates online.
+    </p>
+  </div>
+</div>
+
+<!-- Official Verification Safety Banner -->
+<div class="alert alert-info" style="margin-bottom: 1.5rem;">
+  <i class="fa-solid fa-building-shield" style="font-size: 1.3rem;"></i>
+  <div style="font-size: 0.88rem; line-height: 1.5;">
+    <strong>Authenticity Guarantee:</strong> All websites listed in this directory are official Indian government portals (.gov.in / .nic.in / state apex domains) or statutory bodies. FormSaathi does not host certificate issuance forms or collect government fees; links open directly into the respective official portals in a new window.
+  </div>
+</div>
+
+<!-- State & Category Filter Bar -->
+<div class="card" style="padding: 1.25rem; margin-bottom: 1.5rem;">
+  <form method="GET" action="{{ url_for('online_document_sites') }}" style="display: flex; gap: 1rem; flex-wrap: wrap; align-items: center;">
+    <!-- State Selector -->
+    <div style="flex: 1; min-width: 220px;">
+      <label class="form-label" style="margin-bottom: 0.25rem;">Select State / Territory</label>
+      <select name="state" class="form-control" onchange="this.form.submit()">
+        <option value="All India" {% if current_state == 'All India' %}selected{% endif %}>All India / Central Portals</option>
+        {% for st in states %}
+          <option value="{{ st }}" {% if current_state == st %}selected{% endif %}>{{ st }}</option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <!-- Category Selector -->
+    <div style="flex: 1; min-width: 220px;">
+      <label class="form-label" style="margin-bottom: 0.25rem;">Service Category</label>
+      <select name="category" class="form-control" onchange="this.form.submit()">
+        <option value="All" {% if current_category == 'All' %}selected{% endif %}>All Portal Categories</option>
+        {% for cat in categories %}
+          <option value="{{ cat }}" {% if current_category == cat %}selected{% endif %}>{{ cat }}</option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <div style="align-self: flex-end;">
+      <button type="submit" class="btn btn-secondary">
+        <i class="fa-solid fa-filter"></i> Apply
+      </button>
+      {% if current_state != 'All India' or current_category != 'All' %}
+        <a href="{{ url_for('online_document_sites') }}" class="btn btn-sm btn-secondary" style="margin-left: 0.25rem;">
+          Reset
+        </a>
+      {% endif %}
+    </div>
+  </form>
+</div>
+
+<!-- Portals Grid -->
+<div class="grid-2">
+  {% for portal in portals %}
+    <div class="card" style="display: flex; flex-direction: column; justify-content: space-between;">
+      <div>
+        <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 0.5rem; margin-bottom: 0.75rem;">
+          <div>
+            <h3 style="font-size: 1.15rem; font-weight: 700; color: var(--gray-900); margin-bottom: 0.25rem;">
+              {{ portal.name }}
+            </h3>
+            <div style="display: flex; gap: 0.4rem; flex-wrap: wrap;">
+              <span class="badge badge-primary">{{ portal.category }}</span>
+              <span class="badge badge-gray"><i class="fa-solid fa-location-dot"></i> {{ portal.state }}</span>
+            </div>
+          </div>
+          <span class="badge badge-success" style="white-space: nowrap;">
+            <i class="fa-solid fa-check"></i> {{ portal.badge_text }}
+          </span>
+        </div>
+
+        <p style="font-size: 0.88rem; color: var(--gray-600); line-height: 1.5; margin-bottom: 1.25rem;">
+          {{ portal.description }}
+        </p>
+      </div>
+
+      <div style="display: flex; align-items: center; justify-content: space-between; padding-top: 1rem; border-top: 1px solid var(--gray-100); flex-wrap: wrap; gap: 0.5rem;">
+        <span style="font-size: 0.78rem; color: var(--gray-400); word-break: break-all;">
+          <i class="fa-solid fa-shield-halved" style="color: var(--teal-600);"></i> {{ portal.url.replace('https://', '').split('/')[0] }}
+        </span>
+
+        <a href="{{ portal.url }}" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-primary">
+          <span>Visit Official Website</span>
+          <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 0.7rem;"></i>
+        </a>
+      </div>
+    </div>
+  {% else %}
+    <div class="empty-state" style="grid-column: 1 / -1;">
+      <div class="empty-state-icon">
+        <i class="fa-solid fa-globe"></i>
+      </div>
+      <h3 class="empty-state-title">No portals found for this combination</h3>
+      <p class="empty-state-desc">
+        Try resetting the state or category filter to browse all verified national portals.
+      </p>
+      <a href="{{ url_for('online_document_sites') }}" class="btn btn-primary">
+        View All National Portals
+      </a>
+    </div>
+  {% endfor %}
+</div>
+{% endblock %}

@@ -1,0 +1,21 @@
+{
+  "name": "zaroorat-setu-server",
+  "version": "1.0.0",
+  "description": "ZarooratSetu REST API backend - HackFest 3.0",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "test": "node --test tests/authOtp.test.js tests/duplicateDetection.test.js tests/qrHandover.test.js"
+  },
+  "dependencies": {
+    "@google/generative-ai": "^0.21.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.1",
+    "express-rate-limit": "^7.4.1",
+    "helmet": "^8.0.0",
+    "zod": "^3.23.8"
+  }
+}

@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="csrf-token" content="{{ csrf_token() }}">
+  <title>{% block title %}FormSaathi — Smart Scholarship & Document Assistant{% endblock %}</title>
+  
+  <!-- Font Awesome Icons (Free CDN) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  
+  <!-- FormSaathi Stylesheet -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  {% block extra_head %}{% endblock %}
+</head>
+<body>
+
+<div class="app-layout">
+  <!-- Mobile Backdrop -->
+  <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+  <!-- Left Sidebar Navigation -->
+  <aside class="app-sidebar" id="appSidebar">
+    <div class="sidebar-header">
+      <a href="{{ url_for('home') }}" class="brand-link">
+        <div class="brand-logo-icon">
+          <i class="fa-solid fa-graduation-cap"></i>
+        </div>
+        <div class="brand-text">
+          Form<span>Saathi</span><span style="font-size: 0.85rem; color: var(--teal-600); font-weight: 800;">.in</span>
+        </div>
+      </a>
+    </div>
+
+    <nav class="sidebar-nav">
+      <div class="nav-section-title">Navigation Menu</div>
+
+      <a href="{{ url_for('home') }}" class="nav-item {% if request.endpoint == 'home' %}active{% endif %}">
+        <i class="fa-solid fa-house"></i>
+        <span>Home</span>
+      </a>
+
+      <a href="{{ url_for('documents_need') }}" class="nav-item {% if request.endpoint == 'documents_need' %}active{% endif %}">
+        <i class="fa-solid fa-clipboard-check"></i>
+        <span>Documents Need</span>
+      </a>
+
+      <a href="{{ url_for('my_documents') }}" class="nav-item {% if request.endpoint == 'my_documents' %}active{% endif %}">
+        <i class="fa-solid fa-folder-open"></i>
+        <span>My Documents</span>
+      </a>
+
+      <a href="{{ url_for('dashboard') }}" class="nav-item {% if request.endpoint == 'dashboard' %}active{% endif %}">
+        <i class="fa-solid fa-chart-pie"></i>
+        <span>Dashboard</span>
+      </a>
+
+      <a href="{{ url_for('eligibility_checker') }}" class="nav-item {% if request.endpoint in ('eligibility_checker', 'process_eligibility_check') %}active{% endif %}">
+        <i class="fa-solid fa-user-check"></i>
+        <span>Eligibility Checker</span>
+      </a>
+
+      <a href="{{ url_for('online_document_sites') }}" class="nav-item {% if request.endpoint == 'online_document_sites' %}active{% endif %}">
+        <i class="fa-solid fa-globe"></i>
+        <span>Online Document Sites</span>
+      </a>
+
+      <a href="{{ url_for('notifications') }}" class="nav-item {% if request.endpoint == 'notifications' %}active{% endif %}">
+        <i class="fa-solid fa-bell"></i>
+        <span>Notifications</span>
+        {% if unread_notifications_count > 0 %}
+          <span class="nav-badge">{{ unread_notifications_count }}</span>
+        {% endif %}
+      </a>
+
+      <a href="{{ url_for('explore_schemes') }}" class="nav-item {% if request.endpoint == 'explore_schemes' %}active{% endif %}">
+        <i class="fa-solid fa-book-bookmark"></i>
+        <span>Explore Schemes</span>
+      </a>
+
+      <a href="{{ url_for('government_document_services') }}" class="nav-item {% if request.endpoint == 'government_document_services' %}active{% endif %}">
+        <i class="fa-solid fa-landmark"></i>
+        <span>Government Document Services</span>
+      </a>
+    </nav>
+
+    <!-- Sidebar Student Footer -->
+    {% if current_student %}
+    <div class="sidebar-footer">
+      <div class="sidebar-student-card">
+        <div class="student-avatar">
+          {{ current_student.full_name[:1].upper() }}
+        </div>
+        <div class="student-info">
+          <div class="student-name" title="{{ current_student.full_name }}">{{ current_student.full_name }}</div>
+          <div class="student-meta" title="{{ current_student.class_course }} • {{ current_student.institution_name }}">
+            {{ current_student.class_course }}
+          </div>
+        </div>
+      </div>
+      <div style="margin-top: 0.75rem; display: flex; gap: 0.5rem;">
+        <a href="{{ url_for('edit_profile') }}" class="btn btn-secondary btn-sm" style="flex: 1;" title="Edit Profile">
+          <i class="fa-solid fa-pen-to-square"></i> Profile
+        </a>
+        <form action="{{ url_for('reset_profile') }}" method="POST" style="margin: 0;" onsubmit="return confirm('Do you want to switch or reset the active student profile?');">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <button type="submit" class="btn btn-secondary btn-sm" title="Switch Student">
+            <i class="fa-solid fa-arrow-right-from-bracket"></i>
+          </button>
+        </form>
+      </div>
+    </div>
+    {% endif %}
+  </aside>
+
+  <!-- Main Content Layout -->
+  <div class="app-main">
+    <!-- Topbar Header -->
+    <header class="app-topbar">
+      <div class="topbar-left">
+        <button class="menu-toggle" id="menuToggle" aria-label="Toggle navigation">
+          <i class="fa-solid fa-bars"></i>
+        </button>
+        <h1 class="page-title">{% block page_title %}FormSaathi Assistant{% endblock %}</h1>
+      </div>
+
+      <div class="topbar-right">
+        {% if current_student %}
+          <a href="{{ url_for('documents_need') }}" class="quick-badge-btn" title="Checklist Progress">
+            <i class="fa-solid fa-list-check"></i>
+            <span>{{ checklist_stats.ready }}/{{ checklist_stats.total }} Ready ({{ checklist_stats.percent }}%)</span>
+          </a>
+
+          <a href="{{ url_for('notifications') }}" class="icon-btn" title="Notifications">
+            <i class="fa-regular fa-bell"></i>
+            {% if unread_notifications_count > 0 %}
+              <span class="icon-badge">{{ unread_notifications_count }}</span>
+            {% endif %}
+          </a>
+        {% endif %}
+      </div>
+    </header>
+
+    <!-- Main Body Area -->
+    <main class="content-wrapper">
+      <!-- Flash Messages -->
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          <div class="flash-container">
+            {% for category, message in messages %}
+              <div class="alert alert-{{ category }}">
+                {% if category == 'success' %}
+                  <i class="fa-solid fa-circle-check"></i>
+                {% elif category == 'error' %}
+                  <i class="fa-solid fa-triangle-exclamation"></i>
+                {% elif category == 'warning' %}
+                  <i class="fa-solid fa-circle-exclamation"></i>
+                {% else %}
+                  <i class="fa-solid fa-circle-info"></i>
+                {% endif %}
+                <span>{{ message }}</span>
+              </div>
+            {% endfor %}
+          </div>
+        {% endif %}
+      {% endwith %}
+
+      {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="app-footer">
+      <div class="footer-disclaimer">
+        <strong>FormSaathi.in — Smart Scholarship & Government Document Assistant (AY {{ current_year }})</strong><br>
+        FormSaathi is an independent educational and preparation assistant for Indian students. FormSaathi does not issue government certificates or guarantee scholarship sanction. Official verification and certificate issuance are processed exclusively through authorized government portals (such as DigiLocker, NSP, ServicePlus, and State e-District portals).
+      </div>
+    </footer>
+  </div>
+</div>
+
+<!-- Scripts -->
+<script src="{{ url_for('static', filename='js/app.js') }}"></script>
+{% block extra_scripts %}{% endblock %}
+
+</body>
+</html>

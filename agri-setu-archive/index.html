@@ -1,0 +1,2165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AGRI-SETU | Connecting Farmers to the Right Support | SIH 2026</title>
+  
+  <!-- Meta for SEO & PWA readiness -->
+  <meta name="description" content="Agri-Setu is a unified farmer discovery and action layer for crop assistance, government schemes, mandi intelligence, PMFBY insurance, weather alerts, and KVK scientists. Smart India Hackathon 2026 Prototype by Team Tech Titans, REC Banda.">
+  <meta name="keywords" content="Agri-Setu, Smart India Hackathon 2026, KVK Banda, REC Banda, PM-KISAN, PMFBY, e-NAM, Crop Doctor, Agriculture Technology">
+  <meta name="theme-color" content="#165324">
+
+  <!-- Fonts & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Noto+Sans+Devanagari:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Custom Stylesheet -->
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <!-- =======================================================================
+       1. STICKY NAVBAR
+       ======================================================================= -->
+  <header class="navbar" id="navbar">
+    <div class="container nav-container">
+      <div class="brand-logo" id="brandLogo">
+        <div class="logo-icon-wrap">
+          <i data-lucide="sprout"></i>
+        </div>
+        <div class="brand-text">
+          <span class="brand-title" data-i18n="brand_name">AGRI-SETU</span>
+          <span class="brand-sub" data-i18n="brand_tagline">Connecting Farmers to the Right Support</span>
+        </div>
+      </div>
+
+      <!-- Desktop Nav Menu (8 Primary Sections) -->
+      <ul class="nav-menu" id="navMenu">
+        <li><a href="#home" class="nav-link active" data-target="home"><i data-lucide="home" class="nav-icon-inline"></i> <span data-i18n="nav_home">Home</span></a></li>
+        <li><a href="#crop-doctor" class="nav-link" data-target="crop-doctor"><i data-lucide="sprout" class="nav-icon-inline"></i> <span data-i18n="nav_crop_advisory">Crop Advisory</span></a></li>
+        <li><a href="#weather" class="nav-link" data-target="weather"><i data-lucide="cloud-sun" class="nav-icon-inline"></i> <span data-i18n="nav_weather">Weather</span></a></li>
+        <li><a href="#crop-doctor" class="nav-link" data-target="crop-doctor"><i data-lucide="bug" class="nav-icon-inline"></i> <span data-i18n="nav_pest_disease">Pest & Disease</span></a></li>
+        <li><a href="#scheme-advisory" class="nav-link nav-highlight-link" data-target="scheme-advisory"><i data-lucide="landmark" class="nav-icon-inline"></i> <span data-i18n="nav_scheme_advisory">Scheme Advisory</span></a></li>
+        <li><a href="#mandi" class="nav-link" data-target="mandi"><i data-lucide="trending-up" class="nav-icon-inline"></i> <span data-i18n="nav_market_prices">Market Prices</span></a></li>
+        <li><a href="#documents" class="nav-link" data-target="documents"><i data-lucide="file-check-2" class="nav-icon-inline"></i> <span data-i18n="nav_documents">Documents</span></a></li>
+        <li><a href="#dashboard" class="nav-link" data-target="dashboard"><i data-lucide="user" class="nav-icon-inline"></i> <span data-i18n="nav_profile">Profile</span></a></li>
+      </ul>
+
+      <!-- Right Nav Actions -->
+      <div class="nav-actions">
+        <button class="nav-notif-btn" id="navNotifBtn" title="Scheme Notifications & Alerts" aria-label="Notifications">
+          <i data-lucide="bell"></i>
+          <span class="notif-badge" id="notifBadgeCount">3</span>
+        </button>
+
+        <button class="lang-toggle-btn" id="langToggleBtn" title="Switch Language">
+          <i data-lucide="languages"></i>
+          <span>हिन्दी</span>
+        </button>
+
+        <button class="btn btn-secondary btn-sm" id="navLoginBtn">
+          <i data-lucide="user"></i>
+          <span data-i18n="nav_login">Login</span>
+        </button>
+
+        <button class="hamburger-btn" id="hamburgerBtn" aria-label="Toggle Mobile Navigation">
+          <i data-lucide="menu"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Mobile Drawer -->
+  <div class="mobile-nav-drawer" id="mobileNavDrawer">
+    <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-light); padding-bottom: 1rem;">
+      <span style="font-weight: 800; font-size: 1.15rem; color: var(--primary-900);">AGRI-SETU Menu</span>
+      <button class="lang-toggle-btn" id="mobileLangToggleBtn">
+        <i data-lucide="languages"></i>
+        <span>हिन्दी / EN</span>
+      </button>
+    </div>
+    <ul class="mobile-nav-links">
+      <li><a href="#home" class="mobile-nav-link" data-target="home"><span><i data-lucide="home"></i> <span data-i18n="nav_home">Home</span></span> <i data-lucide="chevron-right"></i></a></li>
+      <li><a href="#crop-doctor" class="mobile-nav-link" data-target="crop-doctor"><span><i data-lucide="sprout"></i> <span data-i18n="nav_crop_advisory">Crop Advisory</span></span> <i data-lucide="chevron-right"></i></a></li>
+      <li><a href="#weather" class="mobile-nav-link" data-target="weather"><span><i data-lucide="cloud-sun"></i> <span data-i18n="nav_weather">Weather</span></span> <i data-lucide="chevron-right"></i></a></li>
+      <li><a href="#crop-doctor" class="mobile-nav-link" data-target="crop-doctor"><span><i data-lucide="bug"></i> <span data-i18n="nav_pest_disease">Pest & Disease</span></span> <i data-lucide="chevron-right"></i></a></li>
+      <li><a href="#scheme-advisory" class="mobile-nav-link mobile-nav-highlight" data-target="scheme-advisory"><span><i data-lucide="landmark"></i> <span data-i18n="nav_scheme_advisory">Scheme Advisory</span></span> <i data-lucide="chevron-right"></i></a></li>
+      <li><a href="#mandi" class="mobile-nav-link" data-target="mandi"><span><i data-lucide="trending-up"></i> <span data-i18n="nav_market_prices">Market Prices</span></span> <i data-lucide="chevron-right"></i></a></li>
+      <li><a href="#documents" class="mobile-nav-link" data-target="documents"><span><i data-lucide="file-check-2"></i> <span data-i18n="nav_documents">Documents</span></span> <i data-lucide="chevron-right"></i></a></li>
+      <li><a href="#dashboard" class="mobile-nav-link" data-target="dashboard"><span><i data-lucide="user"></i> <span data-i18n="nav_profile">Profile</span></span> <i data-lucide="chevron-right"></i></a></li>
+      <li style="border-top: 1px dashed var(--border-light); margin-top: 0.5rem; padding-top: 0.5rem;">
+        <a href="#notifications" class="mobile-nav-link" id="mobileNotifTrigger"><span><i data-lucide="bell"></i> <span data-i18n="sa_notif_title">Scheme Alerts</span> <span class="badge-tag badge-demo" style="font-size: 0.72rem; padding: 2px 6px;">3 New</span></span> <i data-lucide="chevron-right"></i></a>
+      </li>
+    </ul>
+  </div>
+
+  <main>
+    <!-- =======================================================================
+         2. HERO SECTION
+         ======================================================================= -->
+    <section class="section hero-section page-section" id="section-home">
+      <div class="container">
+        <div class="hero-grid">
+          <div class="hero-content">
+            <div class="sih-badge">
+              <span class="sih-badge-flag"></span>
+              <span data-i18n="sih_badge">Smart India Hackathon 2026 Prototype</span>
+            </div>
+
+            <h1 class="hero-title">
+              <span data-i18n="hero_title_part1">Right Support.</span><br>
+              <span class="highlight" data-i18n="hero_title_part2">Right Information.</span><br>
+              <span data-i18n="hero_title_part3">Right When Farmers Need It.</span>
+            </h1>
+
+            <p class="hero-subtitle" data-i18n="hero_subtitle">
+              Agri-Setu connects farmers with crop assistance, government schemes, weather alerts, mandi information, crop insurance and agricultural experts — all in one place.
+            </p>
+
+            <div class="hero-cta-group">
+              <button class="btn btn-primary btn-lg" id="heroGetStartedBtn">
+                <i data-lucide="layout-dashboard"></i>
+                <span data-i18n="btn_get_started">Get Started</span>
+              </button>
+              <button class="btn btn-secondary btn-lg" id="heroTryDemoBtn">
+                <i data-lucide="play-circle"></i>
+                <span data-i18n="btn_try_demo">Try Demo Mode</span>
+              </button>
+            </div>
+
+            <div class="hero-trust-bar">
+              <div class="hero-trust-item">
+                <i data-lucide="award"></i>
+                <span data-i18n="trust_sih">SIH 2026 Initiative</span>
+              </div>
+              <div class="hero-trust-item">
+                <i data-lucide="shield-check"></i>
+                <span data-i18n="trust_gov_link">Direct Gov Portal Linkage</span>
+              </div>
+              <div class="hero-trust-item">
+                <i data-lucide="map-pin"></i>
+                <span data-i18n="trust_rec">REC Banda Innovation</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Hero Visual / Preview Card -->
+          <div class="hero-visual-card">
+            <div class="hero-card-header">
+              <div class="farmer-avatar-badge">
+                <div class="farmer-avatar">आ</div>
+                <div class="farmer-info">
+                  <h4 data-i18n="hero_card_farmer_name">Aditya (Wheat Farmer)</h4>
+                  <p data-i18n="hero_card_farmer_loc">Banda, Uttar Pradesh</p>
+                </div>
+              </div>
+              <div class="live-status-pill">
+                <span class="pulse-dot"></span>
+                <span data-i18n="hero_card_active">Context Active</span>
+              </div>
+            </div>
+
+            <div class="hero-quick-scan">
+              <div class="quick-scan-title">
+                <span data-i18n="hero_card_scan_title">Active Context Engine</span>
+                <span class="badge-tag badge-demo">Demo Data</span>
+              </div>
+              <div class="scan-progress-bar">
+                <div class="scan-progress-fill"></div>
+              </div>
+              <p style="font-size: 0.8rem; color: var(--text-muted);" data-i18n="hero_card_scan_status">
+                Rabi Season • Wheat (Sharbati) • 2.5 Acres
+              </p>
+            </div>
+
+            <div class="hero-quick-stats">
+              <div class="quick-stat-box">
+                <div class="val" data-i18n="stat_temp">28°C</div>
+                <div class="lbl" data-i18n="stat_temp_lbl">Banda Weather</div>
+              </div>
+              <div class="quick-stat-box">
+                <div class="val" data-i18n="stat_mandi">₹2,440</div>
+                <div class="lbl" data-i18n="stat_mandi_lbl">Wheat / Quintal</div>
+              </div>
+              <div class="quick-stat-box">
+                <div class="val" data-i18n="stat_pmfby">Active</div>
+                <div class="lbl" data-i18n="stat_pmfby_lbl">PMFBY Coverage</div>
+              </div>
+            </div>
+
+            <div class="hero-action-routing">
+              <div class="routing-icon">
+                <i data-lucide="git-branch" style="width: 18px; height: 18px;"></i>
+              </div>
+              <div class="routing-text">
+                <strong data-i18n="hero_routing_title">Unified Discovery Layer</strong>
+                <span data-i18n="hero_routing_desc">Routing directly to PM-KISAN, e-NAM & KVK Banda</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =======================================================================
+         3. PROBLEM SECTION
+         ======================================================================= -->
+    <section class="section section-alt page-section" id="section-problem">
+      <div class="container">
+        <div class="problem-grid">
+          <div class="problem-context">
+            <span class="badge-tag" style="background: #fee2e2; color: #991b1b; border-color: #fca5a5;" data-i18n="problem_badge">The Challenge</span>
+            <h2 class="section-title" data-i18n="problem_title">The Problem: Great Services, Fragmented Access</h2>
+            <p data-i18n="problem_p1">
+              Government agricultural services, subsidies, and advisory systems already exist. However, the farmer's real journey remains broken across dozens of disparate portals, physical offices, and middleman networks.
+            </p>
+            <p data-i18n="problem_p2">
+              Farmers need multiple disconnected platforms for income support, mandi prices, crop insurance, weather warnings, and pest diagnosis.
+            </p>
+
+            <div class="problem-quote" data-i18n="problem_quote">
+              “The problem is not only service availability. The problem is: Which service should I use for my problem, right now?”
+            </div>
+
+            <div class="problem-services-list">
+              <div class="problem-service-item">
+                <i data-lucide="layers"></i>
+                <span data-i18n="problem_srv_income">PM-KISAN (Income Support)</span>
+              </div>
+              <div class="problem-service-item">
+                <i data-lucide="shopping-bag"></i>
+                <span data-i18n="problem_srv_market">e-NAM (Market Access)</span>
+              </div>
+              <div class="problem-service-item">
+                <i data-lucide="headphones"></i>
+                <span data-i18n="problem_srv_advisory">KVK / Advisory (Helpline)</span>
+              </div>
+              <div class="problem-service-item">
+                <i data-lucide="shield"></i>
+                <span data-i18n="problem_srv_insurance">PMFBY (Crop Insurance)</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Problem Visual Flow Diagram -->
+          <div class="problem-diagram-card">
+            <div class="diagram-step">
+              <div class="diagram-icon"><i data-lucide="server"></i></div>
+              <div class="diagram-step-content">
+                <h4 data-i18n="prob_flow_1_title">Multiple Government Platforms</h4>
+                <p data-i18n="prob_flow_1_desc">PM-KISAN, PMFBY, e-NAM, IMD, KVKs exist separately</p>
+              </div>
+            </div>
+
+            <div class="diagram-arrow"><i data-lucide="arrow-down"></i></div>
+
+            <div class="diagram-step">
+              <div class="diagram-icon"><i data-lucide="user-x"></i></div>
+              <div class="diagram-step-content">
+                <h4 data-i18n="prob_flow_2_title">Farmer Encounters a Problem</h4>
+                <p data-i18n="prob_flow_2_desc">Crop yellowing, rain threat, or seeking crop subsidy</p>
+              </div>
+            </div>
+
+            <div class="diagram-arrow"><i data-lucide="arrow-down"></i></div>
+
+            <div class="diagram-step confusion">
+              <div class="diagram-icon"><i data-lucide="help-circle"></i></div>
+              <div class="diagram-step-content">
+                <h4 data-i18n="prob_flow_3_title">Confusion & Friction</h4>
+                <p data-i18n="prob_flow_3_desc">Where to apply? What are the deadlines? Am I eligible?</p>
+              </div>
+            </div>
+
+            <div class="diagram-arrow"><i data-lucide="arrow-down"></i></div>
+
+            <div class="diagram-step confusion">
+              <div class="diagram-icon"><i data-lucide="alert-octagon"></i></div>
+              <div class="diagram-step-content">
+                <h4 data-i18n="prob_flow_4_title">No Unified Discovery Layer</h4>
+                <p data-i18n="prob_flow_4_desc">Farmers miss out on critical deadlines & verified support</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =======================================================================
+         4. SOLUTION SECTION
+         ======================================================================= -->
+    <section class="section page-section" id="section-solution">
+      <div class="container">
+        <div class="solution-banner">
+          <div class="solution-grid">
+            <div class="solution-content">
+              <span class="badge-tag solution-badge" data-i18n="solution_badge">The Agri-Setu Solution</span>
+              <h2 data-i18n="solution_title">A Unified Discovery and Action Layer for Indian Agriculture</h2>
+              <p data-i18n="solution_desc">
+                Agri-Setu acts as a smart, context-aware bridge. It understands the farmer's location, crop, soil, and problem, then guides them straight toward the exact government scheme, mandi, or agricultural scientist.
+              </p>
+              <div class="solution-statement-box" data-i18n="solution_statement">
+                “Government platforms deliver services. Agri-Setu helps farmers discover and act on the right service.”
+              </div>
+            </div>
+
+            <!-- Solution Flow Diagram -->
+            <div class="solution-flow-card">
+              <div class="solution-flow-step">
+                <div class="solution-step-num">1</div>
+                <div class="solution-step-info">
+                  <strong data-i18n="sol_flow_step1">Farmer Input (Photo / Voice / Text)</strong>
+                  <span data-i18n="sol_flow_step1_sub">Zero friction, accessible in rural dialects</span>
+                </div>
+              </div>
+              <div class="solution-flow-step">
+                <div class="solution-step-num">2</div>
+                <div class="solution-step-info">
+                  <strong data-i18n="sol_flow_step2">Agri-Setu Context Engine</strong>
+                  <span data-i18n="sol_flow_step2_sub">Evaluates location, crop, weather & farmer profile</span>
+                </div>
+              </div>
+              <div class="solution-flow-step">
+                <div class="solution-step-num">3</div>
+                <div class="solution-step-info">
+                  <strong data-i18n="sol_flow_step3">AI Assistance & Diagnosis</strong>
+                  <span data-i18n="sol_flow_step3_sub">Pinpoints pest risk and actionable remedies</span>
+                </div>
+              </div>
+              <div class="solution-flow-step">
+                <div class="solution-step-num">4</div>
+                <div class="solution-step-info">
+                  <strong data-i18n="sol_flow_step4">Official Service Gateway</strong>
+                  <span data-i18n="sol_flow_step4_sub">Direct hand-off to PM-KISAN, PMFBY, e-NAM, or KVK</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =======================================================================
+         5. HOW IT WORKS (6-Step Interactive Flow)
+         ======================================================================= -->
+    <section class="section section-alt page-section" id="section-how-it-works">
+      <div class="container">
+        <div class="section-header">
+          <span class="badge-tag" data-i18n="hiw_badge">6-Step Unified Journey</span>
+          <h2 class="section-title" data-i18n="hiw_title">How Agri-Setu Works</h2>
+          <p class="section-subtitle" data-i18n="hiw_subtitle">From a farmer's initial problem to successful action and follow-up in six simple stages.</p>
+        </div>
+
+        <div class="how-it-works-flow">
+          <!-- Step 1 -->
+          <div class="step-card active">
+            <span class="step-number">01</span>
+            <div class="step-icon-wrap"><i data-lucide="mic"></i></div>
+            <h4 class="step-title" data-i18n="step1_title">Farmer Input</h4>
+            <p class="step-desc" data-i18n="step1_desc">Farmer submits a crop issue using voice in their language, text, or a mobile photo.</p>
+            <div class="step-tags">
+              <span class="step-tag-item" data-i18n="step1_tag1">Voice Input</span>
+              <span class="step-tag-item" data-i18n="step1_tag2">Crop Photo</span>
+              <span class="step-tag-item" data-i18n="step1_tag3">Local Dialect</span>
+            </div>
+          </div>
+
+          <!-- Step 2 -->
+          <div class="step-card">
+            <span class="step-number">02</span>
+            <div class="step-icon-wrap"><i data-lucide="map-pin"></i></div>
+            <h4 class="step-title" data-i18n="step2_title">Context Engine</h4>
+            <p class="step-desc" data-i18n="step2_desc">System automatically assesses location, crop type, season, and land holding profile.</p>
+            <div class="step-tags">
+              <span class="step-tag-item" data-i18n="step2_tag1">Banda, UP</span>
+              <span class="step-tag-item" data-i18n="step2_tag2">Rabi Season</span>
+              <span class="step-tag-item" data-i18n="step2_tag3">Small Farmer</span>
+            </div>
+          </div>
+
+          <!-- Step 3 -->
+          <div class="step-card">
+            <span class="step-number">03</span>
+            <div class="step-icon-wrap"><i data-lucide="sparkles"></i></div>
+            <h4 class="step-title" data-i18n="step3_title">AI Assistance</h4>
+            <p class="step-desc" data-i18n="step3_desc">Understands farmer intent, detects symptoms, and classifies potential pathogen risks.</p>
+            <div class="step-tags">
+              <span class="step-tag-item" data-i18n="step3_tag1">Intent AI</span>
+              <span class="step-tag-item" data-i18n="step3_tag2">Pathogen Scan</span>
+              <span class="step-tag-item" data-i18n="step3_tag3">Risk Flag</span>
+            </div>
+          </div>
+
+          <!-- Step 4 -->
+          <div class="step-card">
+            <span class="step-number">04</span>
+            <div class="step-icon-wrap"><i data-lucide="compass"></i></div>
+            <h4 class="step-title" data-i18n="step4_title">Personalized Guidance</h4>
+            <p class="step-desc" data-i18n="step4_desc">Synthesizes tailored crop care advisories, weather risk alerts, and eligible schemes.</p>
+            <div class="step-tags">
+              <span class="step-tag-item" data-i18n="step4_tag1">Targeted Advice</span>
+              <span class="step-tag-item" data-i18n="step4_tag2">Scheme Match</span>
+              <span class="step-tag-item" data-i18n="step4_tag3">Agro Alert</span>
+            </div>
+          </div>
+
+          <!-- Step 5 -->
+          <div class="step-card">
+            <span class="step-number">05</span>
+            <div class="step-icon-wrap"><i data-lucide="send"></i></div>
+            <h4 class="step-title" data-i18n="step5_title">Action & Official Link</h4>
+            <p class="step-desc" data-i18n="step5_desc">Directs farmer to the right official government portal, e-NAM mandi, or KVK expert.</p>
+            <div class="step-tags">
+              <span class="step-tag-item" data-i18n="step5_tag1">pmfby.gov.in</span>
+              <span class="step-tag-item" data-i18n="step5_tag2">e-NAM Mandi</span>
+              <span class="step-tag-item" data-i18n="step5_tag3">KVK Banda</span>
+            </div>
+          </div>
+
+          <!-- Step 6 -->
+          <div class="step-card">
+            <span class="step-number">06</span>
+            <div class="step-icon-wrap"><i data-lucide="bell"></i></div>
+            <h4 class="step-title" data-i18n="step6_title">Follow-up & Reminders</h4>
+            <p class="step-desc" data-i18n="step6_desc">Automates SMS reminders for scheme deadlines, spray schedules, and insurance claim tracking.</p>
+            <div class="step-tags">
+              <span class="step-tag-item" data-i18n="step6_tag1">72h Claim Clock</span>
+              <span class="step-tag-item" data-i18n="step6_tag2">SMS Alerts</span>
+              <span class="step-tag-item" data-i18n="step6_tag3">Status Updates</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =======================================================================
+         6. FEATURES GRID (8 Cards)
+         ======================================================================= -->
+    <section class="section page-section" id="section-features">
+      <div class="container">
+        <div class="section-header">
+          <span class="badge-tag" data-i18n="feat_badge">Core Capabilities</span>
+          <h2 class="section-title" data-i18n="feat_title">Built Specifically for Indian Farming Realities</h2>
+          <p class="section-subtitle" data-i18n="feat_subtitle">A unified suite of intelligent tools designed with high empathy for rural accessibility.</p>
+        </div>
+
+        <div class="features-grid">
+          <!-- Feature 1 -->
+          <div class="feature-card">
+            <div class="feature-icon-box feature-icon-green"><i data-lucide="scan"></i></div>
+            <h3 class="feature-title" data-i18n="feat1_title">AI Crop Assistance</h3>
+            <p class="feature-desc" data-i18n="feat1_desc">Upload a crop photo or describe your problem to receive instant AI-assisted crop guidance and risk analysis.</p>
+            <a href="#crop-doctor" class="feature-link" onclick="navigateTo('crop-doctor')"><span data-i18n="nav_crop_doctor">Crop Doctor</span> <i data-lucide="arrow-right" style="width: 16px;"></i></a>
+          </div>
+
+          <!-- Feature 2 -->
+          <div class="feature-card">
+            <div class="feature-icon-box feature-icon-blue"><i data-lucide="landmark"></i></div>
+            <h3 class="feature-title" data-i18n="feat2_title">Government Scheme Discovery</h3>
+            <p class="feature-desc" data-i18n="feat2_desc">Discover relevant central & state government schemes tailored to your district, crop, and land category.</p>
+            <a href="#schemes" class="feature-link" onclick="navigateTo('schemes')"><span data-i18n="nav_schemes">Find Schemes</span> <i data-lucide="arrow-right" style="width: 16px;"></i></a>
+          </div>
+
+          <!-- Feature 3 -->
+          <div class="feature-card">
+            <div class="feature-icon-box feature-icon-amber"><i data-lucide="trending-up"></i></div>
+            <h3 class="feature-title" data-i18n="feat3_title">Mandi Intelligence</h3>
+            <p class="feature-desc" data-i18n="feat3_desc">Find verified mandi prices, arrival trends, and nearest market comparison data to secure fair profits.</p>
+            <a href="#mandi" class="feature-link" onclick="navigateTo('mandi')"><span data-i18n="nav_mandi">Check Rates</span> <i data-lucide="arrow-right" style="width: 16px;"></i></a>
+          </div>
+
+          <!-- Feature 4 -->
+          <div class="feature-card">
+            <div class="feature-icon-box feature-icon-blue"><i data-lucide="cloud-lightning"></i></div>
+            <h3 class="feature-title" data-i18n="feat4_title">Weather & Risk Alerts</h3>
+            <p class="feature-desc" data-i18n="feat4_desc">Receive hyperlocal weather advisories, rainfall forecasts, and unseasonal risk warnings for your fields.</p>
+            <a href="#weather" class="feature-link" onclick="navigateTo('weather')"><span data-i18n="nav_weather">Weather Radar</span> <i data-lucide="arrow-right" style="width: 16px;"></i></a>
+          </div>
+
+          <!-- Feature 5 -->
+          <div class="feature-card">
+            <div class="feature-icon-box feature-icon-green"><i data-lucide="shield-alert"></i></div>
+            <h3 class="feature-title" data-i18n="feat5_title">Crop Insurance Guidance</h3>
+            <p class="feature-desc" data-i18n="feat5_desc">Navigate PMFBY guidelines, calculate farmer premiums, and learn how to lodge claims within the 72-hour window.</p>
+            <a href="#insurance" class="feature-link" onclick="navigateTo('insurance')"><span data-i18n="nav_insurance">PMFBY Portal</span> <i data-lucide="arrow-right" style="width: 16px;"></i></a>
+          </div>
+
+          <!-- Feature 6 -->
+          <div class="feature-card">
+            <div class="feature-icon-box feature-icon-purple"><i data-lucide="graduation-cap"></i></div>
+            <h3 class="feature-title" data-i18n="feat6_title">Expert & KVK Connect</h3>
+            <p class="feature-desc" data-i18n="feat6_desc">Escalate complex crop issues directly to Krishi Vigyan Kendra scientists with pre-filled case diagnostics.</p>
+            <a href="#expert" class="feature-link" onclick="navigateTo('expert')"><span data-i18n="nav_expert">Connect to KVK</span> <i data-lucide="arrow-right" style="width: 16px;"></i></a>
+          </div>
+
+          <!-- Feature 7 -->
+          <div class="feature-card">
+            <div class="feature-icon-box feature-icon-green"><i data-lucide="languages"></i></div>
+            <h3 class="feature-title" data-i18n="feat7_title">Multilingual Access</h3>
+            <p class="feature-desc" data-i18n="feat7_desc">Accessible in Hindi and English with intuitive audio cues, simplified vernacular text, and large touch points.</p>
+            <a href="javascript:void(0)" class="feature-link" onclick="setupLanguageToggle()"><span data-i18n="lang_toggle">Switch Language</span> <i data-lucide="arrow-right" style="width: 16px;"></i></a>
+          </div>
+
+          <!-- Feature 8 -->
+          <div class="feature-card">
+            <div class="feature-icon-box feature-icon-amber"><i data-lucide="bell-ring"></i></div>
+            <h3 class="feature-title" data-i18n="feat8_title">Smart Reminders</h3>
+            <p class="feature-desc" data-i18n="feat8_desc">Automated tracking for PM-KISAN e-KYC deadlines, PMFBY cut-offs, and seasonal top-dressing alerts.</p>
+            <a href="#dashboard" class="feature-link" onclick="navigateTo('dashboard')"><span data-i18n="nav_get_started">Dashboard Reminders</span> <i data-lucide="arrow-right" style="width: 16px;"></i></a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =======================================================================
+         7. CROP DOCTOR PAGE / SECTION
+         ======================================================================= -->
+    <section class="section section-alt page-section" id="section-crop-doctor">
+      <div class="container">
+        <div class="section-header">
+          <span class="badge-tag" data-i18n="cd_badge">AI Advisory Tool</span>
+          <h2 class="section-title" data-i18n="cd_title">AI Crop & Disease Assistance</h2>
+          <p class="section-subtitle" data-i18n="cd_subtitle">Instant advisory support for crop health, symptoms, and disease management.</p>
+        </div>
+
+        <div class="crop-doctor-card">
+          <div class="crop-doctor-grid">
+            <!-- Left Column: Input Controls -->
+            <div class="crop-doctor-inputs">
+              <div class="form-group">
+                <label class="form-label" for="cdCropSelect" data-i18n="cd_lbl_crop">Select Your Crop</label>
+                <select class="form-select" id="cdCropSelect">
+                  <option value="Wheat">Wheat (गेहूं) - Bundelkhand Rabi</option>
+                  <option value="Mustard">Mustard (सरसों)</option>
+                  <option value="Gram">Gram / Chickpea (चना)</option>
+                  <option value="Paddy">Paddy / Rice (धान)</option>
+                  <option value="Potato">Potato (आलू)</option>
+                  <option value="Tomato">Tomato (टमाटर)</option>
+                  <option value="Sugarcane">Sugarcane (गन्ना)</option>
+                </select>
+              </div>
+
+              <!-- Upload / Presets Area -->
+              <div class="form-group">
+                <label class="form-label" data-i18n="cd_lbl_photo">Upload Crop Photo or Choose Sample</label>
+                <div class="upload-dropzone" id="cdDropzone">
+                  <input type="file" id="cdFileInput" accept="image/*" style="display: none;">
+                  <img id="cdPreviewImg" src="https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=600&auto=format&fit=crop&q=60" alt="Wheat Rust Sample" style="max-height: 160px; border-radius: var(--radius-md); margin: 0 auto 0.75rem auto; object-fit: cover;">
+                  <div class="dropzone-content" id="cdDropPlaceholder" style="display: none;">
+                    <i data-lucide="camera" class="dropzone-icon"></i>
+                    <span style="font-weight: 700; color: var(--primary-900);">Tap to Take Photo or Drag & Drop</span>
+                    <span style="font-size: 0.8rem; color: var(--text-muted);">Supports JPG, PNG up to 10MB</span>
+                  </div>
+                </div>
+
+                <div class="sample-presets-title" data-i18n="cd_sample_title">Or Click Sample Wheat Cases (Banda, UP):</div>
+                <div class="sample-presets-grid">
+                  <button type="button" class="sample-preset-chip selected" data-sample="wheat_yellow_rust" data-i18n="sample_yellow_rust">Yellow Rust</button>
+                  <button type="button" class="sample-preset-chip" data-sample="wheat_leaf_blight" data-i18n="sample_leaf_blight">Leaf Blight</button>
+                  <button type="button" class="sample-preset-chip" data-sample="mustard_aphid" data-i18n="sample_aphid">Mustard Aphid</button>
+                  <button type="button" class="sample-preset-chip" data-sample="healthy_wheat" data-i18n="sample_healthy">Healthy Wheat</button>
+                </div>
+              </div>
+
+              <!-- Problem Description & Voice Input -->
+              <div class="form-group">
+                <label class="form-label" for="cdProblemDesc" data-i18n="cd_lbl_desc">Describe Crop Problem (or use Voice)</label>
+                <div class="voice-input-row">
+                  <input type="text" class="form-input" id="cdProblemDesc" value="पत्तियों पर पीले रंग की धारियां दिख रही हैं और पाउडर जैसा झड़ रहा है।" placeholder="Describe symptoms or tap mic...">
+                  <button type="button" class="voice-record-btn" id="cdVoiceBtn" title="Speak to Describe">
+                    <i data-lucide="mic"></i>
+                    <span data-i18n="cd_voice_btn">Voice</span>
+                  </button>
+                </div>
+              </div>
+
+              <button type="button" class="btn btn-primary btn-lg" id="cdAnalyzeBtn" style="width: 100%;">
+                <i data-lucide="scan-eye"></i>
+                <span data-i18n="cd_analyze_btn">Analyze Crop Health</span>
+              </button>
+            </div>
+
+            <!-- Right Column: Results & Advisory -->
+            <div class="crop-doctor-results" style="position: relative;">
+              <!-- Scanning Animation Overlay -->
+              <div class="ai-scanning-overlay" id="cdScanningOverlay">
+                <div class="radar-spinner"></div>
+                <h4 style="font-size: 1.25rem; font-weight: 800; color: var(--primary-900); margin-bottom: 0.5rem;" data-i18n="cd_analyzing">
+                  Scanning Pathogen Signatures...
+                </h4>
+                <p id="cdScanStatusText" style="color: var(--text-muted); font-size: 0.9rem;">
+                  1/3: Digitizing leaf tissue symptoms...
+                </p>
+              </div>
+
+              <!-- Result Screen Box -->
+              <div class="diagnosis-result-box" id="cdResultBox">
+                <div class="diagnosis-header">
+                  <div>
+                    <span class="issue-badge" id="cdStatusBadge">High Risk</span>
+                    <h3 class="diagnosis-issue-name" id="cdIssueName">Stripe / Yellow Rust (पीला रतुआ)</h3>
+                    <p style="font-size: 0.8rem; color: var(--text-muted); font-style: italic;">Puccinia striiformis f. sp. tritici</p>
+                  </div>
+                  <div class="confidence-bar-wrap">
+                    <span data-i18n="diag_confidence">Confidence:</span>
+                    <span id="cdConfidenceVal" style="color: var(--primary-700);">94.2%</span>
+                    <div class="confidence-bar">
+                      <div class="confidence-fill" id="cdConfidenceBar" style="width: 94%;"></div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="diagnosis-details-grid">
+                  <div class="diagnosis-detail-card">
+                    <h5 data-i18n="diag_symptoms">Observed Symptoms</h5>
+                    <ul id="cdSymptomsList">
+                      <li>Yellow to orange-yellow powdery pustules arranged in linear stripes on leaf surfaces</li>
+                      <li>Chlorosis and drying of infected leaf tissues spreading rapidly under high humidity</li>
+                    </ul>
+                  </div>
+
+                  <div class="diagnosis-detail-card">
+                    <h5 data-i18n="diag_guidance">Crop-Care Guidance</h5>
+                    <ul id="cdGuidanceList">
+                      <li>Spray Propiconazole 25% EC @ 1ml/L (200 ml/acre) immediately</li>
+                      <li>Avoid excess nitrogen top-dressing which fosters fungal proliferation</li>
+                    </ul>
+                  </div>
+                </div>
+
+                <div class="weather-context-box" id="cdWeatherContext">
+                  <strong>Banda Weather Context:</strong> Overcast skies with night temperatures between 10-15°C and relative humidity >70% in Banda provide ideal conditions for rust sporulation.
+                </div>
+
+                <div style="background: var(--bg-subtle); padding: 0.85rem 1.25rem; border-radius: var(--radius-md); font-size: 0.88rem;">
+                  <strong data-i18n="diag_next_action">Recommended Next Action:</strong>
+                  <span id="cdActionText">Intimate local Agriculture Department officer and check PMFBY localized pest damage guidelines.</span>
+                </div>
+
+                <div class="disclaimer-box">
+                  <i data-lucide="alert-triangle" class="disclaimer-icon"></i>
+                  <span data-i18n="cd_disclaimer">
+                    AI assistance is advisory only and is not a guaranteed diagnosis. For serious or uncertain cases, consult an agricultural expert or your local KVK.
+                  </span>
+                </div>
+
+                <button type="button" class="btn btn-secondary btn-sm" id="cdConnectExpertBtn" style="align-self: flex-start;">
+                  <i data-lucide="user-check"></i>
+                  <span data-i18n="cd_btn_expert">Connect with KVK Expert</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =======================================================================
+         8. GOVERNMENT SCHEMES PAGE / EXPLORER
+         ======================================================================= -->
+        <!-- =======================================================================
+         8. FARMER SCHEME ADVISORY SECTION (COMPREHENSIVE DASHBOARD)
+         ======================================================================= -->
+    <section class="section page-section" id="section-scheme-advisory">
+      <div class="container">
+        <!-- Section Header -->
+        <div class="section-header sa-header">
+          <div class="sa-badge-row">
+            <span class="badge-tag badge-official">
+              <i data-lucide="award"></i>
+              <span data-i18n="sa_badge">Government Agriculture Schemes & Benefits</span>
+            </span>
+            <span class="badge-tag badge-demo">
+              <i data-lucide="sparkles"></i>
+              <span>AI Recommendation Active</span>
+            </span>
+          </div>
+          <h2 class="section-title" data-i18n="sa_title">Farmer Scheme Advisory</h2>
+          <p class="section-subtitle" data-i18n="sa_subtitle">
+            Discover, verify eligibility, and directly apply for central and state agricultural schemes relevant to your farm.
+          </p>
+        </div>
+
+        <!-- Trust & Official Verification Banner -->
+        <div class="sa-trust-card">
+          <div class="sa-trust-left">
+            <div class="sa-trust-icon-box">
+              <i data-lucide="shield-check"></i>
+            </div>
+            <div>
+              <h4 class="sa-trust-heading">
+                <span data-i18n="sa_verified_trust">Verified Source: Official Government Portal</span>
+                <span class="badge-tag" style="background: #166534; color: #ffffff; font-size: 0.72rem; padding: 2px 6px;">100% Official</span>
+              </h4>
+              <p class="sa-trust-sub" data-i18n="sa_trust_sub">
+                Direct linkages with pmkisan.gov.in, pmfby.gov.in, upagriculture.com & myscheme.gov.in
+              </p>
+            </div>
+          </div>
+          <div class="sa-trust-right">
+            <div class="sa-disclaimer-pill" title="Official Disclaimer">
+              <i data-lucide="alert-circle" style="color: #b45309; width: 16px; height: 16px; flex-shrink: 0;"></i>
+              <span data-i18n="sa_outdated_warning">Information may have changed – verify on the official portal.</span>
+            </div>
+            <button type="button" class="btn btn-secondary btn-sm" id="saOpenNotifBtn" title="View Scheme Alerts">
+              <i data-lucide="bell"></i>
+              <span data-i18n="sa_notif_title">Notifications</span>
+              <span class="badge-pill notif-count-pill" id="saNotifCountPill">3</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Farmer Personalization Active Context Bar -->
+        <div class="sa-profile-bar" id="saFarmerProfileBar">
+          <div class="sa-profile-info">
+            <div class="sa-farmer-avatar" id="saProfileAvatar">आ</div>
+            <div class="sa-profile-details">
+              <div class="sa-profile-name-row">
+                <h4 id="saProfileFarmerName">Aditya (Bundelkhand Farmer)</h4>
+                <span class="badge-tag badge-official" id="saProfileBadge">Profile Active</span>
+              </div>
+              <div class="sa-profile-tags" id="saProfileTags">
+                <span class="sa-tag" id="saTagLoc"><i data-lucide="map-pin"></i> Banda, Uttar Pradesh</span>
+                <span class="sa-tag" id="saTagCrop"><i data-lucide="sprout"></i> Wheat, Mustard</span>
+                <span class="sa-tag" id="saTagLand"><i data-lucide="maximize-2"></i> 2.5 Acres (Small Farmer)</span>
+                <span class="sa-tag" id="saTagIrrig"><i data-lucide="droplets"></i> Borewell Irrigated</span>
+                <span class="sa-tag" id="saTagActivity"><i data-lucide="tractor"></i> Crop Cultivation</span>
+              </div>
+            </div>
+          </div>
+          <div class="sa-profile-actions">
+            <button type="button" class="btn btn-primary btn-sm" id="saEditProfileBtn">
+              <i data-lucide="sliders-horizontal"></i>
+              <span data-i18n="sa_profile_edit_btn">Edit Profile / Personalize</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- 10 Category Carousel / Tabs -->
+        <div class="sa-categories-nav-wrap">
+          <div class="sa-categories-nav" id="saCategoriesNav">
+            <!-- Dynamically populated from AGRI_DATA.schemeCategories -->
+          </div>
+        </div>
+
+        <!-- Interactive Search & Multi-Filter Toolbar -->
+        <div class="sa-filter-panel">
+          <div class="sa-search-row">
+            <div class="sa-search-input-wrap">
+              <i data-lucide="search" class="sa-search-icon"></i>
+              <input type="text" class="form-input sa-search-input" id="saSearchInput" placeholder="Search by scheme name, benefit (e.g. ₹6000, subsidy, solar), or department..." data-i18n-placeholder="sa_search_placeholder">
+              <button type="button" class="sa-search-clear-btn" id="saSearchClearBtn" title="Clear Search" style="display: none;">
+                <i data-lucide="x"></i>
+              </button>
+            </div>
+            <button type="button" class="voice-record-btn" id="saVoiceSearchBtn" title="Voice Search">
+              <i data-lucide="mic"></i>
+              <span data-i18n="cd_voice_btn">Voice</span>
+            </button>
+          </div>
+
+          <div class="sa-filter-controls">
+            <!-- State Filter -->
+            <div class="sa-filter-item">
+              <label class="form-label sa-filter-label" data-i18n="sa_filter_state">State</label>
+              <select class="form-select" id="saStateFilter">
+                <option value="all">All States (Pan-India)</option>
+                <option value="Uttar Pradesh" selected>Uttar Pradesh</option>
+                <option value="Madhya Pradesh">Madhya Pradesh</option>
+                <option value="Punjab">Punjab</option>
+                <option value="Rajasthan">Rajasthan</option>
+                <option value="Bihar">Bihar</option>
+                <option value="Maharashtra">Maharashtra</option>
+              </select>
+            </div>
+
+            <!-- Crop Filter -->
+            <div class="sa-filter-item">
+              <label class="form-label sa-filter-label" data-i18n="sa_filter_crop">Crop</label>
+              <select class="form-select" id="saCropFilter">
+                <option value="all">All Crops</option>
+                <option value="wheat">Wheat (गेहूं)</option>
+                <option value="mustard">Mustard (सरसों)</option>
+                <option value="paddy">Paddy / Rice (धान)</option>
+                <option value="gram">Gram / Pulses (चना/दलहन)</option>
+                <option value="sugarcane">Sugarcane (गन्ना)</option>
+                <option value="cotton">Cotton (कपास)</option>
+                <option value="horticulture">Horticulture / Fruits / Veg</option>
+              </select>
+            </div>
+
+            <!-- Farmer Category Filter -->
+            <div class="sa-filter-item">
+              <label class="form-label sa-filter-label" data-i18n="sa_filter_category">Farmer Category</label>
+              <select class="form-select" id="saCategoryFilter">
+                <option value="all">All Categories</option>
+                <option value="small">Small & Marginal (&lt;2 Ha)</option>
+                <option value="medium">Medium Farmer</option>
+                <option value="large">Large Farmer</option>
+                <option value="tenant">Tenant / Sharecropper</option>
+                <option value="women">Women Farmer</option>
+                <option value="sc_st">SC / ST Farmer</option>
+              </select>
+            </div>
+
+            <!-- Scheme Type Filter -->
+            <div class="sa-filter-item">
+              <label class="form-label sa-filter-label" data-i18n="sa_filter_type">Scheme Type</label>
+              <select class="form-select" id="saTypeFilter">
+                <option value="all">All Types</option>
+                <option value="central">Central Government</option>
+                <option value="state">State Government</option>
+                <option value="subsidies">Subsidies & Grants</option>
+                <option value="machinery">Machinery Subsidies</option>
+                <option value="inputs">Seeds & Fertilizers</option>
+                <option value="irrigation">Irrigation & Solar</option>
+                <option value="insurance">Crop Insurance</option>
+                <option value="pension">Pension / Income Support</option>
+                <option value="credit">Loans & KCC</option>
+              </select>
+            </div>
+
+            <!-- Sort By -->
+            <div class="sa-filter-item">
+              <label class="form-label sa-filter-label" data-i18n="sa_filter_sort">Sort By</label>
+              <select class="form-select" id="saSortSelect">
+                <option value="relevance" selected>Most Relevant (AI Match)</option>
+                <option value="updated">Recently Updated</option>
+                <option value="benefit">Financial Assistance (Highest)</option>
+                <option value="status">Application Open</option>
+              </select>
+            </div>
+
+            <!-- Recently Updated Toggle -->
+            <div class="sa-filter-toggle-item">
+              <label class="sa-checkbox-label">
+                <input type="checkbox" id="saRecentOnlyToggle">
+                <span data-i18n="sa_filter_recent_toggle">Recently Updated Only</span>
+              </label>
+            </div>
+
+            <!-- Reset Button -->
+            <div class="sa-filter-reset-wrap">
+              <button type="button" class="btn btn-secondary" id="saResetBtn" title="Reset Filters">
+                <i data-lucide="rotate-ccw"></i>
+                <span data-i18n="sa_btn_reset">Reset Filters</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- AI Personalized Recommendation Section -->
+        <div class="sa-recommendation-showcase" id="saRecommendedSection">
+          <div class="sa-subhead-row">
+            <div class="sa-subhead-left">
+              <i data-lucide="sparkles" class="sa-sparkle-icon"></i>
+              <div>
+                <h3 class="sa-subhead-title" data-i18n="sa_profile_matched_banner">
+                  Based on your profile, these schemes may be relevant to you:
+                </h3>
+                <p class="sa-subhead-desc">
+                  Tailored matches based on your state, district, crop type, irrigation, and landholding size.
+                </p>
+              </div>
+            </div>
+            <span class="badge-tag badge-official" id="saRecMatchCountBadge">Top Matches</span>
+          </div>
+
+          <div class="sa-recommendations-grid" id="saRecommendedGrid">
+            <!-- Dynamically populated by app.js with explainability cards -->
+          </div>
+        </div>
+
+        <!-- Main Schemes Grid -->
+        <div class="sa-results-header">
+          <div>
+            <h3 class="sa-results-title" id="saResultsTitle">All Government Schemes</h3>
+            <span class="sa-results-count" id="saResultsCount">Showing 16 schemes</span>
+          </div>
+          <div class="sa-results-quick-links">
+            <button type="button" class="btn btn-secondary btn-sm" onclick="navigateTo('documents')">
+              <i data-lucide="file-check-2"></i>
+              <span data-i18n="nav_documents">Check Documents Checklist</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="schemes-grid sa-schemes-grid" id="schemesContainer">
+          <!-- Dynamically populated by renderSchemeAdvisory() in app.js -->
+        </div>
+      </div>
+    </section>
+
+    <!-- Backward-compatible anchor target for existing links -->
+    <div id="section-schemes" style="display:none;"></div>
+
+    <!-- =======================================================================
+         8B. FARMER DOCUMENT LOCKER & CHECKLIST SECTION
+         ======================================================================= -->
+    <section class="section section-alt page-section" id="section-documents">
+      <div class="container">
+        <div class="section-header">
+          <span class="badge-tag badge-official">
+            <i data-lucide="file-check-2"></i>
+            <span data-i18n="sa_badge">Official Scheme Application Readiness</span>
+          </span>
+          <h2 class="section-title" data-i18n="sa_docs_title">Farmer Document Locker</h2>
+          <p class="section-subtitle" data-i18n="sa_docs_sub">
+            Keep your critical documents ready for one-click scheme applications and DBT verification.
+          </p>
+        </div>
+
+        <!-- Document Readiness Summary Banner -->
+        <div class="docs-readiness-banner">
+          <div class="docs-readiness-left">
+            <div class="docs-readiness-icon"><i data-lucide="folder-check"></i></div>
+            <div>
+              <h4 id="docsReadinessTitle">Your Scheme Readiness: 4 of 6 Documents Ready</h4>
+              <p id="docsReadinessDesc">Ready for: PM-KISAN, PMFBY Insurance, Kisan Credit Card (KCC), and Seed Subsidies.</p>
+            </div>
+          </div>
+          <div class="docs-progress-wrap">
+            <div class="docs-progress-text"><span id="docsPercentText">67% Ready</span></div>
+            <div class="docs-progress-track">
+              <div class="docs-progress-bar" id="docsProgressBar" style="width: 67%;"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Documents Checklist Grid -->
+        <div class="docs-cards-grid" id="docsCardsGrid">
+          <!-- Dynamically populated from AGRI_DATA.documentLockerMaster -->
+        </div>
+
+        <div class="disclaimer-box" style="margin-top: 2rem;">
+          <i data-lucide="info" class="disclaimer-icon"></i>
+          <span>
+            Document verification is securely executed on official government portals (UIDAI, Revenue Department, NPCI). Agri-Setu does not store sensitive credentials.
+          </span>
+        </div>
+      </div>
+    </section>
+
+    <!-- =======================================================================
+         9. MANDI INTELLIGENCE PAGE
+         ======================================================================= -->
+    <section class="section section-alt page-section" id="section-mandi">
+      <div class="container">
+        <div class="section-header">
+          <span class="badge-tag" data-i18n="mandi_badge">Market Price Intelligence</span>
+          <h2 class="section-title" data-i18n="mandi_title">Mandi Intelligence & Daily Rates</h2>
+          <p class="section-subtitle" data-i18n="mandi_subtitle">Compare modal prices across nearby APMC mandis and explore e-NAM market access.</p>
+        </div>
+
+        <!-- Mandi Top Stats -->
+        <div class="mandi-hero-stats">
+          <div class="mandi-stat-card">
+            <div class="mandi-stat-icon"><i data-lucide="coins"></i></div>
+            <div class="mandi-stat-info">
+              <h4>₹2,425</h4>
+              <p data-i18n="mandi_stat_avg">Banda Avg. Wheat</p>
+            </div>
+          </div>
+          <div class="mandi-stat-card">
+            <div class="mandi-stat-icon"><i data-lucide="scale"></i></div>
+            <div class="mandi-stat-info">
+              <h4>₹2,425</h4>
+              <p data-i18n="mandi_stat_msp">Govt MSP (Wheat)</p>
+            </div>
+          </div>
+          <div class="mandi-stat-card">
+            <div class="mandi-stat-icon"><i data-lucide="trending-up"></i></div>
+            <div class="mandi-stat-info">
+              <h4>₹2,440</h4>
+              <p data-i18n="mandi_stat_atarra">Atarra Mandi Rate</p>
+            </div>
+          </div>
+          <div class="mandi-stat-card">
+            <div class="mandi-stat-icon"><i data-lucide="bar-chart-2"></i></div>
+            <div class="mandi-stat-info">
+              <h4>₹5,850</h4>
+              <p data-i18n="mandi_stat_mahoba">Mahoba Gram Rate</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Mandi Table Card -->
+        <div class="mandi-table-card">
+          <div class="mandi-table-header">
+            <div style="display: flex; align-items: center; gap: 0.75rem;">
+              <span class="badge-tag badge-demo">Demo Data</span>
+              <span style="font-weight: 700; font-size: 0.95rem; color: var(--text-main);">APMC Markets (Bundelkhand & UP)</span>
+            </div>
+
+            <div style="display: flex; gap: 0.5rem; align-items: center;">
+              <select class="form-select" id="mandiCropFilter" style="padding: 0.4rem 0.8rem; font-size: 0.85rem;">
+                <option value="all">All Commodities</option>
+                <option value="wheat">Wheat (गेहूं)</option>
+                <option value="mustard">Mustard (सरसों)</option>
+                <option value="gram">Gram (चना)</option>
+                <option value="paddy">Paddy (धान)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="mandi-table-wrapper">
+            <table class="mandi-table">
+              <thead>
+                <tr>
+                  <th data-i18n="mandi_col_crop">Commodity</th>
+                  <th data-i18n="mandi_col_mandi">Mandi / APMC</th>
+                  <th data-i18n="mandi_col_min">Min Price</th>
+                  <th data-i18n="mandi_col_modal">Modal Price</th>
+                  <th data-i18n="mandi_col_max">Max Price</th>
+                  <th data-i18n="mandi_col_arrivals">Arrivals</th>
+                  <th data-i18n="mandi_col_trend">Trend</th>
+                  <th data-i18n="mandi_col_action">e-NAM Portal</th>
+                </tr>
+              </thead>
+              <tbody id="mandiTableBody">
+                <!-- Dynamic Mandi Rows Populated by JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =======================================================================
+         10. WEATHER & RISK ALERTS PAGE
+         ======================================================================= -->
+    <section class="section page-section" id="section-weather">
+      <div class="container">
+        <div class="section-header">
+          <span class="badge-tag" data-i18n="wx_badge">Agro-Meteorology</span>
+          <h2 class="section-title" data-i18n="wx_title">Weather & Hyperlocal Risk Alerts</h2>
+          <p class="section-subtitle" data-i18n="wx_subtitle">Weather insights correlated directly with crop vulnerability in your district.</p>
+        </div>
+
+        <!-- Agro Risk Alert Banner -->
+        <div class="agro-risk-alert" id="wxAgroAlertBox">
+          <div class="risk-alert-icon">
+            <i data-lucide="alert-triangle"></i>
+          </div>
+          <div class="risk-alert-content">
+            <span class="badge-tag badge-demo" style="margin-bottom: 0.35rem;">Demo Forecast</span>
+            <h4 id="wxAlertTitle" data-i18n="wx_alert_title">Bundelkhand Rain Risk Alert</h4>
+            <p id="wxAlertDesc" data-i18n="wx_alert_desc">
+              Unseasonal rain and overcast conditions expected in Banda & Chitrakoot division over the next 48 hours. Risk of rust sporulation in wheat fields. Hold pesticide spraying until weather clears.
+            </p>
+          </div>
+        </div>
+
+        <!-- Weather Telemetry Card -->
+        <div class="weather-hero-card">
+          <div class="weather-header-row">
+            <div class="weather-location-title">
+              <i data-lucide="map-pin"></i>
+              <span id="wxLocationTitle" data-i18n="wx_loc_banda">Banda District, Uttar Pradesh</span>
+            </div>
+            <span class="badge-tag badge-demo" style="background: rgba(255,255,255,0.2); color: #ffffff; border: 1px solid rgba(255,255,255,0.3);">
+              Live Weather Telemetry
+            </span>
+          </div>
+
+          <div class="weather-main-grid">
+            <div>
+              <div class="weather-temp-large" id="wxTempLarge">28°C</div>
+              <div class="weather-condition-text" id="wxConditionText">Partly Cloudy • Humid</div>
+              <p style="font-size: 0.85rem; color: #bae6fd; margin-top: 0.5rem;">
+                Night minimum: 16°C • Bundelkhand Agro-Climatic Zone VII
+              </p>
+            </div>
+
+            <div class="weather-metrics-grid">
+              <div class="weather-metric-item">
+                <div class="val" id="wxHumidityVal">68%</div>
+                <div class="lbl" data-i18n="wx_metric_humidity">Humidity</div>
+              </div>
+              <div class="weather-metric-item">
+                <div class="val" id="wxRainVal">45%</div>
+                <div class="lbl" data-i18n="wx_metric_rain_prob">Rain Probability</div>
+              </div>
+              <div class="weather-metric-item">
+                <div class="val" id="wxWindVal">14 km/h</div>
+                <div class="lbl" data-i18n="wx_metric_wind">Wind Speed</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 5-Day Forecast Grid -->
+        <h4 style="font-size: 1.15rem; font-weight: 800; margin-bottom: 1rem; color: var(--text-main);">
+          5-Day Hyperlocal Agro-Advisory Forecast
+        </h4>
+        <div class="forecast-days-grid" id="wxForecastDaysGrid">
+          <!-- Populated by JavaScript -->
+        </div>
+      </div>
+    </section>
+
+    <!-- =======================================================================
+         11. CROP INSURANCE (PMFBY) PAGE
+         ======================================================================= -->
+    <section class="section section-alt page-section" id="section-insurance">
+      <div class="container">
+        <div class="section-header">
+          <span class="badge-tag" data-i18n="ins_badge">Pradhan Mantri Fasal Bima Yojana</span>
+          <h2 class="section-title" data-i18n="ins_title">Crop Insurance & PMFBY Support</h2>
+          <p class="section-subtitle" data-i18n="ins_subtitle">Transparent claim guidance, insurance calendars, and premium calculators.</p>
+        </div>
+
+        <div class="insurance-grid">
+          <!-- Left: Information & 72-Hour Claim Window -->
+          <div>
+            <div style="background: #ffffff; border: 1px solid var(--border-light); border-radius: var(--radius-xl); padding: 2rem; box-shadow: var(--shadow-sm); margin-bottom: 2rem;">
+              <h3 style="font-size: 1.35rem; font-weight: 800; color: var(--text-main); margin-bottom: 0.75rem;" data-i18n="ins_what_title">
+                What is PMFBY Coverage?
+              </h3>
+              <p style="color: var(--text-muted); font-size: 0.92rem; line-height: 1.6; margin-bottom: 1.25rem;" data-i18n="ins_what_desc">
+                Comprehensive crop insurance scheme from sowing to post-harvest against unavoidable non-preventable natural risks (hailstorms, floods, unseasonal rain, pests).
+              </p>
+
+              <h4 style="font-size: 1.1rem; font-weight: 800; color: #991b1b; display: flex; align-items: center; gap: 0.5rem;" data-i18n="ins_timeline_title">
+                <i data-lucide="clock"></i> Crucial 72-Hour Claim Window
+              </h4>
+
+              <div class="claim-timeline">
+                <div class="claim-step">
+                  <h5 data-i18n="ins_t1_title">1. Calamity Occurs</h5>
+                  <p data-i18n="ins_t1_desc">Hailstorm, inundation, unseasonal rainfall, or localized landslide affects your standing crop.</p>
+                </div>
+                <div class="claim-step">
+                  <h5 data-i18n="ins_t2_title">2. Intimate within 72 Hours</h5>
+                  <p data-i18n="ins_t2_desc">Inform Agriculture Insurance Company / Bank / CSC / Crop Insurance App within 72 hours of damage.</p>
+                </div>
+                <div class="claim-step">
+                  <h5 data-i18n="ins_t3_title">3. Survey & Assessment</h5>
+                  <p data-i18n="ins_t3_desc">Joint committee conducts GPS-tagged loss assessment within 10 days.</p>
+                </div>
+              </div>
+
+              <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+                <a href="https://pmfby.gov.in/" target="_blank" rel="noopener" class="btn btn-primary btn-sm">
+                  <i data-lucide="external-link"></i> Official PMFBY Portal
+                </a>
+                <a href="tel:14447" class="btn btn-secondary btn-sm">
+                  <i data-lucide="phone"></i> PMFBY Helpline: 14447
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right: Interactive Farmer Premium Calculator -->
+          <div class="calculator-card">
+            <h3 style="font-size: 1.35rem; font-weight: 800; color: var(--text-main); margin-bottom: 0.5rem;" data-i18n="ins_calc_title">
+              Farmer Premium Calculator
+            </h3>
+            <p style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 1.5rem;">
+              Check your exact premium share versus state and central government subsidies.
+            </p>
+
+            <div class="form-group">
+              <label class="form-label" data-i18n="ins_calc_crop">Crop Season & Type</label>
+              <select class="form-select" id="insSeasonSelect">
+                <option value="rabi">Rabi Food / Oilseed Crop (Max 1.5% Premium)</option>
+                <option value="kharif">Kharif Food / Oilseed Crop (Max 2.0% Premium)</option>
+                <option value="commercial">Commercial / Horticultural Crop (Max 5.0% Premium)</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" data-i18n="ins_calc_area">Insured Area (in Hectares)</label>
+              <input type="number" class="form-input" id="insAreaInput" value="1.0" step="0.1" min="0.1">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" data-i18n="ins_calc_sum">Sum Insured (₹ per Hectare)</label>
+              <input type="number" class="form-input" id="insSumInsuredInput" value="72000" step="1000">
+            </div>
+
+            <button type="button" class="btn btn-primary" id="insCalcBtn" style="width: 100%;">
+              <i data-lucide="calculator"></i>
+              <span data-i18n="ins_calc_btn">Calculate Premium</span>
+            </button>
+
+            <!-- Result Breakdown -->
+            <div class="calculator-result-box">
+              <div class="calculator-breakdown-row">
+                <span class="meta-label">Total Sum Insured:</span>
+                <strong id="insResTotalSum">₹72,000</strong>
+              </div>
+              <div class="calculator-breakdown-row highlight">
+                <span data-i18n="ins_calc_farmer_share">Farmer Share (Max 1.5% Rabi):</span>
+                <span id="insResFarmerShare" style="color: #166534;">₹1,080</span>
+              </div>
+              <div class="calculator-breakdown-row" style="margin-top: 0.5rem;">
+                <span class="meta-label" data-i18n="ins_calc_gov_share">Govt Subsidy (Central + State):</span>
+                <strong id="insResGovSubsidy" style="color: #0369a1;">₹7,560</strong>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =======================================================================
+         12. EXPERT CONNECT PAGE
+         ======================================================================= -->
+    <section class="section page-section" id="section-expert">
+      <div class="container">
+        <div class="section-header">
+          <span class="badge-tag" data-i18n="exp_badge">Scientist Consultation</span>
+          <h2 class="section-title" data-i18n="exp_title">Connect with Agricultural Experts & KVK</h2>
+          <p class="section-subtitle" data-i18n="exp_subtitle">Direct escalation of unresolved crop problems to certified Krishi Vigyan Kendra scientists.</p>
+        </div>
+
+        <div class="expert-directory-grid" id="expertDirectoryGrid">
+          <!-- Populated by JavaScript -->
+        </div>
+
+        <div style="text-align: center; margin-top: 2.5rem;">
+          <button class="btn btn-primary btn-lg" id="expSendQueryBtn">
+            <i data-lucide="send"></i>
+            <span data-i18n="exp_btn_send">Send Problem Summary to KVK Banda</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- =======================================================================
+         13. FARMER DASHBOARD (Viewable via Get Started / Login)
+         ======================================================================= -->
+    <section class="section section-alt page-section" id="section-dashboard">
+      <div class="container">
+        <div class="dashboard-welcome-banner">
+          <div class="dashboard-farmer-info">
+            <h2 id="dashFarmerGreeting" data-i18n="dash_welcome">Namaste, Farmer Aditya 👋</h2>
+            <p id="dashFarmerSub">Tindwari Village, Banda, Uttar Pradesh • Primary Crop: Wheat (2.5 Acres)</p>
+          </div>
+          <button class="btn btn-secondary btn-sm" id="dashLogoutBtn" style="background: rgba(255,255,255,0.15); color: #ffffff; border-color: rgba(255,255,255,0.3);">
+            <i data-lucide="log-out"></i>
+            <span data-i18n="dash_btn_logout">Logout</span>
+          </button>
+        </div>
+
+        <div class="dashboard-grid">
+          <!-- Weather Widget -->
+          <div class="dash-card">
+            <div class="dash-card-header">
+              <div class="dash-card-title"><i data-lucide="cloud-sun"></i> <span data-i18n="dash_card_wx">Today's Weather</span></div>
+              <span class="badge-tag badge-demo">Demo</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+              <span style="font-size: 2rem; font-weight: 900; color: var(--primary-900);">28°C</span>
+              <span style="font-size: 0.85rem; font-weight: 700; color: #b91c1c; background: #fee2e2; padding: 0.2rem 0.6rem; border-radius: var(--radius-sm);">Rain Alert</span>
+            </div>
+            <p style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 1rem;">
+              Western disturbance brings isolated drizzle in Bundelkhand. Delay nitrogen top-dressing.
+            </p>
+            <a href="#weather" onclick="navigateTo('weather')" class="feature-link">View Full Forecast →</a>
+          </div>
+
+          <!-- Active Diagnosis -->
+          <div class="dash-card">
+            <div class="dash-card-header">
+              <div class="dash-card-title"><i data-lucide="activity"></i> <span data-i18n="dash_card_crop">Crop Health</span></div>
+              <span class="badge-tag" style="background: #fef2f2; color: #b91c1c;">Alert</span>
+            </div>
+            <h4 style="font-size: 1.1rem; font-weight: 800; color: var(--text-main); margin-bottom: 0.25rem;">Wheat Stripe Rust</h4>
+            <p style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 0.75rem;">Confidence: 94.2% • Pathogen: Puccinia striiformis</p>
+            <div style="background: var(--bg-subtle); padding: 0.65rem; border-radius: var(--radius-md); font-size: 0.8rem; margin-bottom: 1rem;">
+              <strong>Action:</strong> Propiconazole 25% EC spray recommended.
+            </div>
+            <a href="#crop-doctor" onclick="navigateTo('crop-doctor')" class="feature-link">Open Crop Doctor →</a>
+          </div>
+
+          <!-- Schemes Enrolled -->
+          <div class="dash-card">
+            <div class="dash-card-header">
+              <div class="dash-card-title"><i data-lucide="landmark"></i> <span data-i18n="dash_card_schemes">My Schemes</span></div>
+              <span class="badge-tag badge-official">Verified</span>
+            </div>
+            <ul style="list-style: none; font-size: 0.85rem; display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 1rem;">
+              <li style="display: flex; justify-content: space-between;">
+                <strong>PM-KISAN:</strong> <span style="color: #166534;">16th Installment Credited</span>
+              </li>
+              <li style="display: flex; justify-content: space-between;">
+                <strong>KCC Card:</strong> <span style="color: #0284c7;">₹1.5 Lakh Active</span>
+              </li>
+              <li style="display: flex; justify-content: space-between;">
+                <strong>Soil Card:</strong> <span>Renewed 2025</span>
+              </li>
+            </ul>
+            <a href="#schemes" onclick="navigateTo('schemes')" class="feature-link">Explore More Schemes →</a>
+          </div>
+
+          <!-- Mandi Rates Snapshot -->
+          <div class="dash-card">
+            <div class="dash-card-header">
+              <div class="dash-card-title"><i data-lucide="shopping-bag"></i> <span data-i18n="dash_card_mandi">Local Mandi Ticker</span></div>
+              <span class="badge-tag badge-demo">Today</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+              <span>Atarra APMC (Wheat):</span>
+              <strong style="color: var(--primary-800); font-size: 1.1rem;">₹2,440/qtl</strong>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+              <span>Banda APMC (Mustard):</span>
+              <strong style="color: var(--primary-800); font-size: 1.1rem;">₹5,350/qtl</strong>
+            </div>
+            <a href="#mandi" onclick="navigateTo('mandi')" class="feature-link">Compare Mandis →</a>
+          </div>
+
+          <!-- Insurance Policy -->
+          <div class="dash-card">
+            <div class="dash-card-header">
+              <div class="dash-card-title"><i data-lucide="shield"></i> <span data-i18n="dash_card_ins">PMFBY Coverage</span></div>
+              <span class="badge-tag badge-official">Active</span>
+            </div>
+            <p style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 0.5rem;">
+              Policy: PMFBY/UP/BND/2026/049182 • Rabi 2026
+            </p>
+            <p style="font-size: 0.85rem; font-weight: 700; color: var(--primary-900); margin-bottom: 1rem;">
+              Sum Insured: ₹72,000 (Farmer Paid: ₹1,080)
+            </p>
+            <a href="#insurance" onclick="navigateTo('insurance')" class="feature-link">Claim Guidance (72h) →</a>
+          </div>
+
+          <!-- Tasks & Deadlines -->
+          <div class="dash-card">
+            <div class="dash-card-header">
+              <div class="dash-card-title"><i data-lucide="calendar"></i> <span data-i18n="dash_card_tasks">Pending Deadlines</span></div>
+              <span class="badge-tag" style="background: #fef3c7; color: #92400e;">2 Due</span>
+            </div>
+            <ul style="list-style: none; font-size: 0.82rem; display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 1rem;">
+              <li>• PM-KISAN e-KYC Verification (Aadhaar OTP)</li>
+              <li>• UP SMAM Farm Equipment Subsidy Token window</li>
+            </ul>
+            <button class="btn btn-secondary btn-sm" onclick="showToast(AppState.lang === 'hi' ? 'एसएमएस अनुस्मारक सक्रिय हैं' : 'SMS reminders are active', 'info')" style="width: 100%;">
+              <i data-lucide="bell"></i> Send WhatsApp Reminder
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =======================================================================
+         14. IMPACT SECTION (5 Visual Pillars)
+         ======================================================================= -->
+    <section class="section page-section" id="section-impact">
+      <div class="container">
+        <div class="section-header">
+          <span class="badge-tag">National Value Proposition</span>
+          <h2 class="section-title" data-i18n="impact_title">Impact Pillars</h2>
+          <p class="section-subtitle" style="font-weight: 700; font-size: 1.25rem; color: var(--primary-800);" data-i18n="impact_statement">
+            “One platform. Multiple services. Zero confusion.”
+          </p>
+        </div>
+
+        <div class="impact-pillars-row">
+          <div class="impact-pillar-item">
+            <div class="impact-pillar-icon"><i data-lucide="network"></i></div>
+            <h5 data-i18n="pillar1_title">Unified Integration</h5>
+            <p data-i18n="pillar1_desc">One single doorway connecting multiple official agricultural portals.</p>
+          </div>
+
+          <div class="impact-pillar-item">
+            <div class="impact-pillar-icon"><i data-lucide="target"></i></div>
+            <h5 data-i18n="pillar2_title">Personalized Discovery</h5>
+            <p data-i18n="pillar2_desc">Direct scheme matching tailored to land size and localized crop context.</p>
+          </div>
+
+          <div class="impact-pillar-item">
+            <div class="impact-pillar-icon"><i data-lucide="languages"></i></div>
+            <h5 data-i18n="pillar3_title">Multilingual Access</h5>
+            <p data-i18n="pillar3_desc">Clear farmer-friendly Hindi and English with voice and touch support.</p>
+          </div>
+
+          <div class="impact-pillar-item">
+            <div class="impact-pillar-icon"><i data-lucide="check-square"></i></div>
+            <h5 data-i18n="pillar4_title">Actionable Workflow</h5>
+            <p data-i18n="pillar4_desc">Not just raw information — guided steps from symptom to subsidy or claim.</p>
+          </div>
+
+          <div class="impact-pillar-item">
+            <div class="impact-pillar-icon"><i data-lucide="zap"></i></div>
+            <h5 data-i18n="pillar5_title">Reduced Friction</h5>
+            <p data-i18n="pillar5_desc">Eliminates wasted travel, middleman confusion, and missed claim deadlines.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =======================================================================
+         15. TECHNOLOGY ARCHITECTURE SECTION
+         ======================================================================= -->
+    <section class="section section-dark page-section" id="section-technology">
+      <div class="container">
+        <div class="section-header">
+          <span class="badge-tag" style="background: rgba(255,255,255,0.15); color: #ffffff; border-color: rgba(255,255,255,0.25);" data-i18n="tech_badge">System Architecture</span>
+          <h2 class="section-title" data-i18n="tech_title">API-Ready Robust Architecture</h2>
+          <p class="section-subtitle" data-i18n="tech_subtitle">Designed for seamless future integration with official Gov & AI gateways.</p>
+        </div>
+
+        <div class="tech-pillars-grid">
+          <div class="tech-pillar-card">
+            <i data-lucide="brain-circuit" style="color: #4ade80; width: 32px; height: 32px; margin-bottom: 0.75rem;"></i>
+            <h4 data-i18n="tech_p1_title">AI / ML Pathogen Vision</h4>
+            <p data-i18n="tech_p1_desc">Computer vision classifiers trained on Indian crop disease datasets for rapid symptom recognition.</p>
+          </div>
+
+          <div class="tech-pillar-card">
+            <i data-lucide="cloud-rain" style="color: #38bdf8; width: 32px; height: 32px; margin-bottom: 0.75rem;"></i>
+            <h4 data-i18n="tech_p2_title">Hyperlocal Agro-Weather</h4>
+            <p data-i18n="tech_p2_desc">IMD and agro-meteorological feeds correlated with crop growth stages for timely spray advisories.</p>
+          </div>
+
+          <div class="tech-pillar-card">
+            <i data-lucide="database" style="color: #fbbf24; width: 32px; height: 32px; margin-bottom: 0.75rem;"></i>
+            <h4 data-i18n="tech_p3_title">Mandi Intelligence Layer</h4>
+            <p data-i18n="tech_p3_desc">Structured schema ready for e-NAM & Agmarknet real-time APMC mandi feeds.</p>
+          </div>
+
+          <div class="tech-pillar-card">
+            <i data-lucide="link" style="color: #4ade80; width: 32px; height: 32px; margin-bottom: 0.75rem;"></i>
+            <h4 data-i18n="tech_p4_title">Government Portal Connector</h4>
+            <p data-i18n="tech_p4_desc">Standardized deep links and API bridges for PM-KISAN, PMFBY, and DBT Agriculture.</p>
+          </div>
+
+          <div class="tech-pillar-card">
+            <i data-lucide="users" style="color: #c084fc; width: 32px; height: 32px; margin-bottom: 0.75rem;"></i>
+            <h4 data-i18n="tech_p5_title">KVK Expert Routing</h4>
+            <p data-i18n="tech_p5_desc">Digital ticket dispatcher connecting village farmers to the nearest ICAR Krishi Vigyan Kendra.</p>
+          </div>
+
+          <div class="tech-pillar-card">
+            <i data-lucide="smartphone" style="color: #38bdf8; width: 32px; height: 32px; margin-bottom: 0.75rem;"></i>
+            <h4 data-i18n="tech_p6_title">Cloud & Multilingual Core</h4>
+            <p data-i18n="tech_p6_desc">Lightweight, mobile-first responsive frontend optimized for 2G/3G/4G connectivity in rural India.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =======================================================================
+         16. ABOUT SECTION
+         ======================================================================= -->
+    <section class="section page-section" id="section-about">
+      <div class="container">
+        <div class="section-header">
+          <span class="badge-tag" data-i18n="abt_badge">Our Mission</span>
+          <h2 class="section-title" data-i18n="abt_title">About Agri-Setu</h2>
+          <p class="section-subtitle">Bridging the critical last-mile gap in Indian agricultural digital infrastructure.</p>
+        </div>
+
+        <div style="max-width: 860px; margin: 0 auto; background: #ffffff; border: 1px solid var(--border-light); border-radius: var(--radius-xl); padding: 2.5rem; box-shadow: var(--shadow-md);">
+          <p style="font-size: 1.05rem; color: var(--text-main); line-height: 1.7; margin-bottom: 1.25rem;" data-i18n="abt_desc1">
+            Agri-Setu is a unified discovery and action layer built to eliminate the massive friction Indian farmers experience when seeking agricultural assistance.
+          </p>
+          <p style="font-size: 1.05rem; color: var(--text-muted); line-height: 1.7; margin-bottom: 2rem;" data-i18n="abt_desc2">
+            Instead of building another redundant government portal, Agri-Setu functions as an intelligent context layer that bridges farmers directly to existing official mechanisms: PM-KISAN, PMFBY, e-NAM, IMD, and KVK scientists.
+          </p>
+
+          <div style="border-top: 1px solid var(--border-light); padding-top: 1.5rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;">
+            <div>
+              <h5 style="font-size: 1.05rem; font-weight: 800; color: var(--primary-900);">Team Tech Titans</h5>
+              <p style="font-size: 0.85rem; color: var(--text-muted);" data-i18n="abt_team">
+                Smart India Hackathon 2026 • Rajkiya Engineering College, Banda
+              </p>
+            </div>
+            <div style="display: flex; gap: 0.5rem;">
+              <span class="badge-tag badge-official">SIH 2026</span>
+              <span class="badge-tag" style="background: var(--primary-50); color: var(--primary-800);">REC Banda</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- =======================================================================
+       17. FOOTER
+       ======================================================================= -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-top">
+        <div class="footer-brand">
+          <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem;">
+            <div class="logo-icon-wrap" style="background: #ffffff; color: var(--primary-800);">
+              <i data-lucide="sprout"></i>
+            </div>
+            <h3 style="margin-bottom: 0;">AGRI-SETU</h3>
+          </div>
+          <p data-i18n="ftr_tagline">
+            Technology that connects the farmer to the right support.
+          </p>
+          <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+            <span class="badge-tag" style="background: rgba(255,255,255,0.12); color: #86efac; border-color: rgba(255,255,255,0.2);">
+              Smart India Hackathon 2026
+            </span>
+            <span class="badge-tag" style="background: rgba(255,255,255,0.12); color: #86efac; border-color: rgba(255,255,255,0.2);">
+              REC Banda
+            </span>
+          </div>
+        </div>
+
+        <div class="footer-column">
+          <h4>Navigation</h4>
+          <ul class="footer-links">
+            <li><a href="#home" onclick="navigateTo('home')" data-i18n="nav_home">Home</a></li>
+            <li><a href="#how-it-works" onclick="navigateTo('how-it-works')" data-i18n="nav_how_it_works">How It Works</a></li>
+            <li><a href="#features" onclick="navigateTo('features')" data-i18n="nav_features">Features</a></li>
+            <li><a href="#crop-doctor" onclick="navigateTo('crop-doctor')" data-i18n="nav_crop_doctor">Crop Doctor</a></li>
+            <li><a href="#schemes" onclick="navigateTo('schemes')" data-i18n="nav_schemes">Schemes</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-column">
+          <h4>Services</h4>
+          <ul class="footer-links">
+            <li><a href="#mandi" onclick="navigateTo('mandi')" data-i18n="nav_mandi">Mandi Intelligence</a></li>
+            <li><a href="#weather" onclick="navigateTo('weather')" data-i18n="nav_weather">Weather Radar</a></li>
+            <li><a href="#insurance" onclick="navigateTo('insurance')" data-i18n="nav_insurance">PMFBY Insurance</a></li>
+            <li><a href="#expert" onclick="navigateTo('expert')" data-i18n="nav_expert">KVK Expert Connect</a></li>
+            <li><a href="#dashboard" onclick="navigateTo('dashboard')" data-i18n="nav_get_started">Farmer Dashboard</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-column">
+          <h4>Official Helplines</h4>
+          <div class="footer-helpline-card">
+            <h5 data-i18n="ftr_helpline_title">Kisan Call Center (Toll Free)</h5>
+            <span class="helpline-number">1800-180-1551</span>
+            <p style="font-size: 0.78rem; color: #94a3b8;" data-i18n="ftr_helpline_sub">24x7 Government Agro Advisory</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <span data-i18n="ftr_copyright">
+          © 2026 Agri-Setu • Smart India Hackathon 2026 Prototype • Team Tech Titans (REC Banda)
+        </span>
+        <span style="font-size: 0.76rem;" data-i18n="ftr_disclaimer_note">
+          Agri-Setu is a discovery and facilitation layer. We do not replace official government portals.
+        </span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- =======================================================================
+       MODALS & DIALOGS
+       ======================================================================= -->
+
+  <!-- 1. Authentication Modal (Mobile + OTP) -->
+  <div class="modal-backdrop" id="loginModal">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <div>
+          <h3 class="modal-title" data-i18n="login_title">Farmer Login / Verification</h3>
+          <p style="font-size: 0.8rem; color: var(--text-muted);" data-i18n="login_subtitle">
+            Access your personalized dashboard with your mobile number.
+          </p>
+        </div>
+        <button class="modal-close-btn" onclick="closeModal('loginModal')">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label" data-i18n="login_lbl_phone">Enter 10-Digit Mobile Number</label>
+          <div style="display: flex; gap: 0.5rem;">
+            <span style="background: var(--bg-subtle); border: 1px solid var(--border-light); padding: 0.75rem; border-radius: var(--radius-md); font-weight: 700; color: var(--text-main);">+91</span>
+            <input type="tel" class="form-input" id="authPhoneInput" value="9876543210" placeholder="98765 43210" maxlength="10">
+          </div>
+        </div>
+
+        <button type="button" class="btn btn-primary" id="authSendOtpBtn" style="width: 100%; margin-bottom: 1rem;">
+          <i data-lucide="message-square"></i>
+          <span data-i18n="login_btn_otp">Get OTP via SMS</span>
+        </button>
+
+        <div id="authOtpSection" style="display: none; border-top: 1px solid var(--border-light); padding-top: 1rem;">
+          <div class="form-group">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+              <label class="form-label" style="margin-bottom: 0;" data-i18n="login_lbl_otp">Enter 6-Digit OTP</label>
+              <span id="authOtpTimer" style="font-size: 0.78rem; color: var(--text-muted);">Resend in: 00:30</span>
+            </div>
+            <input type="text" class="form-input" id="authOtpInput" value="482910" placeholder="e.g. 482910" style="text-align: center; letter-spacing: 0.3em; font-weight: 800; font-size: 1.2rem;">
+          </div>
+
+          <button type="button" class="btn btn-primary" id="authVerifyOtpBtn" style="width: 100%;">
+            <i data-lucide="check"></i>
+            <span data-i18n="login_btn_submit">Verify & Login</span>
+          </button>
+        </div>
+
+        <div style="text-align: center; margin-top: 1.25rem; border-top: 1px dashed var(--border-light); padding-top: 1rem;">
+          <button type="button" class="btn btn-amber btn-sm" id="authQuickDemoBtn">
+            <i data-lucide="zap"></i>
+            <span data-i18n="login_demo_btn">Quick Login as Farmer Aditya (Demo)</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. Guided Demo Tour Modal (8-Step Experience) -->
+  <div class="modal-backdrop" id="demoTourModal">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-header">
+        <div>
+          <span class="badge-tag badge-demo" id="demoStepCount">Step 1 / 8</span>
+          <h3 class="modal-title" id="demoStepTitle">Farmer Problem & Identity</h3>
+          <p style="font-size: 0.8rem; color: var(--text-muted);" data-i18n="demo_modal_subtitle">
+            Walk through the unified farmer journey for Aditya from Banda, UP (Wheat Crop).
+          </p>
+        </div>
+        <button class="modal-close-btn" onclick="closeModal('demoTourModal')">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <!-- Stepper bubbles -->
+        <div class="demo-journey-stepper" id="demoStepperIndicators">
+          <!-- Populated by JS -->
+        </div>
+
+        <div style="background: var(--bg-subtle); border: 1px solid var(--border-light); border-radius: var(--radius-lg); padding: 1.5rem; margin-bottom: 1.5rem;">
+          <div style="display: inline-block; background: var(--primary-100); color: var(--primary-900); font-weight: 800; font-size: 0.85rem; padding: 0.25rem 0.65rem; border-radius: var(--radius-sm); margin-bottom: 0.75rem;" id="demoStepHighlight">
+            Aditya • Banda, UP • Wheat Crop
+          </div>
+          <p id="demoStepContent" style="font-size: 1.05rem; line-height: 1.6; color: var(--text-main);">
+            Aditya, a farmer from Tindwari village in Banda, UP, notices yellow dust-like stripes spreading across his 2.5-acre wheat crop.
+          </p>
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.88rem; color: var(--primary-800); font-weight: 700;">
+          <i data-lucide="info" style="width: 18px; height: 18px;"></i>
+          <span id="demoStepActionHint">Click Next to see how Agri-Setu understands his context.</span>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-secondary" id="demoPrevBtn">
+          <i data-lucide="chevron-left"></i> Previous
+        </button>
+        <button class="btn btn-primary" id="demoNextBtn">
+          Next Step <i data-lucide="chevron-right"></i>
+        </button>
+        <button class="btn btn-primary" id="demoFinishBtn" style="display: none;">
+          <i data-lucide="layout-dashboard"></i> <span data-i18n="demo_btn_finish">Open Farmer Dashboard</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. Scheme Required Documents Modal -->
+  <div class="modal-backdrop" id="schemeDocsModal">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <div>
+          <span class="badge-tag badge-official">Official Guidelines</span>
+          <h3 class="modal-title" id="schemeDocsModalTitle">Scheme Details</h3>
+        </div>
+        <button class="modal-close-btn" onclick="closeModal('schemeDocsModal')">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+      <div class="modal-body" id="schemeDocsModalBody">
+        <!-- Content injected dynamically -->
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeModal('schemeDocsModal')">Close</button>
+        <a href="#" target="_blank" rel="noopener" class="btn btn-primary" id="schemeDocsPortalBtn">
+          <i data-lucide="external-link"></i> Go to Official Portal
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. Expert Connect Case Summary Modal -->
+  <div class="modal-backdrop" id="expertCaseModal">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <div>
+          <span class="badge-tag badge-official">KVK Escalation Gateway</span>
+          <h3 class="modal-title">Send Case Summary to KVK Banda</h3>
+        </div>
+        <button class="modal-close-btn" onclick="closeModal('expertCaseModal')">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label">Consulting Scientist / Center</label>
+          <input type="text" class="form-input" id="expCaseTarget" value="Dr. R. K. Singh (KVK Banda)" readonly>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Crop & Variety</label>
+          <input type="text" class="form-input" id="expCaseCrop" value="Wheat (Sharbati)" readonly>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Location</label>
+          <input type="text" class="form-input" id="expCaseLoc" value="Banda, Uttar Pradesh (Tindwari Village)" readonly>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">AI Diagnostic & Weather Context</label>
+          <textarea class="form-textarea" id="expCaseIssue" rows="3" readonly></textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Additional Farmer Note</label>
+          <input type="text" class="form-input" id="expFarmerNote" value="फसल में 20% पत्तियों पर पीला पाउडर दिख रहा है। क्या स्प्रे तुरंत करें या बारिश रुकने का इंतज़ार करें?">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeModal('expertCaseModal')">Cancel</button>
+        <button class="btn btn-primary" id="expModalSubmitBtn">
+          <i data-lucide="send"></i> Dispatch Digital Case File
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+    <!-- =======================================================================
+       SCHEME ADVISORY MODALS
+       ======================================================================= -->
+
+  <!-- Modal 1: Farmer Personalization Profile Modal -->
+  <div class="modal-backdrop" id="farmerProfileModal">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-header">
+        <div>
+          <span class="badge-tag badge-official">Farmer Personalization</span>
+          <h3 class="modal-title" data-i18n="sa_modal_prof_title">Personalize Your Farmer Profile</h3>
+          <p style="font-size: 0.82rem; color: var(--text-muted);" data-i18n="sa_modal_prof_sub">
+            Provide your farm details to get personalized recommendations tailored to your land, crop, and location.
+          </p>
+        </div>
+        <button class="modal-close-btn" onclick="closeModal('farmerProfileModal')">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <form id="farmerProfileForm" onsubmit="return false;">
+          <div class="form-grid-2">
+            <!-- State -->
+            <div class="form-group">
+              <label class="form-label" data-i18n="sa_lbl_state">State</label>
+              <select class="form-select" id="profModalState">
+                <option value="Uttar Pradesh" selected>Uttar Pradesh</option>
+                <option value="Madhya Pradesh">Madhya Pradesh</option>
+                <option value="Punjab">Punjab</option>
+                <option value="Rajasthan">Rajasthan</option>
+                <option value="Bihar">Bihar</option>
+                <option value="Maharashtra">Maharashtra</option>
+                <option value="Other">Other / All-India</option>
+              </select>
+            </div>
+
+            <!-- District -->
+            <div class="form-group">
+              <label class="form-label" data-i18n="sa_lbl_district">District</label>
+              <input type="text" class="form-input" id="profModalDistrict" value="Banda" placeholder="Enter your district (e.g. Banda, Chitrakoot)">
+            </div>
+          </div>
+
+          <div class="form-grid-2">
+            <!-- Age Group -->
+            <div class="form-group">
+              <label class="form-label" data-i18n="sa_lbl_age">Age Group</label>
+              <select class="form-select" id="profModalAgeGroup">
+                <option value="18-40" selected>18 - 40 Years (Eligible for Pension PM-KMY)</option>
+                <option value="41-60">41 - 60 Years</option>
+                <option value="Above 60">Above 60 Years (Senior Farmer)</option>
+              </select>
+            </div>
+
+            <!-- Land Holding Size -->
+            <div class="form-group">
+              <label class="form-label" data-i18n="sa_lbl_land">Land Holding Size</label>
+              <select class="form-select" id="profModalLandSize">
+                <option value="marginal">Marginal Farmer (&lt; 2.5 Acres / &lt; 1 Ha)</option>
+                <option value="small" selected>Small Farmer (2.5 - 5 Acres / 1 - 2 Ha)</option>
+                <option value="medium">Medium Farmer (5 - 25 Acres / 2 - 10 Ha)</option>
+                <option value="large">Large Farmer (&gt; 25 Acres / &gt; 10 Ha)</option>
+                <option value="tenant">Tenant Farmer / Sharecropper (No Owned Land)</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Crops Grown -->
+          <div class="form-group">
+            <label class="form-label" data-i18n="sa_lbl_crops">Crop(s) Grown (Select all that apply)</label>
+            <div class="prof-crops-checkbox-grid">
+              <label class="sa-crop-check"><input type="checkbox" name="profCrops" value="wheat" checked> <span>🌾 Wheat (गेहूं)</span></label>
+              <label class="sa-crop-check"><input type="checkbox" name="profCrops" value="mustard" checked> <span>🌱 Mustard (सरसों)</span></label>
+              <label class="sa-crop-check"><input type="checkbox" name="profCrops" value="paddy"> <span>🌾 Paddy / Rice (धान)</span></label>
+              <label class="sa-crop-check"><input type="checkbox" name="profCrops" value="gram"> <span>🌰 Gram / Pulses (चना)</span></label>
+              <label class="sa-crop-check"><input type="checkbox" name="profCrops" value="sugarcane"> <span>🎋 Sugarcane (गन्ना)</span></label>
+              <label class="sa-crop-check"><input type="checkbox" name="profCrops" value="cotton"> <span>☁️ Cotton (कपास)</span></label>
+              <label class="sa-crop-check"><input type="checkbox" name="profCrops" value="horticulture"> <span>🥦 Vegetables & Fruits (सब्जी/फल)</span></label>
+            </div>
+          </div>
+
+          <div class="form-grid-2">
+            <!-- Irrigation Availability -->
+            <div class="form-group">
+              <label class="form-label" data-i18n="sa_lbl_irrigation">Irrigation Availability</label>
+              <select class="form-select" id="profModalIrrigation">
+                <option value="tube_well" selected>Borewell / Tube well Irrigated</option>
+                <option value="canal">Canal Irrigation Available</option>
+                <option value="drip">Drip / Sprinkler Micro-Irrigation</option>
+                <option value="rainfed">Rainfed / Dryland (Seeking Irrigation)</option>
+              </select>
+            </div>
+
+            <!-- Farmer Category -->
+            <div class="form-group">
+              <label class="form-label" data-i18n="sa_lbl_farmer_type">Farmer Category / Type</label>
+              <select class="form-select" id="profModalCategory">
+                <option value="small" selected>Small & Marginal Farmer</option>
+                <option value="general">General Farmer</option>
+                <option value="sc_st">SC / ST Farmer (Higher Subsidy Quotas)</option>
+                <option value="women">Women Farmer (Special Subsidies)</option>
+                <option value="tenant">Tenant / Sharecropper</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Farming Activity -->
+          <div class="form-group">
+            <label class="form-label" data-i18n="sa_lbl_activity">Primary Farming Activity</label>
+            <select class="form-select" id="profModalActivity">
+              <option value="crop" selected>Crop Cultivation (Food grains / Oilseeds / Pulses)</option>
+              <option value="horticulture">Horticulture (Vegetables, Fruits, Polyhouse)</option>
+              <option value="dairy">Dairy & Livestock (Cow, Buffalo, Goat, Poultry)</option>
+              <option value="fisheries">Fisheries & Aquaculture (Fish Farming)</option>
+              <option value="mixed">Mixed Farming (Crops + Animal Husbandry)</option>
+            </select>
+          </div>
+        </form>
+      </div>
+
+      <div class="modal-footer" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem;">
+        <button type="button" class="btn btn-amber btn-sm" id="profModalLoadDemoBtn">
+          <i data-lucide="zap"></i>
+          <span data-i18n="sa_btn_demo_profile">Load Demo Profile (Aditya - Banda UP)</span>
+        </button>
+        <div style="display: flex; gap: 0.5rem;">
+          <button type="button" class="btn btn-secondary" onclick="closeModal('farmerProfileModal')">Cancel</button>
+          <button type="button" class="btn btn-primary" id="profModalSaveBtn">
+            <i data-lucide="check"></i>
+            <span data-i18n="sa_btn_save_profile">Save Profile & Update Schemes</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 2: Interactive Scheme Eligibility Checker Modal -->
+  <div class="modal-backdrop" id="schemeEligibilityModal">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-header">
+        <div>
+          <span class="badge-tag badge-official" id="eligModalGovLevel">Central Scheme</span>
+          <h3 class="modal-title" id="eligModalSchemeTitle">Check Eligibility: PM-KISAN</h3>
+          <p style="font-size: 0.82rem; color: var(--text-muted);" data-i18n="sa_elig_subtitle">
+            Answer a few questions to see if you meet the preliminary criteria.
+          </p>
+        </div>
+        <button class="modal-close-btn" onclick="closeModal('schemeEligibilityModal')">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <!-- Live Result Banner -->
+        <div class="elig-result-banner" id="eligResultBanner">
+          <div class="elig-result-icon-box" id="eligResultIconBox">
+            <i data-lucide="check-circle-2" id="eligResultIcon"></i>
+          </div>
+          <div class="elig-result-text">
+            <h4 id="eligResultHeading">Potentially Eligible – Check official requirements</h4>
+            <p id="eligResultSub">Based on your answers, your profile fulfills the primary conditions for this scheme.</p>
+          </div>
+        </div>
+
+        <!-- Non-Guarantee Legal Disclaimer -->
+        <div class="disclaimer-box" style="margin-bottom: 1.5rem;">
+          <i data-lucide="alert-triangle" class="disclaimer-icon"></i>
+          <span data-i18n="sa_elig_disclaimer">
+            Final eligibility is determined by the concerned government department. Agri-Setu provides preliminary discovery guidance only.
+          </span>
+        </div>
+
+        <!-- Interactive Questions Form -->
+        <div class="elig-questions-card">
+          <h5 style="font-weight: 800; font-size: 0.95rem; margin-bottom: 1rem; color: var(--primary-900);">
+            Confirm Your Eligibility Criteria:
+          </h5>
+          <div class="elig-questions-list" id="eligQuestionsList">
+            <!-- Populated dynamically per scheme by openEligibilityChecker() -->
+          </div>
+        </div>
+
+        <!-- Matched vs Unmet Criteria Breakdown -->
+        <div class="elig-criteria-breakdown" id="eligCriteriaBreakdown">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+
+      <div class="modal-footer" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem;">
+        <button type="button" class="btn btn-secondary" onclick="closeModal('schemeEligibilityModal')">
+          Close
+        </button>
+        <div style="display: flex; gap: 0.5rem;">
+          <button type="button" class="btn btn-secondary" id="eligViewDetailsBtn">
+            <i data-lucide="file-text"></i>
+            <span data-i18n="sa_card_btn_details">View Details</span>
+          </button>
+          <a href="#" target="_blank" rel="noopener" class="btn btn-primary" id="eligApplyPortalBtn">
+            <i data-lucide="external-link"></i>
+            <span data-i18n="sa_elig_apply_now">Proceed to Official Application</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 3: Comprehensive Scheme Detail Modal -->
+  <div class="modal-backdrop" id="schemeDetailModal">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-header">
+        <div>
+          <div style="display: flex; gap: 0.5rem; align-items: center; margin-bottom: 0.25rem;">
+            <span class="badge-tag badge-official" id="detailGovLevelBadge">Central Government</span>
+            <span class="badge-tag" style="background: #e0f2fe; color: #0369a1;" id="detailCategoryBadge">Income Support</span>
+            <span class="badge-tag badge-demo" id="detailStatusBadge">Active</span>
+          </div>
+          <h3 class="modal-title" id="detailSchemeTitle">PM-KISAN (Pradhan Mantri Kisan Samman Nidhi)</h3>
+          <p style="font-size: 0.8rem; color: var(--text-muted);" id="detailDeptName">Ministry of Agriculture & Farmers Welfare, GoI</p>
+        </div>
+        <button class="modal-close-btn" onclick="closeModal('schemeDetailModal')">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+
+      <div class="modal-body" style="padding-top: 0.75rem;">
+        <!-- Quick Stats Strip -->
+        <div class="detail-quick-strip">
+          <div class="detail-stat">
+            <span class="detail-stat-label">Main Benefit:</span>
+            <strong class="detail-stat-val text-primary" id="detailBenefitStat">₹6,000 / Year</strong>
+          </div>
+          <div class="detail-stat">
+            <span class="detail-stat-label">Target Farmers:</span>
+            <strong class="detail-stat-val" id="detailTargetStat">All Landholders</strong>
+          </div>
+          <div class="detail-stat">
+            <span class="detail-stat-label">Application Mode:</span>
+            <strong class="detail-stat-val" id="detailModeStat">Online / CSC</strong>
+          </div>
+          <div class="detail-stat">
+            <span class="detail-stat-label">Verification:</span>
+            <strong class="detail-stat-val" style="color: #166534;"><i data-lucide="check-circle-2" style="width: 14px; height: 14px; display: inline;"></i> Official Portal</strong>
+          </div>
+        </div>
+
+        <!-- Detail Tab Buttons -->
+        <div class="detail-tabs-bar">
+          <button type="button" class="detail-tab-btn active" data-tab="overview">
+            <i data-lucide="info"></i> <span data-i18n="sa_detail_tab_overview">Overview</span>
+          </button>
+          <button type="button" class="detail-tab-btn" data-tab="benefits">
+            <i data-lucide="badge-percent"></i> <span data-i18n="sa_detail_tab_benefits">Benefits</span>
+          </button>
+          <button type="button" class="detail-tab-btn" data-tab="eligibility">
+            <i data-lucide="user-check"></i> <span data-i18n="sa_detail_tab_eligibility">Eligibility</span>
+          </button>
+          <button type="button" class="detail-tab-btn" data-tab="documents">
+            <i data-lucide="file-text"></i> <span data-i18n="sa_detail_tab_documents">Documents</span>
+          </button>
+          <button type="button" class="detail-tab-btn" data-tab="apply">
+            <i data-lucide="arrow-right-circle"></i> <span data-i18n="sa_detail_tab_apply">How to Apply</span>
+          </button>
+          <button type="button" class="detail-tab-btn" data-tab="contact">
+            <i data-lucide="phone-call"></i> <span data-i18n="sa_detail_tab_contact">Helpline & Dates</span>
+          </button>
+        </div>
+
+        <!-- Tab Content Panes -->
+        <div class="detail-tab-content-wrap">
+          <!-- Pane 1: Overview -->
+          <div class="detail-tab-pane active" id="pane-overview">
+            <h5 class="detail-pane-heading">Scheme Overview</h5>
+            <p id="detailDescText" style="line-height: 1.7; color: var(--text-main); font-size: 0.95rem; margin-bottom: 1.25rem;">
+              Direct income support to eligible farmer families...
+            </p>
+            <div class="sa-ai-card" id="detailAiRelevanceBox">
+              <div class="sa-ai-icon-box"><i data-lucide="sparkles"></i></div>
+              <div>
+                <strong data-i18n="sa_ai_why_relevant">Why this scheme may be relevant to you:</strong>
+                <p id="detailAiRelevanceText" style="margin-top: 0.25rem; font-size: 0.88rem; color: var(--text-main);">
+                  You have agricultural landholding registered in your profile.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Pane 2: Benefits -->
+          <div class="detail-tab-pane" id="pane-benefits">
+            <h5 class="detail-pane-heading" data-i18n="sa_card_benefit_lbl">Main Benefits:</h5>
+            <div class="detail-highlight-box">
+              <p id="detailBenefitLongText" style="font-weight: 700; color: var(--primary-900); font-size: 1.05rem; line-height: 1.6;"></p>
+            </div>
+          </div>
+
+          <!-- Pane 3: Eligibility -->
+          <div class="detail-tab-pane" id="pane-eligibility">
+            <h5 class="detail-pane-heading" data-i18n="sa_card_eligibility_lbl">Who Can Apply:</h5>
+            <p id="detailEligibilityText" style="line-height: 1.7; font-size: 0.95rem; color: var(--text-main); margin-bottom: 1rem;"></p>
+            <button type="button" class="btn btn-secondary btn-sm" id="detailCheckEligNowBtn">
+              <i data-lucide="user-check"></i>
+              <span data-i18n="sa_card_btn_eligibility">Check Your Eligibility Interactive</span>
+            </button>
+          </div>
+
+          <!-- Pane 4: Documents -->
+          <div class="detail-tab-pane" id="pane-documents">
+            <h5 class="detail-pane-heading" data-i18n="sa_card_docs_lbl">Required Documents Checklist:</h5>
+            <ul class="detail-checklist" id="detailDocsList">
+              <!-- Populated by JS -->
+            </ul>
+          </div>
+
+          <!-- Pane 5: How to Apply -->
+          <div class="detail-tab-pane" id="pane-apply">
+            <h5 class="detail-pane-heading" data-i18n="sa_card_process_lbl">Step-by-Step Application Method:</h5>
+            <div class="detail-steps-flow" id="detailProcessFlow">
+              <!-- Injected by JS -->
+            </div>
+          </div>
+
+          <!-- Pane 6: Contact & Dates -->
+          <div class="detail-tab-pane" id="pane-contact">
+            <h5 class="detail-pane-heading">Important Dates & Helplines</h5>
+            <div class="form-grid-2" style="margin-bottom: 1.25rem;">
+              <div style="background: var(--bg-subtle); padding: 1rem; border-radius: var(--radius-md);">
+                <span style="font-size: 0.78rem; color: var(--text-muted); display: block;" data-i18n="sa_detail_important_dates">Important Dates:</span>
+                <strong style="font-size: 0.95rem; color: var(--text-main);" id="detailDatesText">Ongoing (Always Open)</strong>
+              </div>
+              <div style="background: var(--bg-subtle); padding: 1rem; border-radius: var(--radius-md);">
+                <span style="font-size: 0.78rem; color: var(--text-muted); display: block;">Official Helpline:</span>
+                <strong style="font-size: 0.95rem; color: var(--primary-800);" id="detailHelplineText">1800-180-1551 (Toll Free)</strong>
+              </div>
+            </div>
+            <div style="font-size: 0.82rem; color: var(--text-muted);">
+              <strong>Source Portal:</strong> <span id="detailSourceText">myscheme.gov.in</span> • 
+              <strong>Last Verified:</strong> <span id="detailLastUpdatedText">August 2026</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="disclaimer-box" style="margin-top: 1rem;">
+          <i data-lucide="info" class="disclaimer-icon"></i>
+          <span data-i18n="sa_outdated_warning">Information may have changed – verify on the official portal.</span>
+        </div>
+      </div>
+
+      <div class="modal-footer" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem;">
+        <button type="button" class="btn btn-secondary" onclick="window.print()" title="Print Scheme Summary">
+          <i data-lucide="printer"></i>
+          <span data-i18n="sa_detail_print">Print Summary</span>
+        </button>
+        <div style="display: flex; gap: 0.5rem;">
+          <button type="button" class="btn btn-secondary" onclick="closeModal('schemeDetailModal')">Close</button>
+          <a href="#" target="_blank" rel="noopener" class="btn btn-primary" id="detailOfficialApplyBtn">
+            <i data-lucide="external-link"></i>
+            <span data-i18n="sa_card_btn_apply">Apply / Official Website</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 4: Scheme Notifications Drawer -->
+  <div class="modal-backdrop" id="schemeNotificationsDrawer">
+    <div class="modal-dialog modal-md">
+      <div class="modal-header">
+        <div>
+          <div style="display: flex; gap: 0.5rem; align-items: center;">
+            <span class="badge-tag badge-demo">Agri-Alerts</span>
+            <span class="pulse-dot"></span>
+          </div>
+          <h3 class="modal-title" data-i18n="sa_notif_title">Scheme Notifications & Alerts</h3>
+          <p style="font-size: 0.8rem; color: var(--text-muted);" data-i18n="sa_notif_sub">
+            Never miss an application deadline, token opening, or subsidy update.
+          </p>
+        </div>
+        <button class="modal-close-btn" onclick="closeModal('schemeNotificationsDrawer')">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <!-- Notification Preference Switch -->
+        <div class="notif-toggle-card">
+          <div style="display: flex; align-items: center; gap: 0.75rem;">
+            <i data-lucide="bell-ring" style="color: var(--primary-700); width: 22px; height: 22px;"></i>
+            <div>
+              <strong style="font-size: 0.9rem; display: block;" data-i18n="sa_notif_toggle">Enable SMS & Push Notifications</strong>
+              <span style="font-size: 0.78rem; color: var(--text-muted);">Receive subsidy token alerts on +91 98765 43210</span>
+            </div>
+          </div>
+          <label class="switch">
+            <input type="checkbox" id="notifSmsToggle" checked>
+            <span class="slider round"></span>
+          </label>
+        </div>
+
+        <!-- Filter tabs for notifications -->
+        <div class="notif-tabs-bar">
+          <button type="button" class="notif-tab-chip active" data-notif-filter="all" data-i18n="sa_notif_all_tab">All</button>
+          <button type="button" class="notif-tab-chip" data-notif-filter="deadline" data-i18n="sa_notif_deadlines">Deadlines</button>
+          <button type="button" class="notif-tab-chip" data-notif-filter="subsidy" data-i18n="sa_notif_subsidies">Subsidies</button>
+          <button type="button" class="notif-tab-chip" data-notif-filter="announcement" data-i18n="sa_notif_announcements">Announcements</button>
+        </div>
+
+        <!-- Notification List Items -->
+        <div class="notif-list-container" id="notifListContainer">
+          <!-- Populated by JS from AGRI_DATA.schemeNotifications -->
+        </div>
+      </div>
+
+      <div class="modal-footer" style="display: flex; justify-content: space-between; align-items: center;">
+        <button type="button" class="btn btn-secondary btn-sm" id="notifMarkAllReadBtn">
+          <i data-lucide="check-check"></i>
+          <span data-i18n="sa_notif_mark_all">Mark All as Read</span>
+        </button>
+        <button type="button" class="btn btn-secondary btn-sm" onclick="closeModal('schemeNotificationsDrawer')">
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+
+<div class="toast-container" id="toastContainer"></div>
+
+  <!-- Application Scripts -->
+  <script src="js/translations.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

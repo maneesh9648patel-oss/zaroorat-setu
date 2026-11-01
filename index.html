@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>RESCUEX | Emergency Accident Alert &amp; Dispatch Network</title>
+  
+  <!-- SEO & Emergency Web Meta -->
+  <meta name="description" content="Rapid accident alert, automated crash detection, GPS telemetry, and emergency dispatch network for immediate Golden Hour life-saving medical response." />
+  <meta name="theme-color" content="#dc2626" />
+
+  <!-- Leaflet CSS for Emergency Map -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+  
+  <!-- Custom Emergency Stylesheet -->
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+
+  <!-- 1. TOP EMERGENCY HAZARD STROBE BANNER -->
+  <div class="emergency-top-banner" role="banner">
+    <div class="banner-left">
+      <span class="strobe-dot" aria-hidden="true"></span>
+      <div class="banner-ticker">
+        <strong>HIGH-PRIORITY ALERT:</strong> ACCIDENT DISPATCH GRID ACTIVE • SATELLITE TELEMETRY READY
+      </div>
+    </div>
+    <div class="banner-right">
+      <span class="telemetry-badge" id="liveClock">UTC: --:--:-- | LOCAL: --:--:--</span>
+      <button class="siren-toggle-btn" id="btnToggleSiren" title="Toggle Emergency Siren Sound">
+        🚨 SIREN: OFF
+      </button>
+    </div>
+  </div>
+
+  <!-- 2. SPEED-DIAL EMERGENCY HOTLINE BAR -->
+  <nav class="speed-dial-bar" aria-label="Emergency Hotlines">
+    <div class="speed-dial-label">
+      <span>⚡ INSTANT HOTLINES:</span>
+    </div>
+    <div class="speed-dial-items">
+      <a href="tel:112" class="dial-chip highlight">
+        <span>🚨</span> <strong>112</strong> National SOS
+      </a>
+      <a href="tel:108" class="dial-chip">
+        <span>🚑</span> <strong>108</strong> Ambulance
+      </a>
+      <a href="tel:100" class="dial-chip">
+        <span>🚓</span> <strong>100</strong> Police Control
+      </a>
+      <a href="tel:101" class="dial-chip">
+        <span>🚒</span> <strong>101</strong> Fire &amp; Rescue
+      </a>
+      <a href="tel:1033" class="dial-chip highlight">
+        <span>🛣️</span> <strong>1033</strong> Highway Emergency
+      </a>
+    </div>
+  </nav>
+
+  <div class="container">
+    <!-- 3. MAIN HEADER -->
+    <header class="app-header">
+      <div class="brand">
+        <div class="brand-icon" aria-hidden="true">🚨</div>
+        <div class="brand-text">
+          <h1>RESCUEX <span class="brand-badge">LIVE 24/7</span></h1>
+          <p>National Accident Alert &amp; Golden-Hour Emergency Response Network</p>
+        </div>
+      </div>
+      <div class="header-actions">
+        <button class="lang-btn" id="langToggleBtn">🌐 Language: English</button>
+      </div>
+    </header>
+
+    <!-- 4. HERO SECTION: MASSIVE SOS CRASH TRIGGER -->
+    <section class="sos-hero-section" aria-labelledby="sosHeading">
+      <div class="hero-subhead" id="sosHeading">🚨 High-Priority Emergency Response Grid</div>
+      <h2 class="hero-title">
+        EMERGENCY <span>ACCIDENT ALERT</span> &amp; DISPATCH
+      </h2>
+      <p class="hero-description">
+        Tap the SOS button to immediately broadcast critical accident coordinates to the nearest trauma hospital, advanced life support ambulances, and highway traffic interceptors.
+      </p>
+
+      <!-- BIG RED PULSING SOS BUTTON -->
+      <div class="sos-trigger-wrapper">
+        <div class="sos-pulse-ring"></div>
+        <div class="sos-pulse-ring"></div>
+        <div class="sos-pulse-ring"></div>
+        <button class="btn-big-sos" id="btnSosHero" aria-label="Trigger Instant Accident SOS Alert">
+          <span class="sos-icon">⚠️</span>
+          <span class="sos-text">REPORT SOS</span>
+          <span class="sos-hint">One-Tap Accident Alert</span>
+        </button>
+      </div>
+
+      <!-- 5-SECOND ABORT COUNTDOWN BANNER -->
+      <div class="sos-countdown-banner" id="sosCountdownBanner" role="alert">
+        <div class="countdown-flex">
+          <div class="countdown-circle" id="countdownNumber">5</div>
+          <div class="countdown-info">
+            <h4>BROADCASTING EMERGENCY DISPATCH</h4>
+            <p>Accidental trigger? Tap abort immediately to cancel.</p>
+          </div>
+          <button class="btn-abort-sos" id="btnAbortSos">ABORT SOS</button>
+        </div>
+      </div>
+
+      <!-- Quick Telemetry Stats -->
+      <div class="hero-quick-stats">
+        <div class="quick-stat-card">
+          <div class="stat-icon">🚑</div>
+          <div class="stat-info">
+            <div class="stat-val">42 UNITS</div>
+            <div class="stat-lbl">Active Ambulances on Grid</div>
+          </div>
+        </div>
+        <div class="quick-stat-card">
+          <div class="stat-icon">🏥</div>
+          <div class="stat-info">
+            <div class="stat-val">12 HOSPITALS</div>
+            <div class="stat-lbl">Trauma Centers on Standby</div>
+          </div>
+        </div>
+        <div class="quick-stat-card">
+          <div class="stat-icon">⏱️</div>
+          <div class="stat-info">
+            <div class="stat-val">4.8 MIN</div>
+            <div class="stat-lbl">Average Golden-Hour ETA</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. MAIN TWO-COLUMN WORKFLOW GRID -->
+    <div class="main-grid">
+      
+      <!-- LEFT COLUMN: RAPID ACCIDENT INTAKE FORM -->
+      <main class="left-col">
+        <section class="emergency-panel highlight-red">
+          <div class="panel-header">
+            <div class="panel-title">
+              <span class="title-icon">📋</span>
+              <span>Rapid Incident Reporting Form</span>
+            </div>
+            <span class="badge-live">LIVE INTAKE</span>
+          </div>
+
+          <form class="report-form" id="accidentReportForm">
+            
+            <!-- Severity Level Selection -->
+            <div class="form-group">
+              <label class="form-label">
+                <span>Accident Severity Level</span>
+                <span class="req">* Required</span>
+              </label>
+              <div class="severity-selector">
+                <label class="severity-pill sev-1">
+                  <input type="radio" name="severity" value="1 (Minor)" />
+                  <div class="sev-num">LEVEL 1</div>
+                  <div class="sev-title">Minor Fender</div>
+                </label>
+                <label class="severity-pill sev-2">
+                  <input type="radio" name="severity" value="2 (Moderate)" />
+                  <div class="sev-num">LEVEL 2</div>
+                  <div class="sev-title">Moderate</div>
+                </label>
+                <label class="severity-pill sev-3">
+                  <input type="radio" name="severity" value="3 (Severe)" checked />
+                  <div class="sev-num">LEVEL 3</div>
+                  <div class="sev-title">Severe Injury</div>
+                </label>
+                <label class="severity-pill sev-4">
+                  <input type="radio" name="severity" value="4 (Critical)" />
+                  <div class="sev-num">LEVEL 4</div>
+                  <div class="sev-title">Fatal / Trapped</div>
+                </label>
+              </div>
+            </div>
+
+            <!-- Collision Type Chips -->
+            <div class="form-group">
+              <label class="form-label">Collision Type</label>
+              <div class="collision-types-grid">
+                <div class="type-chip selected" data-type="Head-On Collision">💥 Head-On</div>
+                <div class="type-chip" data-type="Multi-Vehicle Pileup">🚗 Multi-Car Pileup</div>
+                <div class="type-chip" data-type="Vehicle Rollover">🔄 Rollover</div>
+                <div class="type-chip" data-type="2-Wheeler / Bike Crash">🏍️ Bike / Scooter</div>
+                <div class="type-chip" data-type="Pedestrian Hit">🚶 Pedestrian</div>
+                <div class="type-chip" data-type="Hazardous Tanker / Bus">🚛 Bus / Tanker</div>
+              </div>
+            </div>
+
+            <!-- Casualties & Entrapment Steppers -->
+            <div class="form-group">
+              <div class="counter-row">
+                <div class="counter-box">
+                  <span class="cb-label">Injured Persons</span>
+                  <div class="counter-controls">
+                    <button type="button" class="counter-btn" data-target="casualtiesVal" data-step="-1">-</button>
+                    <span class="counter-val" id="casualtiesVal">1</span>
+                    <button type="button" class="counter-btn" data-target="casualtiesVal" data-step="1">+</button>
+                  </div>
+                </div>
+                <div class="counter-box">
+                  <span class="cb-label">Trapped / Unconscious</span>
+                  <div class="counter-controls">
+                    <button type="button" class="counter-btn" data-target="trappedVal" data-step="-1">-</button>
+                    <span class="counter-val" id="trappedVal">0</span>
+                    <button type="button" class="counter-btn" data-target="trappedVal" data-step="1">+</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Smart GPS Location Bar -->
+            <div class="form-group">
+              <label class="form-label">
+                <span>Accident Location / Highway Landmark</span>
+                <span class="req">* Required</span>
+              </label>
+              <div class="location-input-group">
+                <input 
+                  type="text" 
+                  class="input-text" 
+                  id="inputLocation" 
+                  placeholder="e.g. NH-44 Milepost 182, near Toll Plaza, Outer Ring Road" 
+                  value="NH-44 Bypass Milepost 182.4, Sector 7 Junction" 
+                  required 
+                />
+                <button type="button" class="btn-gps-detect" id="btnGpsDetect">
+                  📍 Lock GPS
+                </button>
+              </div>
+              <div class="location-coords-preview" id="coordsPreview">
+                LAT: 28.6145 | LNG: 77.2115 • SATELLITE TRIANGULATED
+              </div>
+            </div>
+
+            <!-- Hazard Conditions Toggles -->
+            <div class="form-group">
+              <label class="form-label">Active Scene Hazards</label>
+              <div class="hazard-toggles">
+                <div class="hazard-toggle-chip">🔥 Active Vehicle Fire</div>
+                <div class="hazard-toggle-chip">⛽ Fuel Leakage Spurt</div>
+                <div class="hazard-toggle-chip">⚡ Downed Power Cables</div>
+                <div class="hazard-toggle-chip">🌫️ Dense Smog / Blind Curve</div>
+              </div>
+            </div>
+
+            <!-- Witness Voice Emergency Memo -->
+            <div class="form-group">
+              <label class="form-label">Witness Voice Memo (Speak Details Directly)</label>
+              <div class="voice-memo-box">
+                <div class="voice-status">
+                  <div class="audio-wave-bars" id="audioWave">
+                    <div class="audio-bar"></div>
+                    <div class="audio-bar"></div>
+                    <div class="audio-bar"></div>
+                    <div class="audio-bar"></div>
+                    <div class="audio-bar"></div>
+                  </div>
+                  <span id="voiceStatusText">Tap to record a 15-second emergency voice memo</span>
+                </div>
+                <button type="button" class="btn-mic-record" id="btnVoiceRecord">
+                  🎤 Record Memo
+                </button>
+              </div>
+            </div>
+
+            <!-- Photo Evidence Upload -->
+            <div class="form-group">
+              <label class="form-label">Scene Photos / Damage Capture (Optional)</label>
+              <label class="photo-upload-zone" for="photoInput">
+                <span>📷 Tap to Upload Crash Scene Photos (or drag &amp; drop)</span>
+                <input type="file" id="photoInput" accept="image/*" multiple style="display: none;" />
+                <div class="photo-preview-grid" id="photoPreviewGrid"></div>
+              </label>
+            </div>
+
+            <!-- Submit Broadcast Button -->
+            <button type="submit" class="btn-submit-alert" id="btnSubmitAlert">
+              <span>🚨</span>
+              <span>BROADCAST ACCIDENT ALERT NOW</span>
+            </button>
+          </form>
+        </section>
+
+        <!-- FIRST AID & GOLDEN HOUR PROTOCOLS SECTION -->
+        <section class="first-aid-section">
+          <div class="panel-header">
+            <div class="panel-title">
+              <span class="title-icon">🩺</span>
+              <span>Immediate Golden-Hour First Aid Guide</span>
+            </div>
+            <span class="badge-live">LIFE SAVING</span>
+          </div>
+
+          <div class="guide-tabs">
+            <button class="guide-tab-btn active" data-tab="tabBleeding">🩸 Severe Bleeding</button>
+            <button class="guide-tab-btn" data-tab="tabCpr">🫀 Unconscious &amp; CPR</button>
+            <button class="guide-tab-btn" data-tab="tabSpine">⚠️ Spine Trauma</button>
+            <button class="guide-tab-btn" data-tab="tabFire">🔥 Vehicle Fire</button>
+          </div>
+
+          <div class="guide-content-panel">
+            <!-- Tab 1: Bleeding -->
+            <div class="protocol-card active" id="tabBleeding">
+              <div class="protocol-header">
+                <span class="protocol-badge">Top Priority</span>
+                <h3 class="protocol-title">Arterial &amp; Severe Bleeding Protocol</h3>
+              </div>
+              <div class="protocol-steps-list">
+                <div class="protocol-step-item">
+                  <span class="psi-num">01</span>
+                  <div class="psi-text"><strong>Direct Firm Pressure:</strong> Apply immediate, direct two-handed pressure on the wound using a clean cloth, jacket, or sterile dressing. Do not release pressure.</div>
+                </div>
+                <div class="protocol-step-item">
+                  <span class="psi-num">02</span>
+                  <div class="psi-text"><strong>Elevate Injured Limb:</strong> If an arm or leg is bleeding and there are no evident bone fractures, raise it above heart level while maintaining firm pressure.</div>
+                </div>
+                <div class="protocol-step-item">
+                  <span class="psi-num">03</span>
+                  <div class="psi-text"><strong>Tourniquet Application:</strong> For catastrophic limb hemorrhage, place a tourniquet 2 to 3 inches above the wound (never directly on a joint) and twist until bleeding halts. Note the application time.</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Tab 2: CPR & Metronome -->
+            <div class="protocol-card" id="tabCpr">
+              <div class="protocol-header">
+                <span class="protocol-badge">Cardiac Arrest</span>
+                <h3 class="protocol-title">Hands-Only CPR Protocol &amp; Metronome</h3>
+              </div>
+              <div class="protocol-steps-list">
+                <div class="protocol-step-item">
+                  <span class="psi-num">01</span>
+                  <div class="psi-text"><strong>Check Responsiveness:</strong> Shake victim's shoulder and shout. Check for normal breathing for no more than 10 seconds.</div>
+                </div>
+                <div class="protocol-step-item">
+                  <span class="psi-num">02</span>
+                  <div class="psi-text"><strong>Center of Chest:</strong> Place the heel of one hand in the center of the chest (lower half of breastbone), lock fingers with the other hand.</div>
+                </div>
+                <div class="protocol-step-item">
+                  <span class="psi-num">03</span>
+                  <div class="psi-text"><strong>Push Hard &amp; Fast:</strong> Compress 2 inches (5 cm) deep at 100-120 compressions per minute until paramedics take over. Use the metronome below for exact rhythm.</div>
+                </div>
+              </div>
+
+              <!-- Interactive CPR Metronome -->
+              <div class="cpr-metronome-box">
+                <div class="metronome-pulse-indicator" id="metronomeIndicator">🫀</div>
+                <div class="metronome-info">
+                  <h4>Interactive CPR Rhythm Guide (110 BPM)</h4>
+                  <p>Matches "Stayin' Alive" rhythm recommended by Emergency Medical Services.</p>
+                </div>
+                <button type="button" class="btn-metronome-toggle" id="btnMetronome">
+                  ▶ Start Metronome
+                </button>
+              </div>
+            </div>
+
+            <!-- Tab 3: Spine Injury -->
+            <div class="protocol-card" id="tabSpine">
+              <div class="protocol-header">
+                <span class="protocol-badge">Critical Precaution</span>
+                <h3 class="protocol-title">Spinal &amp; Neck Trauma Safety</h3>
+              </div>
+              <div class="protocol-steps-list">
+                <div class="protocol-step-item">
+                  <span class="psi-num">01</span>
+                  <div class="psi-text"><strong>DO NOT MOVE THE VICTIM:</strong> Unless there is an imminent fire, explosion, or submersion risk, NEVER move an accident victim. Moving can sever spinal cord nerves and cause permanent paralysis.</div>
+                </div>
+                <div class="protocol-step-item">
+                  <span class="psi-num">02</span>
+                  <div class="psi-text"><strong>Stabilize Head &amp; Neck:</strong> Kneel behind the victim's head and hold their head steady in line with their spine with both hands to prevent any twisting or tilting.</div>
+                </div>
+                <div class="protocol-step-item">
+                  <span class="psi-num">03</span>
+                  <div class="psi-text"><strong>Motorcycle Helmets:</strong> DO NOT remove a motorcyclist's helmet unless they are not breathing and CPR is impossible with the helmet on.</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Tab 4: Vehicle Fire -->
+            <div class="protocol-card" id="tabFire">
+              <div class="protocol-header">
+                <span class="protocol-badge">Explosion Hazard</span>
+                <h3 class="protocol-title">Vehicle Fire &amp; Fuel Leak Evacuation</h3>
+              </div>
+              <div class="protocol-steps-list">
+                <div class="protocol-step-item">
+                  <span class="psi-num">01</span>
+                  <div class="psi-text"><strong>Turn Off Ignition:</strong> If safely accessible, switch off the car engine immediately to cut electrical fuel pumps and spark hazards.</div>
+                </div>
+                <div class="protocol-step-item">
+                  <span class="psi-num">02</span>
+                  <div class="psi-text"><strong>100-Foot Perimeter:</strong> Evacuate all conscious occupants at least 100 feet (30 meters) away from the vehicle upwind to avoid toxic smoke inhalation.</div>
+                </div>
+                <div class="protocol-step-item">
+                  <span class="psi-num">03</span>
+                  <div class="psi-text"><strong>Never Open Hood:</strong> If smoke or flames emerge from under the hood, DO NOT open the hood fully. Rushing oxygen can cause an explosive fireball flare.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <!-- RIGHT COLUMN: RADAR MAP, DISPATCH TRACKER, IOT SENSOR -->
+      <aside class="right-col">
+
+        <!-- LIVE RADAR MAP PANEL -->
+        <section class="emergency-panel highlight-blue">
+          <div class="panel-header">
+            <div class="panel-title">
+              <span class="title-icon">🛰️</span>
+              <span>Incident Radar &amp; Responder Map</span>
+            </div>
+            <span class="badge-live">GPS TELEMETRY</span>
+          </div>
+
+          <div class="map-container-box">
+            <div id="emergencyMap"></div>
+            <div class="radar-overlay-badge">
+              <span>●</span> GRID STATUS: LIVE TRACKING
+            </div>
+          </div>
+
+          <div class="map-legend">
+            <div class="legend-item"><span class="legend-dot red"></span> Crash Location</div>
+            <div class="legend-item"><span class="legend-dot blue"></span> Ambulance #108</div>
+            <div class="legend-item"><span class="legend-dot green"></span> Trauma Hospital</div>
+            <div class="legend-item"><span class="legend-dot yellow"></span> Highway Patrol</div>
+          </div>
+        </section>
+
+        <!-- AUTOMATED GOLDEN HOUR DISPATCH TRACKER -->
+        <section class="dispatch-tracker-card" id="dispatchTrackerCard">
+          <div class="dispatch-header">
+            <div class="dispatch-id-group">
+              <h3><span>🚑</span> DISPATCH #DISP-9942</h3>
+              <p style="font-size: 0.78rem; color: var(--text-muted); margin-top: 2px;">
+                Priority: Code Red Trauma • Advanced Life Support Unit
+              </p>
+            </div>
+            <div class="dispatch-eta-box">
+              <div class="eta-label">ESTIMATED ETA</div>
+              <div class="eta-timer" id="dispatchEtaVal">04:20</div>
+            </div>
+          </div>
+
+          <!-- Step Progress Timeline -->
+          <div class="timeline-steps">
+            <div class="timeline-step completed">
+              <div class="step-marker">✓</div>
+              <div class="step-title">1. SOS Alert Broadcasted &amp; Triaged</div>
+              <div class="step-meta">Auto-routed via emergency highway telematics</div>
+            </div>
+            <div class="timeline-step active">
+              <div class="step-marker">2</div>
+              <div class="step-title">2. Ambulance #AMB-108 Dispatched</div>
+              <div class="step-meta">Paramedic crew: Dr. Verma + Paramedic Rohit</div>
+            </div>
+            <div class="timeline-step">
+              <div class="step-marker">3</div>
+              <div class="step-title">3. St. Jude Level-1 Trauma Hospital Pre-Alerted</div>
+              <div class="step-meta">ICU Trauma Bay 3 reserved, blood bank on standby</div>
+            </div>
+            <div class="timeline-step">
+              <div class="step-marker">4</div>
+              <div class="step-title">4. Highway Patrol Traffic Cleared</div>
+              <div class="step-meta">PCR-33 closing intersection lane for emergency corridor</div>
+            </div>
+            <div class="timeline-step">
+              <div class="step-marker">5</div>
+              <div class="step-title">5. Paramedics on Scene &amp; Stabilization</div>
+              <div class="step-meta">Immediate triage and Golden-Hour transit to trauma bay</div>
+            </div>
+          </div>
+
+          <!-- Responder Telemetry Unit -->
+          <div class="responder-telemetry-grid">
+            <div class="telemetry-item">
+              <div class="t-val">84 KM/H</div>
+              <div class="t-lbl">Ambulance Speed</div>
+            </div>
+            <div class="telemetry-item">
+              <div class="t-val">1.8 KM</div>
+              <div class="t-lbl">Distance to Site</div>
+            </div>
+            <div class="telemetry-item">
+              <div class="t-val">CH-16</div>
+              <div class="t-lbl">Radio Channel</div>
+            </div>
+          </div>
+
+          <!-- Quick Action: SMS Notification to Family -->
+          <button type="button" class="dial-chip highlight" id="btnSimulateSms" style="width: 100%; justify-content: center; margin-top: 14px; padding: 10px;">
+            <span>📲</span> Preview Emergency Family SMS Broadcast
+          </button>
+        </section>
+
+        <!-- IN-CAR IOT CRASH SENSOR SIMULATOR -->
+        <section class="crash-sensor-box">
+          <div class="panel-header" style="margin-bottom: 10px;">
+            <div class="panel-title" style="font-size: 1.05rem;">
+              <span class="title-icon">📡</span>
+              <span>Vehicle IoT Crash Sensor (eCall Simulator)</span>
+            </div>
+            <span class="badge-live">ON-BOARD</span>
+          </div>
+          <p style="font-size: 0.78rem; color: var(--text-sub);">
+            Simulates a modern connected vehicle's crash telemetry. If sudden deceleration exceeding 15G is detected, an automatic accident alert is dispatched without human touch.
+          </p>
+
+          <div class="sensor-display">
+            <div class="g-force-meter">
+              <div class="g-force-val" id="gForceVal">1.02 G</div>
+              <div class="g-force-lbl">Live Accelerometer</div>
+            </div>
+            <button type="button" class="btn-trigger-impact" id="btnTriggerImpact">
+              💥 Simulate 25G Crash Impact
+            </button>
+          </div>
+        </section>
+
+      </aside>
+    </div>
+
+    <!-- 6. LIVE INCIDENT FEED / RECENT ALERTS TICKER -->
+    <section class="incident-feed-section">
+      <div class="panel-header">
+        <div class="panel-title">
+          <span class="title-icon">🚨</span>
+          <span>Regional Emergency Incident Feed</span>
+        </div>
+        <span class="badge-live">LIVE FEED</span>
+      </div>
+
+      <div class="incident-feed-list">
+        <div class="incident-card">
+          <div class="incident-left">
+            <span class="incident-badge-status active">ACTIVE DISPATCH</span>
+            <div class="incident-details">
+              <h4>NH-44 Bypass Milepost 182.4 • Multi-Car Pileup</h4>
+              <p>2 Casualties reported • 2 Ambulances en route • Traffic diversion active</p>
+            </div>
+          </div>
+          <div class="incident-right">
+            <div>3 MIN AGO</div>
+            <div style="color: var(--emergency-red); font-weight: 700;">CODE RED</div>
+          </div>
+        </div>
+
+        <div class="incident-card">
+          <div class="incident-left">
+            <span class="incident-badge-status dispatched">PARAMEDIC ON SCENE</span>
+            <div class="incident-details">
+              <h4>Outer Ring Road Junction 4 • Two-Wheeler Collision</h4>
+              <p>Rider stabilized by First Responder Unit • Transit to St. Jude Trauma</p>
+            </div>
+          </div>
+          <div class="incident-right">
+            <div>14 MIN AGO</div>
+            <div style="color: var(--emergency-blue); font-weight: 700;">CODE YELLOW</div>
+          </div>
+        </div>
+
+        <div class="incident-card">
+          <div class="incident-left">
+            <span class="incident-badge-status cleared">CLEARED &amp; RESOLVED</span>
+            <div class="incident-details">
+              <h4>Expressway Exit 12 • Fender Bender &amp; Fuel Spill</h4>
+              <p>Tow truck cleared obstruction • Hazard foam deployed by Fire Unit 101</p>
+            </div>
+          </div>
+          <div class="incident-right">
+            <div>42 MIN AGO</div>
+            <div style="color: var(--emergency-green); font-weight: 700;">RESOLVED</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- 7. EMERGENCY SMS / WHATSAPP BROADCAST MODAL -->
+  <div class="broadcast-modal" id="broadcastModal" role="dialog" aria-modal="true">
+    <div class="modal-content">
+      <button class="modal-close-btn" id="btnCloseModal" aria-label="Close dialog">&times;</button>
+      <div class="panel-title" style="margin-bottom: 12px; font-size: 1.15rem;">
+        <span>📲</span> Automated Next-of-Kin Emergency SMS Broadcast
+      </div>
+      <p style="font-size: 0.8rem; color: var(--text-muted);">
+        The following urgent dispatch notification is automatically broadcasted to pre-registered emergency contacts via cellular SMS &amp; WhatsApp:
+      </p>
+      <div class="broadcast-preview-box" id="smsPreviewText">
+        🚨 [CRITICAL ACCIDENT SOS]
+Alert triggered by RESCUEX System.
+Location: NH-44 Bypass Milepost 182.4
+Map Vector: https://maps.google.com/?q=28.6145,77.2115
+Status: Ambulance #108 En Route (ETA 4 min).
+Trauma ICU Bay 3 Pre-Alerted.
+      </div>
+      <div style="display: flex; gap: 10px; margin-top: 16px;">
+        <a href="sms:?body=🚨 Emergency Accident Alert Broadcasted! Live GPS: https://maps.google.com/?q=28.6145,77.2115" class="dial-chip highlight" style="flex: 1; justify-content: center; padding: 10px;">
+          <span>💬</span> Send Direct SMS Now
+        </a>
+        <a href="https://api.whatsapp.com/send?text=🚨%20Emergency%20Accident%20Alert!%20GPS:%20https://maps.google.com/?q=28.6145,77.2115" target="_blank" rel="noopener" class="dial-chip" style="flex: 1; justify-content: center; padding: 10px; background: #059669; border-color: #10b981;">
+          <span>🟢</span> Send WhatsApp Alert
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- 8. TOAST NOTIFICATION CONTAINER -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- 9. EMERGENCY FOOTER -->
+  <footer class="app-footer">
+    <div class="footer-hotlines">
+      <a href="tel:112">National SOS: 112</a>
+      <a href="tel:108">Ambulance: 108</a>
+      <a href="tel:100">Police: 100</a>
+      <a href="tel:101">Fire Dept: 101</a>
+      <a href="tel:1033">NHAI Highway Emergency: 1033</a>
+    </div>
+    <p>
+      RESCUEX Emergency Accident Response System • Built for high-speed life-saving coordination during the critical Golden Hour.
+    </p>
+    <p style="font-size: 0.72rem; color: #6b7280; margin-top: 6px;">
+      Zero External Backend Required • Operates directly in standard modern web browsers with HTML5 Geolocation, Web Audio API, and Leaflet Maps.
+    </p>
+  </footer>
+
+  <!-- Leaflet JavaScript -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <!-- Application Scripts -->
+  <script src="js/audio.js"></script>
+  <script src="js/map.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
