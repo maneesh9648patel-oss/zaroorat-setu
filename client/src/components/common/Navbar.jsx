@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { MapPin, Globe, ChevronDown, Check, Mic, Home, ClipboardList, Box, CheckSquare, PhoneCall, Bot, Sparkles } from 'lucide-react';
+import { MapPin, Globe, ChevronDown, Check, Mic, Home, ClipboardList, Box, CheckSquare, PhoneCall, Bot, Sparkles, Camera } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { useLanguage } from '../../contexts/LanguageContext';
 import BrandLogo from './BrandLogo';
 import KycBadge from './KycBadge';
 
-export default function Navbar({ onOpenVoiceRecorder, onOpenAssistant }) {
+export default function Navbar({ onOpenVoiceRecorder, onOpenAssistant, onOpenLens }) {
   const { user, switchRole, openAuthModal } = useAuth();
   const { language, currentLangObj, setIsLangModalOpen, t } = useLanguage();
   const location = useLocation();
@@ -73,6 +73,20 @@ export default function Navbar({ onOpenVoiceRecorder, onOpenAssistant }) {
 
         {/* Action Controls */}
         <div className="flex items-center gap-2 shrink-0">
+          {/* AI Lens Camera Trigger */}
+          {onOpenLens && (
+            <button
+              onClick={onOpenLens}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-gradient-to-r from-teal-dark to-teal hover:opacity-95 text-white text-xs font-extrabold shadow-sm transition border border-teal/40"
+              title="Open AI Lens Camera (सामान जांच एवं 50% धरोहर स्कैनर)"
+              aria-label="AI Lens Camera"
+            >
+              <Camera className="w-3.5 h-3.5 text-softYellow" />
+              <span className="hidden sm:inline">AI Lens</span>
+              <span className="sm:hidden">Lens</span>
+            </button>
+          )}
+
           {/* AI Voice Recorder Trigger */}
           {onOpenVoiceRecorder && (
             <button

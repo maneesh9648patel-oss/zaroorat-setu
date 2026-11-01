@@ -19,7 +19,7 @@
         "status": "not_submitted",
         "provider": "Authorized Partner (Coming Soon)"
       },
-      "createdAt": "2026-11-01T21:23:07.238Z"
+      "createdAt": "2026-11-01T22:18:06.460Z"
     },
     {
       "uid": "usr_ngo_01",
@@ -40,7 +40,7 @@
         "regNumber": "UP/2021/BND/0042",
         "verifiedByAdmin": true
       },
-      "createdAt": "2026-11-01T21:23:07.240Z"
+      "createdAt": "2026-11-01T22:18:06.461Z"
     },
     {
       "uid": "usr_donor_priya",
@@ -61,7 +61,7 @@
         "status": "verified",
         "provider": "Manual Verifier Verified"
       },
-      "createdAt": "2026-11-01T21:23:07.240Z"
+      "createdAt": "2026-11-01T22:18:06.461Z"
     },
     {
       "uid": "usr_student_rec",
@@ -78,7 +78,7 @@
         "lat": 25.5348,
         "lng": 80.3478
       },
-      "createdAt": "2026-11-01T21:23:07.240Z"
+      "createdAt": "2026-11-01T22:18:06.461Z"
     },
     {
       "uid": "usr_kitchen_banda",
@@ -95,7 +95,7 @@
         "lat": 25.4764,
         "lng": 80.3344
       },
-      "createdAt": "2026-11-01T21:23:07.240Z"
+      "createdAt": "2026-11-01T22:18:06.461Z"
     },
     {
       "uid": "usr_verifier_01",
@@ -112,7 +112,7 @@
         "lat": 25.5348,
         "lng": 80.3478
       },
-      "createdAt": "2026-11-01T21:23:07.240Z"
+      "createdAt": "2026-11-01T22:18:06.461Z"
     },
     {
       "uid": "usr_admin",
@@ -129,18 +129,18 @@
         "lat": 25.5348,
         "lng": 80.3478
       },
-      "createdAt": "2026-11-01T21:23:07.240Z"
+      "createdAt": "2026-11-01T22:18:06.461Z"
     },
     {
-      "uid": "usr_mvyc6uex",
-      "phone": "+919811122233",
-      "email": null,
-      "displayName": "New Member",
-      "publicName": "Member",
+      "uid": "usr_mvye6yo1",
+      "phone": "+916307778429",
+      "email": "aarav.banda@example.com",
+      "displayName": "Aarav Kumar",
+      "publicName": "Aarav K.",
       "role": "needer",
       "kycLevel": "level_1",
       "kycStatus": "basic_verified",
-      "area": "Civil Lines",
+      "area": "Civil Lines, Banda",
       "city": "Banda",
       "coordinates": {
         "lat": 25.4764,
@@ -150,8 +150,9 @@
         "status": "not_submitted",
         "provider": "Authorized Partner (Coming Soon)"
       },
-      "createdAt": "2026-11-01T21:23:07.257Z",
-      "updatedAt": "2026-11-01T21:23:07.257Z"
+      "createdAt": "2026-11-01T22:19:12.001Z",
+      "updatedAt": "2026-11-01T22:19:22.390Z",
+      "emailVerified": true
     }
   ],
   "requests": [
@@ -190,7 +191,7 @@
         "lat": 25.481,
         "lng": 80.341
       },
-      "createdAt": "2026-11-01T21:11:07.240Z"
+      "createdAt": "2026-11-01T22:06:06.461Z"
     },
     {
       "id": "req_1042",
@@ -227,7 +228,7 @@
         "lat": 25.4764,
         "lng": 80.3344
       },
-      "createdAt": "2026-11-01T20:23:07.240Z"
+      "createdAt": "2026-11-01T21:18:06.461Z"
     },
     {
       "id": "req_1043",
@@ -259,7 +260,7 @@
         "lat": 25.5348,
         "lng": 80.3478
       },
-      "createdAt": "2026-11-01T17:23:07.240Z"
+      "createdAt": "2026-11-01T18:18:06.461Z"
     },
     {
       "id": "req_1044",
@@ -285,7 +286,7 @@
         "lat": 25.5348,
         "lng": 80.3478
       },
-      "createdAt": "2026-11-01T20:58:07.240Z"
+      "createdAt": "2026-11-01T21:53:06.462Z"
     },
     {
       "id": "req_1045",
@@ -311,7 +312,7 @@
         "lat": 25.55,
         "lng": 80.55
       },
-      "createdAt": "2026-11-01T20:38:07.240Z"
+      "createdAt": "2026-11-01T21:33:06.462Z"
     }
   ],
   "items": [
@@ -329,7 +330,7 @@
       "returnDeadline": null,
       "disputeFlag": false,
       "tag": "books",
-      "createdAt": "2026-11-01T21:23:07.240Z"
+      "createdAt": "2026-11-01T22:18:06.462Z"
     },
     {
       "id": "itm_study_02",
@@ -345,7 +346,7 @@
       "returnDeadline": null,
       "disputeFlag": false,
       "tag": "calculator",
-      "createdAt": "2026-11-01T21:23:07.240Z"
+      "createdAt": "2026-11-01T22:18:06.462Z"
     },
     {
       "id": "itm_study_03",
@@ -361,7 +362,7 @@
       "returnDeadline": null,
       "disputeFlag": false,
       "tag": "notes",
-      "createdAt": "2026-11-01T21:23:07.240Z"
+      "createdAt": "2026-11-01T22:18:06.462Z"
     },
     {
       "id": "itm_study_04",
@@ -377,7 +378,7 @@
       "returnDeadline": null,
       "disputeFlag": false,
       "tag": "drafter",
-      "createdAt": "2026-11-01T21:23:07.240Z"
+      "createdAt": "2026-11-01T22:18:06.462Z"
     },
     {
       "id": "itm_study_05",
@@ -393,7 +394,7 @@
       "returnDeadline": null,
       "disputeFlag": false,
       "tag": "ncert",
-      "createdAt": "2026-11-01T21:23:07.240Z"
+      "createdAt": "2026-11-01T22:18:06.462Z"
     },
     {
       "id": "itm_utensil_01",
@@ -409,7 +410,7 @@
       "returnDeadline": null,
       "disputeFlag": false,
       "tag": "patila",
-      "createdAt": "2026-11-01T21:23:07.240Z"
+      "createdAt": "2026-11-01T22:18:06.462Z"
     },
     {
       "id": "itm_utensil_02",
@@ -425,7 +426,7 @@
       "returnDeadline": null,
       "disputeFlag": false,
       "tag": "thali",
-      "createdAt": "2026-11-01T21:23:07.240Z"
+      "createdAt": "2026-11-01T22:18:06.462Z"
     },
     {
       "id": "itm_utensil_03",
@@ -441,7 +442,7 @@
       "returnDeadline": null,
       "disputeFlag": false,
       "tag": "kadhai",
-      "createdAt": "2026-11-01T21:23:07.240Z"
+      "createdAt": "2026-11-01T22:18:06.462Z"
     },
     {
       "id": "itm_utensil_04",
@@ -457,7 +458,7 @@
       "returnDeadline": null,
       "disputeFlag": false,
       "tag": "camper",
-      "createdAt": "2026-11-01T21:23:07.240Z"
+      "createdAt": "2026-11-01T22:18:06.462Z"
     },
     {
       "id": "itm_utensil_05",
@@ -473,7 +474,7 @@
       "returnDeadline": null,
       "disputeFlag": false,
       "tag": "brass",
-      "createdAt": "2026-11-01T21:23:07.240Z"
+      "createdAt": "2026-11-01T22:18:06.462Z"
     },
     {
       "id": "itm_elec_01",
@@ -489,7 +490,7 @@
       "returnDeadline": null,
       "disputeFlag": false,
       "tag": "soldering",
-      "createdAt": "2026-11-01T21:23:07.240Z"
+      "createdAt": "2026-11-01T22:18:06.462Z"
     },
     {
       "id": "itm_elec_02",
@@ -505,7 +506,7 @@
       "returnDeadline": null,
       "disputeFlag": false,
       "tag": "solar",
-      "createdAt": "2026-11-01T21:23:07.240Z"
+      "createdAt": "2026-11-01T22:18:06.462Z"
     },
     {
       "id": "itm_elec_03",
@@ -521,7 +522,7 @@
       "returnDeadline": null,
       "disputeFlag": false,
       "tag": "nebulizer",
-      "createdAt": "2026-11-01T21:23:07.240Z"
+      "createdAt": "2026-11-01T22:18:06.462Z"
     },
     {
       "id": "itm_elec_04",
@@ -537,7 +538,7 @@
       "returnDeadline": null,
       "disputeFlag": false,
       "tag": "bp_monitor",
-      "createdAt": "2026-11-01T21:23:07.240Z"
+      "createdAt": "2026-11-01T22:18:06.462Z"
     },
     {
       "id": "itm_elec_05",
@@ -553,7 +554,7 @@
       "returnDeadline": null,
       "disputeFlag": false,
       "tag": "projector",
-      "createdAt": "2026-11-01T21:23:07.240Z"
+      "createdAt": "2026-11-01T22:18:06.462Z"
     },
     {
       "id": "itm_elec_06",
@@ -569,7 +570,7 @@
       "returnDeadline": null,
       "disputeFlag": false,
       "tag": "megaphone",
-      "createdAt": "2026-11-01T21:23:07.240Z"
+      "createdAt": "2026-11-01T22:18:06.462Z"
     },
     {
       "id": "itm_501",
@@ -585,7 +586,7 @@
       "returnDeadline": "Saturday, 8 Nov",
       "disputeFlag": false,
       "tag": "wheelchair",
-      "createdAt": "2026-11-01T21:23:07.240Z"
+      "createdAt": "2026-11-01T22:18:06.462Z"
     },
     {
       "id": "itm_502",
@@ -601,7 +602,7 @@
       "returnDeadline": null,
       "disputeFlag": false,
       "tag": "crutches",
-      "createdAt": "2026-11-01T21:23:07.240Z"
+      "createdAt": "2026-11-01T22:18:06.462Z"
     },
     {
       "id": "itm_503",
@@ -617,7 +618,7 @@
       "returnDeadline": null,
       "disputeFlag": false,
       "tag": "backrest",
-      "createdAt": "2026-11-01T21:23:07.240Z"
+      "createdAt": "2026-11-01T22:18:06.462Z"
     }
   ],
   "handover_tokens": [
@@ -630,8 +631,8 @@
       "receiverId": "usr_aarav",
       "status": "active",
       "nonce": "demo_nonce_77",
-      "createdAt": "2026-11-01T21:23:07.241Z",
-      "expiresAt": "2026-11-02T21:23:07.241Z"
+      "createdAt": "2026-11-01T22:18:06.462Z",
+      "expiresAt": "2026-11-02T22:18:06.462Z"
     }
   ],
   "audit_logs": [
@@ -643,7 +644,7 @@
       "performedBy": "usr_verifier_01",
       "performerName": "Manoj Tripathi (Verifier #01)",
       "performerRole": "verifier",
-      "timestamp": "2026-11-01T20:38:07.241Z",
+      "timestamp": "2026-11-01T21:33:06.462Z",
       "details": "Duplicate check passed. Priority confirmed as High."
     }
   ],
@@ -655,7 +656,7 @@
       "rawText": "Need oxygen concentrator near Baberu",
       "status": "pending-assist",
       "assignedVolunteerId": null,
-      "createdAt": "2026-11-01T20:53:07.241Z"
+      "createdAt": "2026-11-01T21:48:06.462Z"
     }
   ]
 }

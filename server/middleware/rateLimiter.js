@@ -8,6 +8,7 @@ import rateLimit from 'express-rate-limit';
 export const otpRateLimiter = rateLimit({
   windowMs: 10 * 60 * 1000,
   max: 10,
+  validate: { xForwardedForHeader: false },
   message: {
     success: false,
     error: "Too many OTP attempts. Please wait 10 minutes before requesting another code.",
@@ -21,6 +22,7 @@ export const otpRateLimiter = rateLimit({
 export const apiRateLimiter = rateLimit({
   windowMs: 60 * 1000,
   max: 120,
+  validate: { xForwardedForHeader: false },
   message: {
     success: false,
     error: "Too many requests. Please slow down.",

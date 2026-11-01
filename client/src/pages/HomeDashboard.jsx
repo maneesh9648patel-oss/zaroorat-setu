@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { 
   Plus, Repeat, ArrowRight, ShieldCheck, HeartHandshake, MapPin, Sparkles, 
-  AlertCircle, PhoneCall, CheckCircle, Mic, Globe, Clock, Users, PackageCheck
+  AlertCircle, PhoneCall, CheckCircle, Mic, Globe, Clock, Users, PackageCheck, Camera, Shield
 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -10,7 +10,7 @@ import PriorityBadge from '../components/common/PriorityBadge';
 import KycBadge from '../components/common/KycBadge';
 import BrandLogo from '../components/common/BrandLogo';
 
-export default function HomeDashboard({ onOpenVoiceRecorder }) {
+export default function HomeDashboard({ onOpenVoiceRecorder, onOpenAssistant, onOpenLens }) {
   const { user, openAuthModal } = useAuth();
   const { t } = useLanguage();
   const navigate = useNavigate();
@@ -194,6 +194,35 @@ export default function HomeDashboard({ onOpenVoiceRecorder }) {
                 </div>
               </div>
               <Sparkles className="w-5 h-5 text-terracotta shrink-0 animate-pulse hidden sm:block" />
+            </div>
+          )}
+
+          {/* AI Lens & 50% Security Escrow Quick Banner */}
+          {onOpenLens && (
+            <div 
+              onClick={onOpenLens}
+              className="p-4 sm:p-5 rounded-3xl bg-gradient-to-r from-teal-light to-white border-2 border-teal/40 shadow-sm hover:border-teal hover:shadow-md transition cursor-pointer flex items-center justify-between gap-4 group"
+            >
+              <div className="flex items-center gap-3.5">
+                <div className="w-12 h-12 rounded-2xl bg-teal text-white flex items-center justify-center shadow-md group-hover:scale-105 transition shrink-0">
+                  <Camera className="w-6 h-6 text-softYellow" />
+                </div>
+                <div>
+                  <div className="font-black text-sm sm:text-base text-darkbrown flex items-center gap-2">
+                    <span>AI Lens Camera Scanner (सामान स्कैन व 50% धरोहर गणना)</span>
+                    <span className="px-2 py-0.5 rounded-full bg-softYellow/70 text-[10px] font-extrabold text-darkbrown">
+                      Visual AI
+                    </span>
+                  </div>
+                  <div className="text-xs text-darkbrown/70 mt-1 leading-normal">
+                    कैमरे से किताब, कैलकुलेटर, पतीला या इलेक्ट्रॉनिक्स स्कैन करें — AI तुरंत वस्तु पहचानकर 50% रिफंडेबल सुरक्षा राशि व कंडीशन तय करेगा।
+                  </div>
+                </div>
+              </div>
+              <div className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-teal text-white text-xs font-bold shrink-0">
+                <Shield className="w-3.5 h-3.5" />
+                <span>स्कैन करें</span>
+              </div>
             </div>
           )}
 

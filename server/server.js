@@ -29,6 +29,9 @@ const __dirname = path.dirname(__filename);
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+// Trust reverse proxies (Cloudflare Tunnel, Vercel, Nginx)
+app.set('trust proxy', 1);
+
 // Security Middleware (configured for SPA serving)
 app.use(helmet({
   crossOriginResourcePolicy: false,
