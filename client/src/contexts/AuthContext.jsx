@@ -5,21 +5,20 @@ const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(() => {
-    const saved = localStorage.getItem('zaroorat_user');
-    return saved ? JSON.parse(saved) : {
-      uid: "usr_aarav",
-      displayName: "Aarav Kumar",
-      publicName: "Aarav K.",
-      role: "needer",
-      kycLevel: "level_1",
-      kycStatus: "basic_verified",
-      area: "Civil Lines, Banda",
-      city: "Banda"
-    };
+    try {
+      const saved = localStorage.getItem('zaroorat_user');
+      return saved ? JSON.parse(saved) : null;
+    } catch (e) {
+      return null;
+    }
   });
 
-  const [token, setToken] = useState(() => localStorage.getItem('zaroorat_token') || 'tok_usr_aarav');
+  const [token, setToken] = useState(() => {
+    return localStorage.getItem('zaroorat_token') || null;
+  });
+
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [authMode, setAuthMode] = useState('login'); // 'login' | 'signup' | 'otp' | 'kyc'
   const [authStep, setAuthStep] = useState(1);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -41,8 +40,9 @@ export function AuthProvider({ children }) {
   }, [user]);
 
   // Actions
-  const openAuthModal = (step = 1) => {
+  const openAuthModal = (step = 1, mode = 'login') => {
     setAuthStep(step);
+    setAuthMode(mode);
     setIsAuthModalOpen(true);
     setError(null);
   };
@@ -52,6 +52,54 @@ export function AuthProvider({ children }) {
     setError(null);
   };
 
+  // 1. Password Signup
+  const signup = async ({ name, phone, email, password, role, area }) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const data = await api.auth.signup({ name, phone, email, password, role, area });
+      setToken(data.token);
+      setUser(data.user);
+      setLoading(false);
+      return data;
+    } catch (err) {
+      setLoading(false);
+      setError(err.message);
+      throw err;
+    }
+  };
+
+  // 2. Password Login (Email or Phone)
+  const login = async ({ identifier, password }) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const data = await api.auth.login({ identifier, password });
+      setToken(data.token);
+      setUser(data.user);
+      setLoading(false);
+      return data;
+    } catch (err) {
+      setLoading(false);
+      setError(err.message);
+      throw err;
+    }
+  };
+
+  // 3. Logout
+  const logout = async () => {
+    try {
+      await api.auth.logout();
+    } catch (e) {
+      // ignore
+    }
+    setUser(null);
+    setToken(null);
+    localStorage.removeItem('zaroorat_user');
+    localStorage.removeItem('zaroorat_token');
+  };
+
+  // OTP Fallback Methods
   const sendOtp = async (phone) => {
     setLoading(true);
     setError(null);
@@ -136,13 +184,12 @@ export function AuthProvider({ children }) {
       setLoading(false);
       return data;
     } catch (err) {
-      // Local fallback for quick mock
       const roleMap = {
-        needer: { uid: "usr_aarav", displayName: "Aarav Kumar", publicName: "Aarav K.", role: "needer", kycLevel: "level_1", kycStatus: "basic_verified", area: "Civil Lines, Banda" },
-        ngo: { uid: "usr_ngo_01", displayName: "Seva Sahayata Trust", publicName: "Seva Sahayata Trust", role: "ngo", kycLevel: "level_3", kycStatus: "fully_verified", area: "Civil Lines, Banda" },
-        donor: { uid: "usr_donor_priya", displayName: "Priya Verma", publicName: "Priya V.", role: "donor", kycLevel: "level_2", kycStatus: "fully_verified", area: "District Hospital Banda" },
-        verifier: { uid: "usr_verifier_01", displayName: "Manoj Tripathi", publicName: "Manoj T. (Reviewer)", role: "verifier", kycLevel: "level_2", kycStatus: "fully_verified", area: "REC Banda" },
-        admin: { uid: "usr_admin", displayName: "Admin ZarooratSetu", publicName: "Platform Admin", role: "admin", kycLevel: "level_3", kycStatus: "fully_verified", area: "REC Banda" }
+        needer: { uid: "usr_aarav", displayName: "Aarav Kumar", publicName: "Aarav K.", email: "aarav.banda@example.com", phone: "+919876543210", role: "needer", kycLevel: "level_1", kycStatus: "basic_verified", area: "Civil Lines, Banda" },
+        ngo: { uid: "usr_ngo_01", displayName: "Seva Sahayata Trust", publicName: "Seva Sahayata Trust", email: "seva.banda@example.org", phone: "+919415112345", role: "ngo", kycLevel: "level_3", kycStatus: "fully_verified", area: "Civil Lines, Banda" },
+        donor: { uid: "usr_donor_priya", displayName: "Priya Verma", publicName: "Priya V.", email: "priya.v@example.com", phone: "+919839054321", role: "donor", kycLevel: "level_2", kycStatus: "fully_verified", area: "District Hospital Banda" },
+        verifier: { uid: "usr_verifier_01", displayName: "Manoj Tripathi", publicName: "Manoj T. (Reviewer)", email: "verifier01@zarooratsetu.org", phone: "+919450099887", role: "verifier", kycLevel: "level_2", kycStatus: "fully_verified", area: "REC Banda" },
+        admin: { uid: "usr_admin", displayName: "Admin ZarooratSetu", publicName: "Platform Admin", email: "admin@zarooratsetu.org", phone: "+919999900000", role: "admin", kycLevel: "level_3", kycStatus: "fully_verified", area: "REC Banda" }
       };
       const fallbackUser = roleMap[targetRole] || roleMap.needer;
       setToken(`tok_${fallbackUser.uid}`);
@@ -152,33 +199,30 @@ export function AuthProvider({ children }) {
     }
   };
 
-  const logout = () => {
-    setUser(null);
-    setToken(null);
-    localStorage.removeItem('zaroorat_user');
-    localStorage.removeItem('zaroorat_token');
-  };
-
   return (
     <AuthContext.Provider
       value={{
         user,
         token,
-        isAuthenticated: !!user,
+        isAuthenticated: Boolean(user && token),
         kycLevel: user?.kycLevel || 'none',
         kycStatus: user?.kycStatus || 'unverified',
         isAuthModalOpen,
+        authMode,
+        setAuthMode,
         authStep,
         setAuthStep,
         openAuthModal,
         closeAuthModal,
+        signup,
+        login,
+        logout,
         sendOtp,
         verifyOtp,
         verifyEmail,
         updateProfile,
         submitTier2Id,
         switchRole,
-        logout,
         loading,
         error
       }}

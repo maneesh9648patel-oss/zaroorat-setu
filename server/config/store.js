@@ -6,6 +6,7 @@
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { hashPassword } from '../utils/security.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const DB_FILE = path.join(__dirname, '..', 'data', 'db.json');
@@ -612,8 +613,29 @@ class DataStore {
       if (!fs.existsSync(dataDir)) {
         fs.mkdirSync(dataDir, { recursive: true });
       }
-      // Always seed rich database with full catalog
-      this.data = INITIAL_DATA;
+      if (fs.existsSync(DB_FILE)) {
+        try {
+          const content = fs.readFileSync(DB_FILE, 'utf-8');
+          const parsed = JSON.parse(content);
+          if (parsed && Array.isArray(parsed.users) && parsed.users.length > 0) {
+            this.data = parsed;
+          } else {
+            this.data = INITIAL_DATA;
+          }
+        } catch (e) {
+          this.data = INITIAL_DATA;
+        }
+      } else {
+        this.data = INITIAL_DATA;
+      }
+
+      // Ensure demo accounts have a passwordHash so they can be logged into with password123
+      const defaultHash = hashPassword('password123');
+      for (const u of this.data.users) {
+        if (!u.passwordHash) {
+          u.passwordHash = defaultHash;
+        }
+      }
       this.persist();
     } catch (e) {
       console.warn("Using in-memory store (file sync fallback):", e.message);
@@ -630,20 +652,36 @@ class DataStore {
 
   // Users
   getUserByUid(uid) {
+    if (!uid) return null;
     return this.data.users.find(u => u.uid === uid) || null;
   }
 
   getUserByPhone(phone) {
-    return this.data.users.find(u => u.phone === phone) || null;
+    if (!phone) return null;
+    const clean = phone.toString().replace(/\D/g, '').slice(-10);
+    if (!clean) return null;
+    return this.data.users.find(u => {
+      if (!u.phone) return false;
+      const uClean = u.phone.toString().replace(/\D/g, '').slice(-10);
+      return uClean === clean;
+    }) || null;
   }
 
   getUserByEmail(email) {
-    return this.data.users.find(u => u.email === email) || null;
+    if (!email || typeof email !== 'string') return null;
+    const cleanEmail = email.trim().toLowerCase();
+    return this.data.users.find(u => u.email && u.email.trim().toLowerCase() === cleanEmail) || null;
   }
 
   createUser(userData) {
-    const existing = this.getUserByPhone(userData.phone);
-    if (existing) return existing;
+    if (userData.phone) {
+      const existing = this.getUserByPhone(userData.phone);
+      if (existing) return existing;
+    }
+    if (userData.email) {
+      const existingEmail = this.getUserByEmail(userData.email);
+      if (existingEmail) return existingEmail;
+    }
 
     const user = {
       ...userData,
@@ -668,19 +706,33 @@ class DataStore {
   }
 
   // Privacy helper: Sanitizes sensitive details from user record
-  sanitizeUser(user) {
+  // NEVER exposes passwordHash, salt, or private tokens
+  // If isOwner is false, phone and email are stripped to protect privacy from public viewers
+  sanitizeUser(user, isOwner = false) {
     if (!user) return null;
-    return {
+    const sanitized = {
       uid: user.uid,
       displayName: user.displayName,
       publicName: user.publicName || (user.displayName ? `${user.displayName.split(' ')[0]} ${user.displayName.split(' ')[1]?.[0] || ''}.` : 'Community Member'),
       role: user.role,
       kycLevel: user.kycLevel,
       kycStatus: user.kycStatus,
-      area: user.area,
+      area: user.area || "Civil Lines",
       city: user.city || "Banda",
-      ngoDetails: user.ngoDetails ? { regNumber: user.ngoDetails.regNumber, verified: true } : null
+      ngoDetails: user.ngoDetails ? { regNumber: user.ngoDetails.regNumber, verified: true } : null,
+      createdAt: user.createdAt
     };
+
+    if (isOwner) {
+      sanitized.phone = user.phone || null;
+      sanitized.email = user.email || null;
+    }
+
+    return sanitized;
+  }
+
+  sanitizePrivateUser(user) {
+    return this.sanitizeUser(user, true);
   }
 
   // Requests

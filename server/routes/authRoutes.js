@@ -10,6 +10,9 @@ import { otpRateLimiter } from '../middleware/rateLimiter.js';
 const router = Router();
 
 // Public auth endpoints
+router.post('/signup', authController.signup);
+router.post('/login', authController.login);
+router.post('/logout', authController.logout);
 router.post('/send-otp', otpRateLimiter, authController.sendOtp);
 router.post('/verify-otp', authController.verifyOtp);
 router.post('/switch-demo-user', authController.switchDemoUser);

@@ -36,6 +36,17 @@ async function request(endpoint, options = {}) {
 export const api = {
   // Auth & KYC
   auth: {
+    signup: (data) => request('/auth/signup', {
+      method: 'POST',
+      body: JSON.stringify(data)
+    }),
+    login: (data) => request('/auth/login', {
+      method: 'POST',
+      body: JSON.stringify(data)
+    }),
+    logout: () => request('/auth/logout', {
+      method: 'POST'
+    }),
     sendOtp: (phone) => request('/auth/send-otp', {
       method: 'POST',
       body: JSON.stringify({ phone })

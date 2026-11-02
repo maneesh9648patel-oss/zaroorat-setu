@@ -5,6 +5,7 @@ import { AuthProvider } from './contexts/AuthContext';
 import { SettingsProvider } from './contexts/SettingsContext';
 import Navbar from './components/common/Navbar';
 import BottomNav from './components/common/BottomNav';
+import ProtectedRoute from './components/auth/ProtectedRoute';
 import AuthKYCModal from './components/auth/AuthKYCModal';
 import RegionalLanguageModal from './components/common/RegionalLanguageModal';
 import VoiceRecorderModal from './components/voice/VoiceRecorderModal';
@@ -17,6 +18,8 @@ import TrackStatusPage from './pages/TrackStatusPage';
 import BorrowReturnPage from './pages/BorrowReturnPage';
 import VerifierDashboard from './pages/VerifierDashboard';
 import VolunteerAssistPage from './pages/VolunteerAssistPage';
+import AuthPortalPage from './pages/AuthPortalPage';
+import ProfilePage from './pages/ProfilePage';
 
 function AppContent() {
   const [isVoiceRecorderOpen, setIsVoiceRecorderOpen] = useState(false);
@@ -40,45 +43,68 @@ function AppContent() {
       />
       <main className="flex-1">
         <Routes>
+          {/* Public Auth Portal Routes */}
+          <Route path="/login" element={<AuthPortalPage initialTab="login" />} />
+          <Route path="/signup" element={<AuthPortalPage initialTab="signup" />} />
+
+          {/* Protected Routes: Only logged-in users can access dashboard & give/take item pages */}
           <Route 
             path="/" 
             element={
-              <HomeDashboard 
-                onOpenVoiceRecorder={() => setIsVoiceRecorderOpen(true)} 
-                onOpenAssistant={() => setIsAssistantOpen(true)}
-                onOpenLens={() => setIsLensOpen(true)}
-              />
+              <ProtectedRoute>
+                <HomeDashboard 
+                  onOpenVoiceRecorder={() => setIsVoiceRecorderOpen(true)} 
+                  onOpenAssistant={() => setIsAssistantOpen(true)}
+                  onOpenLens={() => setIsLensOpen(true)}
+                />
+              </ProtectedRoute>
             } 
           />
           <Route 
             path="/requests" 
             element={
-              <HomeDashboard 
-                onOpenVoiceRecorder={() => setIsVoiceRecorderOpen(true)} 
-                onOpenAssistant={() => setIsAssistantOpen(true)}
-                onOpenLens={() => setIsLensOpen(true)}
-              />
+              <ProtectedRoute>
+                <HomeDashboard 
+                  onOpenVoiceRecorder={() => setIsVoiceRecorderOpen(true)} 
+                  onOpenAssistant={() => setIsAssistantOpen(true)}
+                  onOpenLens={() => setIsLensOpen(true)}
+                />
+              </ProtectedRoute>
             } 
           />
           <Route 
             path="/new-request" 
             element={
-              <NewRequestPage 
-                onOpenVoiceRecorder={() => setIsVoiceRecorderOpen(true)} 
-              />
+              <ProtectedRoute>
+                <NewRequestPage 
+                  onOpenVoiceRecorder={() => setIsVoiceRecorderOpen(true)} 
+                />
+              </ProtectedRoute>
             } 
           />
-          <Route path="/requests/:id/status" element={<TrackStatusPage />} />
           <Route 
             path="/borrow-return" 
             element={
-              <BorrowReturnPage 
-                onOpenLens={() => setIsLensOpen(true)}
-                prefilledLensItem={lensScannedItem}
-                onClearPrefill={() => setLensScannedItem(null)}
-              />
+              <ProtectedRoute>
+                <BorrowReturnPage 
+                  onOpenLens={() => setIsLensOpen(true)}
+                  prefilledLensItem={lensScannedItem}
+                  onClearPrefill={() => setLensScannedItem(null)}
+                />
+              </ProtectedRoute>
             } 
           />
+          <Route 
+            path="/profile" 
+            element={
+              <ProtectedRoute>
+                <ProfilePage />
+              </ProtectedRoute>
+            } 
+          />
+
+          {/* Other App Routes */}
+          <Route path="/requests/:id/status" element={<TrackStatusPage />} />
           <Route path="/verifier" element={<VerifierDashboard />} />
           <Route path="/volunteer-assist" element={<VolunteerAssistPage />} />
           <Route path="*" element={<Navigate to="/" replace />} />

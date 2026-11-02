@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { MapPin, Globe, ChevronDown, Check, Mic, Home, ClipboardList, Box, CheckSquare, PhoneCall, Bot, Sparkles, Camera, Settings, Sun, Moon } from 'lucide-react';
+import { MapPin, Globe, ChevronDown, Check, Mic, Home, ClipboardList, Box, CheckSquare, PhoneCall, Bot, Sparkles, Camera, Settings, Sun, Moon, LogIn, LogOut, User as UserIcon } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useSettings } from '../../contexts/SettingsContext';
@@ -8,7 +8,7 @@ import BrandLogo from './BrandLogo';
 import KycBadge from './KycBadge';
 
 export default function Navbar({ onOpenVoiceRecorder, onOpenAssistant, onOpenLens }) {
-  const { user, switchRole, openAuthModal } = useAuth();
+  const { user, switchRole, openAuthModal, logout, isAuthenticated } = useAuth();
   const { language, currentLangObj, setIsLangModalOpen, t } = useLanguage();
   const { theme, toggleTheme, openSettings } = useSettings();
   const location = useLocation();
@@ -200,13 +200,43 @@ export default function Navbar({ onOpenVoiceRecorder, onOpenAssistant, onOpenLen
             )}
           </div>
 
-          {/* KYC Status / Login Trigger */}
-          <button
-            onClick={() => openAuthModal(1)}
-            className="flex items-center gap-1.5 p-1 rounded-full hover:bg-white/10 transition"
-          >
-            <KycBadge level={user?.kycLevel} status={user?.kycStatus} size="sm" />
-          </button>
+          {/* User Auth Portal & Profile Controls */}
+          {user ? (
+            <div className="flex items-center gap-1.5">
+              <Link
+                to="/profile"
+                className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/10 hover:bg-white/20 text-xs font-bold text-cream transition border border-white/10"
+                title="मेरा प्रोफाइल देखें (View Profile)"
+              >
+                <UserIcon className="w-3.5 h-3.5 text-softYellow" />
+                <span className="hidden sm:inline max-w-[85px] truncate">{user.displayName || user.publicName}</span>
+              </Link>
+              <button
+                onClick={() => openAuthModal(1)}
+                className="p-1 rounded-full hover:bg-white/10 transition"
+                title="KYC Status"
+              >
+                <KycBadge level={user?.kycLevel} status={user?.kycStatus} size="sm" />
+              </button>
+              <button
+                onClick={logout}
+                className="p-1.5 rounded-full hover:bg-red-500/20 text-cream/70 hover:text-red-400 transition"
+                title="लॉग आउट करें (Logout)"
+                aria-label="Logout"
+              >
+                <LogOut className="w-3.5 h-3.5" />
+              </button>
+            </div>
+          ) : (
+            <Link
+              to="/login"
+              className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-terracotta hover:bg-terracotta-hover text-white text-xs font-black shadow-sm transition"
+              title="लॉग इन अथवा नया खाता बनाएं (Login / Signup)"
+            >
+              <LogIn className="w-3.5 h-3.5" />
+              <span>लॉग इन</span>
+            </Link>
+          )}
         </div>
       </div>
     </header>

@@ -19,7 +19,8 @@
         "status": "not_submitted",
         "provider": "Authorized Partner (Coming Soon)"
       },
-      "createdAt": "2026-11-02T03:55:40.284Z"
+      "createdAt": "2026-11-02T04:32:13.212Z",
+      "passwordHash": "5980c957dea89af54b104ca37044efc6:b9ef8975a943be9ea05c6cc8c74dc04a6f52078d8eb7864a60f644c4ee77a726dce1fe0b727f4ef6a09b9d1fb0ef4a9fcbadaa24748e3a551ecaff43cf036650"
     },
     {
       "uid": "usr_ngo_01",
@@ -40,7 +41,8 @@
         "regNumber": "UP/2021/BND/0042",
         "verifiedByAdmin": true
       },
-      "createdAt": "2026-11-02T03:55:40.292Z"
+      "createdAt": "2026-11-02T04:32:13.215Z",
+      "passwordHash": "5980c957dea89af54b104ca37044efc6:b9ef8975a943be9ea05c6cc8c74dc04a6f52078d8eb7864a60f644c4ee77a726dce1fe0b727f4ef6a09b9d1fb0ef4a9fcbadaa24748e3a551ecaff43cf036650"
     },
     {
       "uid": "usr_donor_priya",
@@ -61,7 +63,8 @@
         "status": "verified",
         "provider": "Manual Verifier Verified"
       },
-      "createdAt": "2026-11-02T03:55:40.292Z"
+      "createdAt": "2026-11-02T04:32:13.215Z",
+      "passwordHash": "5980c957dea89af54b104ca37044efc6:b9ef8975a943be9ea05c6cc8c74dc04a6f52078d8eb7864a60f644c4ee77a726dce1fe0b727f4ef6a09b9d1fb0ef4a9fcbadaa24748e3a551ecaff43cf036650"
     },
     {
       "uid": "usr_student_rec",
@@ -78,7 +81,8 @@
         "lat": 25.5348,
         "lng": 80.3478
       },
-      "createdAt": "2026-11-02T03:55:40.292Z"
+      "createdAt": "2026-11-02T04:32:13.215Z",
+      "passwordHash": "5980c957dea89af54b104ca37044efc6:b9ef8975a943be9ea05c6cc8c74dc04a6f52078d8eb7864a60f644c4ee77a726dce1fe0b727f4ef6a09b9d1fb0ef4a9fcbadaa24748e3a551ecaff43cf036650"
     },
     {
       "uid": "usr_kitchen_banda",
@@ -95,7 +99,8 @@
         "lat": 25.4764,
         "lng": 80.3344
       },
-      "createdAt": "2026-11-02T03:55:40.292Z"
+      "createdAt": "2026-11-02T04:32:13.215Z",
+      "passwordHash": "5980c957dea89af54b104ca37044efc6:b9ef8975a943be9ea05c6cc8c74dc04a6f52078d8eb7864a60f644c4ee77a726dce1fe0b727f4ef6a09b9d1fb0ef4a9fcbadaa24748e3a551ecaff43cf036650"
     },
     {
       "uid": "usr_verifier_01",
@@ -112,7 +117,8 @@
         "lat": 25.5348,
         "lng": 80.3478
       },
-      "createdAt": "2026-11-02T03:55:40.292Z"
+      "createdAt": "2026-11-02T04:32:13.215Z",
+      "passwordHash": "5980c957dea89af54b104ca37044efc6:b9ef8975a943be9ea05c6cc8c74dc04a6f52078d8eb7864a60f644c4ee77a726dce1fe0b727f4ef6a09b9d1fb0ef4a9fcbadaa24748e3a551ecaff43cf036650"
     },
     {
       "uid": "usr_admin",
@@ -129,7 +135,192 @@
         "lat": 25.5348,
         "lng": 80.3478
       },
-      "createdAt": "2026-11-02T03:55:40.292Z"
+      "createdAt": "2026-11-02T04:32:13.215Z",
+      "passwordHash": "5980c957dea89af54b104ca37044efc6:b9ef8975a943be9ea05c6cc8c74dc04a6f52078d8eb7864a60f644c4ee77a726dce1fe0b727f4ef6a09b9d1fb0ef4a9fcbadaa24748e3a551ecaff43cf036650"
+    },
+    {
+      "uid": "usr_mvyrio52",
+      "phone": "+919811122233",
+      "email": null,
+      "displayName": "New Member",
+      "publicName": "Member",
+      "role": "needer",
+      "kycLevel": "level_1",
+      "kycStatus": "basic_verified",
+      "area": "Civil Lines",
+      "city": "Banda",
+      "coordinates": {
+        "lat": 25.4764,
+        "lng": 80.3344
+      },
+      "idDocumentPlaceholder": {
+        "status": "not_submitted",
+        "provider": "Authorized Partner (Coming Soon)"
+      },
+      "createdAt": "2026-11-02T04:32:13.238Z",
+      "updatedAt": "2026-11-02T04:32:13.238Z",
+      "passwordHash": "5980c957dea89af54b104ca37044efc6:b9ef8975a943be9ea05c6cc8c74dc04a6f52078d8eb7864a60f644c4ee77a726dce1fe0b727f4ef6a09b9d1fb0ef4a9fcbadaa24748e3a551ecaff43cf036650"
+    },
+    {
+      "uid": "usr_mvyrnlx5_uxfa",
+      "phone": "+919810939717",
+      "email": "newuser_mvyrnlvq@example.com",
+      "passwordHash": "bddaebeda9d0a93443a7518b36588465:9111b11b3454215d9121b275308415bf3d4b9da7089d81d9fcfd07cc0a79dd5023fbb758256e99bb9ec2c9deaf63fc2ae617aeb123df70c9ef338de2cd312eb1",
+      "displayName": "Ramesh Sharma",
+      "publicName": "Ramesh S.",
+      "role": "needer",
+      "kycLevel": "level_1",
+      "kycStatus": "basic_verified",
+      "area": "Civil Lines",
+      "city": "Banda",
+      "coordinates": {
+        "lat": 25.4764,
+        "lng": 80.3344
+      },
+      "idDocumentPlaceholder": {
+        "status": "not_submitted",
+        "provider": "Authorized Partner (Coming Soon)"
+      },
+      "createdAt": "2026-11-02T04:36:03.641Z",
+      "updatedAt": "2026-11-02T04:36:03.641Z"
+    },
+    {
+      "uid": "usr_mvyrnlyt_75rr",
+      "phone": "+919955787445",
+      "email": "login_mvyrnlxa@example.com",
+      "passwordHash": "77f116e88fe41b4b7f00f2d72affc24a:5e09332d6c7aea6e8631269d383ef686f04fa42b3b5bfa1bbd4efae960caa6dcfae2b1b4af91240f9b7956386b72a72fc3cb9f42c5d96febc652e7d59fa66522",
+      "displayName": "Kavita Devi",
+      "publicName": "Kavita D.",
+      "role": "needer",
+      "kycLevel": "level_1",
+      "kycStatus": "basic_verified",
+      "area": "Civil Lines",
+      "city": "Banda",
+      "coordinates": {
+        "lat": 25.4764,
+        "lng": 80.3344
+      },
+      "idDocumentPlaceholder": {
+        "status": "not_submitted",
+        "provider": "Authorized Partner (Coming Soon)"
+      },
+      "createdAt": "2026-11-02T04:36:03.701Z",
+      "updatedAt": "2026-11-02T04:36:03.701Z"
+    },
+    {
+      "uid": "usr_mvyrpjd2_cf7u",
+      "phone": "+919810538761",
+      "email": "newuser_mvyrpjbo@example.com",
+      "passwordHash": "3810c2ed456a3559b9674d3f1febaac5:d58a8b4d19e0def3f43717bf55091160432c149eac3529a58dacdb18d348eb34948d079c50d2b13aebb976c6d5a814621dd5436f4935651daf204791810299d8",
+      "displayName": "Ramesh Sharma",
+      "publicName": "Ramesh S.",
+      "role": "needer",
+      "kycLevel": "level_1",
+      "kycStatus": "basic_verified",
+      "area": "Civil Lines",
+      "city": "Banda",
+      "coordinates": {
+        "lat": 25.4764,
+        "lng": 80.3344
+      },
+      "idDocumentPlaceholder": {
+        "status": "not_submitted",
+        "provider": "Authorized Partner (Coming Soon)"
+      },
+      "createdAt": "2026-11-02T04:37:33.638Z",
+      "updatedAt": "2026-11-02T04:37:33.638Z"
+    },
+    {
+      "uid": "usr_mvyrpjet_bs6i",
+      "phone": "+919955702867",
+      "email": "login_mvyrpjd8@example.com",
+      "passwordHash": "d1282dc298e4a9c10aaf2341cb6dbfe6:87447440d34bc3c374715726f38003d9abc3e195d8825014d0ccbb6c0fea89182edfe2e6fbc5b4c4e0519184e924a307b39964dffc9a5187da9ea24c40bf0d10",
+      "displayName": "Kavita Devi",
+      "publicName": "Kavita D.",
+      "role": "needer",
+      "kycLevel": "level_1",
+      "kycStatus": "basic_verified",
+      "area": "Civil Lines",
+      "city": "Banda",
+      "coordinates": {
+        "lat": 25.4764,
+        "lng": 80.3344
+      },
+      "idDocumentPlaceholder": {
+        "status": "not_submitted",
+        "provider": "Authorized Partner (Coming Soon)"
+      },
+      "createdAt": "2026-11-02T04:37:33.701Z",
+      "updatedAt": "2026-11-02T04:37:33.701Z"
+    },
+    {
+      "uid": "usr_mvyrylg5_hy5o",
+      "phone": "+919876599999",
+      "email": "aditya.singh@example.com",
+      "passwordHash": "9dd7e12c5e01ead6f87318ea15606ffb:3a043de94a1f7a503e6a305ac96765ea05787b21f9ac8a7ac51420d9929c0d252c8392d26ab76e4900483845e89b8471f58ce990786c8a8e75c09541faada4ab",
+      "displayName": "Aditya Singh",
+      "publicName": "Aditya S.",
+      "role": "needer",
+      "kycLevel": "level_1",
+      "kycStatus": "basic_verified",
+      "area": "Civil Lines",
+      "city": "Banda",
+      "coordinates": {
+        "lat": 25.4764,
+        "lng": 80.3344
+      },
+      "idDocumentPlaceholder": {
+        "status": "not_submitted",
+        "provider": "Authorized Partner (Coming Soon)"
+      },
+      "createdAt": "2026-11-02T04:44:36.246Z",
+      "updatedAt": "2026-11-02T04:44:36.246Z"
+    },
+    {
+      "uid": "usr_mvys58j7_wsgf",
+      "phone": "+919810592191",
+      "email": "newuser_mvys58hq@example.com",
+      "passwordHash": "0fc8db737fd2c39115d6f0e1d5308373:a36c9a5a735f3fbe390a97a5217875aec83e34a57ee59bec3661f2dcb17b186833c18521956c9ab6812410e505e8af080a1a0d0351de74d9cf80af9b53b472a2",
+      "displayName": "Ramesh Sharma",
+      "publicName": "Ramesh S.",
+      "role": "needer",
+      "kycLevel": "level_1",
+      "kycStatus": "basic_verified",
+      "area": "Civil Lines",
+      "city": "Banda",
+      "coordinates": {
+        "lat": 25.4764,
+        "lng": 80.3344
+      },
+      "idDocumentPlaceholder": {
+        "status": "not_submitted",
+        "provider": "Authorized Partner (Coming Soon)"
+      },
+      "createdAt": "2026-11-02T04:49:46.099Z",
+      "updatedAt": "2026-11-02T04:49:46.099Z"
+    },
+    {
+      "uid": "usr_mvys58ld_i9la",
+      "phone": "+919955779939",
+      "email": "login_mvys58ju@example.com",
+      "passwordHash": "2107114ea9fd9b3775b0619509c8fc04:5f4730182d93c0763ab3794ed7d4c9bd1a9c7d0d87e95f21d3edea0e1b497251e2bcff0f489ff167abf6c20f4397dcf6b8a01309f08e7ddeb857eca25dedb6dd",
+      "displayName": "Kavita Devi",
+      "publicName": "Kavita D.",
+      "role": "needer",
+      "kycLevel": "level_1",
+      "kycStatus": "basic_verified",
+      "area": "Civil Lines",
+      "city": "Banda",
+      "coordinates": {
+        "lat": 25.4764,
+        "lng": 80.3344
+      },
+      "idDocumentPlaceholder": {
+        "status": "not_submitted",
+        "provider": "Authorized Partner (Coming Soon)"
+      },
+      "createdAt": "2026-11-02T04:49:46.177Z",
+      "updatedAt": "2026-11-02T04:49:46.177Z"
     }
   ],
   "requests": [
@@ -168,7 +359,7 @@
         "lat": 25.481,
         "lng": 80.341
       },
-      "createdAt": "2026-11-02T03:43:40.292Z"
+      "createdAt": "2026-11-02T04:20:13.216Z"
     },
     {
       "id": "req_1042",
@@ -205,7 +396,7 @@
         "lat": 25.4764,
         "lng": 80.3344
       },
-      "createdAt": "2026-11-02T02:55:40.292Z"
+      "createdAt": "2026-11-02T03:32:13.216Z"
     },
     {
       "id": "req_1043",
@@ -237,7 +428,7 @@
         "lat": 25.5348,
         "lng": 80.3478
       },
-      "createdAt": "2026-11-01T23:55:40.292Z"
+      "createdAt": "2026-11-02T00:32:13.216Z"
     },
     {
       "id": "req_1044",
@@ -263,7 +454,7 @@
         "lat": 25.5348,
         "lng": 80.3478
       },
-      "createdAt": "2026-11-02T03:30:40.292Z"
+      "createdAt": "2026-11-02T04:07:13.216Z"
     },
     {
       "id": "req_1045",
@@ -289,7 +480,7 @@
         "lat": 25.55,
         "lng": 80.55
       },
-      "createdAt": "2026-11-02T03:10:40.292Z"
+      "createdAt": "2026-11-02T03:47:13.216Z"
     }
   ],
   "items": [
@@ -307,7 +498,7 @@
       "returnDeadline": null,
       "disputeFlag": false,
       "tag": "books",
-      "createdAt": "2026-11-02T03:55:40.292Z"
+      "createdAt": "2026-11-02T04:32:13.216Z"
     },
     {
       "id": "itm_study_02",
@@ -323,7 +514,7 @@
       "returnDeadline": null,
       "disputeFlag": false,
       "tag": "calculator",
-      "createdAt": "2026-11-02T03:55:40.292Z"
+      "createdAt": "2026-11-02T04:32:13.216Z"
     },
     {
       "id": "itm_study_03",
@@ -339,7 +530,7 @@
       "returnDeadline": null,
       "disputeFlag": false,
       "tag": "notes",
-      "createdAt": "2026-11-02T03:55:40.292Z"
+      "createdAt": "2026-11-02T04:32:13.216Z"
     },
     {
       "id": "itm_study_04",
@@ -355,7 +546,7 @@
       "returnDeadline": null,
       "disputeFlag": false,
       "tag": "drafter",
-      "createdAt": "2026-11-02T03:55:40.292Z"
+      "createdAt": "2026-11-02T04:32:13.216Z"
     },
     {
       "id": "itm_study_05",
@@ -371,7 +562,7 @@
       "returnDeadline": null,
       "disputeFlag": false,
       "tag": "ncert",
-      "createdAt": "2026-11-02T03:55:40.292Z"
+      "createdAt": "2026-11-02T04:32:13.216Z"
     },
     {
       "id": "itm_utensil_01",
@@ -387,7 +578,7 @@
       "returnDeadline": null,
       "disputeFlag": false,
       "tag": "patila",
-      "createdAt": "2026-11-02T03:55:40.292Z"
+      "createdAt": "2026-11-02T04:32:13.216Z"
     },
     {
       "id": "itm_utensil_02",
@@ -403,7 +594,7 @@
       "returnDeadline": null,
       "disputeFlag": false,
       "tag": "thali",
-      "createdAt": "2026-11-02T03:55:40.292Z"
+      "createdAt": "2026-11-02T04:32:13.216Z"
     },
     {
       "id": "itm_utensil_03",
@@ -419,7 +610,7 @@
       "returnDeadline": null,
       "disputeFlag": false,
       "tag": "kadhai",
-      "createdAt": "2026-11-02T03:55:40.292Z"
+      "createdAt": "2026-11-02T04:32:13.216Z"
     },
     {
       "id": "itm_utensil_04",
@@ -435,7 +626,7 @@
       "returnDeadline": null,
       "disputeFlag": false,
       "tag": "camper",
-      "createdAt": "2026-11-02T03:55:40.292Z"
+      "createdAt": "2026-11-02T04:32:13.216Z"
     },
     {
       "id": "itm_utensil_05",
@@ -451,7 +642,7 @@
       "returnDeadline": null,
       "disputeFlag": false,
       "tag": "brass",
-      "createdAt": "2026-11-02T03:55:40.292Z"
+      "createdAt": "2026-11-02T04:32:13.216Z"
     },
     {
       "id": "itm_elec_01",
@@ -467,7 +658,7 @@
       "returnDeadline": null,
       "disputeFlag": false,
       "tag": "soldering",
-      "createdAt": "2026-11-02T03:55:40.292Z"
+      "createdAt": "2026-11-02T04:32:13.216Z"
     },
     {
       "id": "itm_elec_02",
@@ -483,7 +674,7 @@
       "returnDeadline": null,
       "disputeFlag": false,
       "tag": "solar",
-      "createdAt": "2026-11-02T03:55:40.292Z"
+      "createdAt": "2026-11-02T04:32:13.216Z"
     },
     {
       "id": "itm_elec_03",
@@ -499,7 +690,7 @@
       "returnDeadline": null,
       "disputeFlag": false,
       "tag": "nebulizer",
-      "createdAt": "2026-11-02T03:55:40.292Z"
+      "createdAt": "2026-11-02T04:32:13.216Z"
     },
     {
       "id": "itm_elec_04",
@@ -515,7 +706,7 @@
       "returnDeadline": null,
       "disputeFlag": false,
       "tag": "bp_monitor",
-      "createdAt": "2026-11-02T03:55:40.292Z"
+      "createdAt": "2026-11-02T04:32:13.216Z"
     },
     {
       "id": "itm_elec_05",
@@ -531,7 +722,7 @@
       "returnDeadline": null,
       "disputeFlag": false,
       "tag": "projector",
-      "createdAt": "2026-11-02T03:55:40.292Z"
+      "createdAt": "2026-11-02T04:32:13.216Z"
     },
     {
       "id": "itm_elec_06",
@@ -547,7 +738,7 @@
       "returnDeadline": null,
       "disputeFlag": false,
       "tag": "megaphone",
-      "createdAt": "2026-11-02T03:55:40.292Z"
+      "createdAt": "2026-11-02T04:32:13.216Z"
     },
     {
       "id": "itm_501",
@@ -563,7 +754,7 @@
       "returnDeadline": "Saturday, 8 Nov",
       "disputeFlag": false,
       "tag": "wheelchair",
-      "createdAt": "2026-11-02T03:55:40.292Z"
+      "createdAt": "2026-11-02T04:32:13.216Z"
     },
     {
       "id": "itm_502",
@@ -579,7 +770,7 @@
       "returnDeadline": null,
       "disputeFlag": false,
       "tag": "crutches",
-      "createdAt": "2026-11-02T03:55:40.292Z"
+      "createdAt": "2026-11-02T04:32:13.216Z"
     },
     {
       "id": "itm_503",
@@ -595,7 +786,7 @@
       "returnDeadline": null,
       "disputeFlag": false,
       "tag": "backrest",
-      "createdAt": "2026-11-02T03:55:40.292Z"
+      "createdAt": "2026-11-02T04:32:13.216Z"
     }
   ],
   "handover_tokens": [
@@ -608,11 +799,220 @@
       "receiverId": "usr_aarav",
       "status": "active",
       "nonce": "demo_nonce_77",
-      "createdAt": "2026-11-02T03:55:40.292Z",
-      "expiresAt": "2026-11-03T03:55:40.292Z"
+      "createdAt": "2026-11-02T04:32:13.216Z",
+      "expiresAt": "2026-11-03T04:32:13.216Z"
     }
   ],
   "audit_logs": [
+    {
+      "id": "aud_1793594986403_606",
+      "action": "USER_LOGIN",
+      "entityType": "user",
+      "entityId": "usr_mvys58ld_i9la",
+      "performedBy": "usr_mvys58ld_i9la",
+      "performerName": "Kavita Devi",
+      "performerRole": "needer",
+      "details": "User logged in successfully via email",
+      "timestamp": "2026-11-02T04:49:46.403Z"
+    },
+    {
+      "id": "aud_1793594986293_617",
+      "action": "USER_LOGIN",
+      "entityType": "user",
+      "entityId": "usr_mvys58ld_i9la",
+      "performedBy": "usr_mvys58ld_i9la",
+      "performerName": "Kavita Devi",
+      "performerRole": "needer",
+      "details": "User logged in successfully via phone",
+      "timestamp": "2026-11-02T04:49:46.293Z"
+    },
+    {
+      "id": "aud_1793594986233_319",
+      "action": "USER_LOGIN",
+      "entityType": "user",
+      "entityId": "usr_mvys58ld_i9la",
+      "performedBy": "usr_mvys58ld_i9la",
+      "performerName": "Kavita Devi",
+      "performerRole": "needer",
+      "details": "User logged in successfully via email",
+      "timestamp": "2026-11-02T04:49:46.233Z"
+    },
+    {
+      "id": "aud_1793594986179_534",
+      "action": "USER_SIGNUP",
+      "entityType": "user",
+      "entityId": "usr_mvys58ld_i9la",
+      "performedBy": "usr_mvys58ld_i9la",
+      "performerName": "Kavita Devi",
+      "performerRole": "needer",
+      "details": "New account registered: Kavita Devi (+919955779939)",
+      "timestamp": "2026-11-02T04:49:46.179Z"
+    },
+    {
+      "id": "aud_1793594986102_82",
+      "action": "USER_SIGNUP",
+      "entityType": "user",
+      "entityId": "usr_mvys58j7_wsgf",
+      "performedBy": "usr_mvys58j7_wsgf",
+      "performerName": "Ramesh Sharma",
+      "performerRole": "needer",
+      "details": "New account registered: Ramesh Sharma (+919810592191)",
+      "timestamp": "2026-11-02T04:49:46.102Z"
+    },
+    {
+      "id": "aud_1793594782955_838",
+      "action": "USER_LOGIN",
+      "entityType": "user",
+      "entityId": "usr_mvyrylg5_hy5o",
+      "performedBy": "usr_mvyrylg5_hy5o",
+      "performerName": "Aditya Singh",
+      "performerRole": "needer",
+      "details": "User logged in successfully via phone",
+      "timestamp": "2026-11-02T04:46:22.955Z"
+    },
+    {
+      "id": "aud_1793594721500_363",
+      "action": "USER_LOGIN",
+      "entityType": "user",
+      "entityId": "usr_mvyrylg5_hy5o",
+      "performedBy": "usr_mvyrylg5_hy5o",
+      "performerName": "Aditya Singh",
+      "performerRole": "needer",
+      "details": "User logged in successfully via phone",
+      "timestamp": "2026-11-02T04:45:21.500Z"
+    },
+    {
+      "id": "aud_1793594708703_335",
+      "action": "USER_LOGIN",
+      "entityType": "user",
+      "entityId": "usr_mvyrylg5_hy5o",
+      "performedBy": "usr_mvyrylg5_hy5o",
+      "performerName": "Aditya Singh",
+      "performerRole": "needer",
+      "details": "User logged in successfully via email",
+      "timestamp": "2026-11-02T04:45:08.703Z"
+    },
+    {
+      "id": "aud_1793594676248_372",
+      "action": "USER_SIGNUP",
+      "entityType": "user",
+      "entityId": "usr_mvyrylg5_hy5o",
+      "performedBy": "usr_mvyrylg5_hy5o",
+      "performerName": "Aditya Singh",
+      "performerRole": "needer",
+      "details": "New account registered: Aditya Singh (+919876599999)",
+      "timestamp": "2026-11-02T04:44:36.248Z"
+    },
+    {
+      "id": "aud_1793594253917_316",
+      "action": "USER_LOGIN",
+      "entityType": "user",
+      "entityId": "usr_mvyrpjet_bs6i",
+      "performedBy": "usr_mvyrpjet_bs6i",
+      "performerName": "Kavita Devi",
+      "performerRole": "needer",
+      "details": "User logged in successfully via email",
+      "timestamp": "2026-11-02T04:37:33.917Z"
+    },
+    {
+      "id": "aud_1793594253809_636",
+      "action": "USER_LOGIN",
+      "entityType": "user",
+      "entityId": "usr_mvyrpjet_bs6i",
+      "performedBy": "usr_mvyrpjet_bs6i",
+      "performerName": "Kavita Devi",
+      "performerRole": "needer",
+      "details": "User logged in successfully via phone",
+      "timestamp": "2026-11-02T04:37:33.809Z"
+    },
+    {
+      "id": "aud_1793594253757_65",
+      "action": "USER_LOGIN",
+      "entityType": "user",
+      "entityId": "usr_mvyrpjet_bs6i",
+      "performedBy": "usr_mvyrpjet_bs6i",
+      "performerName": "Kavita Devi",
+      "performerRole": "needer",
+      "details": "User logged in successfully via email",
+      "timestamp": "2026-11-02T04:37:33.757Z"
+    },
+    {
+      "id": "aud_1793594253702_547",
+      "action": "USER_SIGNUP",
+      "entityType": "user",
+      "entityId": "usr_mvyrpjet_bs6i",
+      "performedBy": "usr_mvyrpjet_bs6i",
+      "performerName": "Kavita Devi",
+      "performerRole": "needer",
+      "details": "New account registered: Kavita Devi (+919955702867)",
+      "timestamp": "2026-11-02T04:37:33.702Z"
+    },
+    {
+      "id": "aud_1793594253640_828",
+      "action": "USER_SIGNUP",
+      "entityType": "user",
+      "entityId": "usr_mvyrpjd2_cf7u",
+      "performedBy": "usr_mvyrpjd2_cf7u",
+      "performerName": "Ramesh Sharma",
+      "performerRole": "needer",
+      "details": "New account registered: Ramesh Sharma (+919810538761)",
+      "timestamp": "2026-11-02T04:37:33.640Z"
+    },
+    {
+      "id": "aud_1793594163923_499",
+      "action": "USER_LOGIN",
+      "entityType": "user",
+      "entityId": "usr_mvyrnlyt_75rr",
+      "performedBy": "usr_mvyrnlyt_75rr",
+      "performerName": "Kavita Devi",
+      "performerRole": "needer",
+      "details": "User logged in successfully via email",
+      "timestamp": "2026-11-02T04:36:03.923Z"
+    },
+    {
+      "id": "aud_1793594163814_271",
+      "action": "USER_LOGIN",
+      "entityType": "user",
+      "entityId": "usr_mvyrnlyt_75rr",
+      "performedBy": "usr_mvyrnlyt_75rr",
+      "performerName": "Kavita Devi",
+      "performerRole": "needer",
+      "details": "User logged in successfully via phone",
+      "timestamp": "2026-11-02T04:36:03.814Z"
+    },
+    {
+      "id": "aud_1793594163757_143",
+      "action": "USER_LOGIN",
+      "entityType": "user",
+      "entityId": "usr_mvyrnlyt_75rr",
+      "performedBy": "usr_mvyrnlyt_75rr",
+      "performerName": "Kavita Devi",
+      "performerRole": "needer",
+      "details": "User logged in successfully via email",
+      "timestamp": "2026-11-02T04:36:03.757Z"
+    },
+    {
+      "id": "aud_1793594163703_209",
+      "action": "USER_SIGNUP",
+      "entityType": "user",
+      "entityId": "usr_mvyrnlyt_75rr",
+      "performedBy": "usr_mvyrnlyt_75rr",
+      "performerName": "Kavita Devi",
+      "performerRole": "needer",
+      "details": "New account registered: Kavita Devi (+919955787445)",
+      "timestamp": "2026-11-02T04:36:03.703Z"
+    },
+    {
+      "id": "aud_1793594163643_368",
+      "action": "USER_SIGNUP",
+      "entityType": "user",
+      "entityId": "usr_mvyrnlx5_uxfa",
+      "performedBy": "usr_mvyrnlx5_uxfa",
+      "performerName": "Ramesh Sharma",
+      "performerRole": "needer",
+      "details": "New account registered: Ramesh Sharma (+919810939717)",
+      "timestamp": "2026-11-02T04:36:03.643Z"
+    },
     {
       "id": "aud_01",
       "action": "REQUEST_VERIFIED",
@@ -621,7 +1021,7 @@
       "performedBy": "usr_verifier_01",
       "performerName": "Manoj Tripathi (Verifier #01)",
       "performerRole": "verifier",
-      "timestamp": "2026-11-02T03:10:40.292Z",
+      "timestamp": "2026-11-02T03:47:13.216Z",
       "details": "Duplicate check passed. Priority confirmed as High."
     }
   ],
@@ -633,7 +1033,7 @@
       "rawText": "Need oxygen concentrator near Baberu",
       "status": "pending-assist",
       "assignedVolunteerId": null,
-      "createdAt": "2026-11-02T03:25:40.292Z"
+      "createdAt": "2026-11-02T04:02:13.216Z"
     }
   ]
 }

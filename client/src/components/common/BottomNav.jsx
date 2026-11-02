@@ -80,13 +80,17 @@ export default function BottomNav({ onOpenLens }) {
             <span className="text-[10px] leading-none text-teal font-semibold">Verifier</span>
           </NavLink>
         ) : (
-          <button
-            onClick={() => openAuthModal(1)}
-            className="flex flex-col items-center justify-center h-full text-darkbrown/60 hover:text-darkbrown transition"
+          <NavLink
+            to={user ? "/profile" : "/login"}
+            className={({ isActive }) =>
+              `flex flex-col items-center justify-center h-full transition ${
+                isActive ? 'text-terracotta font-extrabold' : 'text-darkbrown/60 hover:text-darkbrown'
+              }`
+            }
           >
             <User className="w-5 h-5 mb-0.5" />
-            <span className="text-[10px] leading-none">{t('navProfile')}</span>
-          </button>
+            <span className="text-[10px] leading-none">{user ? t('navProfile') : 'Login'}</span>
+          </NavLink>
         )}
       </div>
     </nav>
