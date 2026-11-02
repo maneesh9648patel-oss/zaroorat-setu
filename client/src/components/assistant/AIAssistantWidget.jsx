@@ -33,6 +33,7 @@ export default function AIAssistantWidget({ isOpen: propIsOpen, onClose: propOnC
   const [loading, setLoading] = useState(false);
 
   const messagesEndRef = useRef(null);
+  const recognitionRef = useRef(null);
 
   const [messages, setMessages] = useState([
     {
@@ -90,15 +91,32 @@ export default function AIAssistantWidget({ isOpen: propIsOpen, onClose: propOnC
     setIsSpeakingTTS(false);
   };
 
-  // Speech-to-Text via Web Speech API
-  const handleToggleVoice = () => {
-    if (!('webkitSpeechRecognition' in window || 'SpeechRecognition' in window)) {
-      setSpeechError("Speech recognition not supported in your browser.");
+  // Speech-to-Text via Web Speech API with real microphone activation
+  const handleToggleVoice = async () => {
+    if (isListening) {
+      if (recognitionRef.current) {
+        try { recognitionRef.current.stop(); } catch (e) {}
+      }
+      setIsListening(false);
       return;
     }
 
-    if (isListening) {
-      setIsListening(false);
+    setSpeechError(null);
+
+    // 1. Request real microphone permission from browser
+    try {
+      if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        stream.getTracks().forEach(t => t.stop());
+      }
+    } catch (err) {
+      console.warn("Mic permission error:", err);
+      setSpeechError("माइक अनुमति नहीं मिली। कृपया ब्राउज़र में Microphone Allow करें।");
+      return;
+    }
+
+    if (!('webkitSpeechRecognition' in window || 'SpeechRecognition' in window)) {
+      setSpeechError("इस ब्राउज़र में स्पीच रिकग्निशन उपलब्ध नहीं है। कृपया टाइप करें।");
       return;
     }
 
@@ -123,7 +141,7 @@ export default function AIAssistantWidget({ isOpen: propIsOpen, onClose: propOnC
       };
 
       recognition.onerror = () => {
-        setSpeechError("Mic input error. You can type your question.");
+        setSpeechError("माइक इनपुट नहीं मिला। आप लिखकर भी पूछ सकते हैं।");
         setIsListening(false);
       };
 
@@ -131,9 +149,10 @@ export default function AIAssistantWidget({ isOpen: propIsOpen, onClose: propOnC
         setIsListening(false);
       };
 
+      recognitionRef.current = recognition;
       recognition.start();
     } catch (err) {
-      setSpeechError("Could not start microphone.");
+      setSpeechError("माइक शुरू नहीं हो सका।");
       setIsListening(false);
     }
   };

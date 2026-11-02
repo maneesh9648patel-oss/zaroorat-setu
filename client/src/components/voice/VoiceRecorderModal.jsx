@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Mic, Square, Play, Pause, Sparkles, Check, X, Volume2, AlertCircle, RefreshCw, Radio, Settings } from 'lucide-react';
+import { 
+  Mic, Square, Play, Pause, Sparkles, Check, X, Volume2, AlertCircle, RefreshCw, Radio, Settings, ShieldCheck 
+} from 'lucide-react';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useSettings } from '../../contexts/SettingsContext';
 import { api } from '../../services/api';
@@ -19,9 +21,20 @@ export default function VoiceRecorderModal({ isOpen, onClose, onApplyExtracted }
   const [speakingTts, setSpeakingTts] = useState(false);
   const [isSimulating, setIsSimulating] = useState(false);
 
+  // Live Audio Frequency & Volume Analyzer State
+  const [liveFrequencies, setLiveFrequencies] = useState([20, 25, 20, 30, 25, 20, 25, 30, 20, 25, 20, 25]);
+  const [liveVolume, setLiveVolume] = useState(0);
+  const [isMicHardwareActive, setIsMicHardwareActive] = useState(false);
+
   const recognitionRef = useRef(null);
   const timerRef = useRef(null);
+  const audioContextRef = useRef(null);
+  const mediaStreamRef = useRef(null);
+  const animFrameRef = useRef(null);
+  const mediaRecorderRef = useRef(null);
+  const audioChunksRef = useRef([]);
 
+  // Duration timer
   useEffect(() => {
     if (isRecording || isSimulating) {
       timerRef.current = setInterval(() => {
@@ -35,10 +48,45 @@ export default function VoiceRecorderModal({ isOpen, onClose, onApplyExtracted }
     };
   }, [isRecording, isSimulating]);
 
+  // Clean up streams when modal closes
+  useEffect(() => {
+    if (!isOpen) {
+      cleanupAudio();
+    }
+  }, [isOpen]);
+
+  const cleanupAudio = () => {
+    if (recognitionRef.current) {
+      try { recognitionRef.current.stop(); } catch (e) {}
+      recognitionRef.current = null;
+    }
+    if (animFrameRef.current) {
+      cancelAnimationFrame(animFrameRef.current);
+      animFrameRef.current = null;
+    }
+    if (audioContextRef.current) {
+      audioContextRef.current.close().catch(() => {});
+      audioContextRef.current = null;
+    }
+    if (mediaRecorderRef.current && mediaRecorderRef.current.state !== 'inactive') {
+      try { mediaRecorderRef.current.stop(); } catch (e) {}
+      mediaRecorderRef.current = null;
+    }
+    if (mediaStreamRef.current) {
+      mediaStreamRef.current.getTracks().forEach(track => track.stop());
+      mediaStreamRef.current = null;
+    }
+    setIsRecording(false);
+    setIsMicHardwareActive(false);
+    setIsSimulating(false);
+    setLiveVolume(0);
+    setLiveFrequencies([20, 25, 20, 30, 25, 20, 25, 30, 20, 25, 20, 25]);
+  };
+
   if (!isOpen) return null;
 
-  // Real Speech Recording using Web Speech API
-  const handleStartRecording = () => {
+  // Real Microphone Hardware Activation + Live Web Audio Visualizer + Speech Recognition
+  const handleStartRecording = async () => {
     setErrorNotice(null);
     setExtractedData(null);
     setTranscript('');
@@ -50,69 +98,175 @@ export default function VoiceRecorderModal({ isOpen, onClose, onApplyExtracted }
       return;
     }
 
-    if (!('webkitSpeechRecognition' in window || 'SpeechRecognition' in window)) {
-      setErrorNotice("Speech recognition is not supported in this browser. Running live demo simulation instead.");
-      handleRunLiveSimulation();
-      return;
-    }
+    let micStreamAcquired = false;
 
+    // 1. Request REAL Microphone Hardware Stream with Web Audio API Analyser
     try {
-      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-      const recognition = new SpeechRecognition();
-      
-      recognition.lang = currentSpeechLang || 'hi-IN';
-      recognition.continuous = false;
-      recognition.interimResults = true;
-      recognition.maxAlternatives = 1;
+      if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+        const stream = await navigator.mediaDevices.getUserMedia({
+          audio: {
+            echoCancellation: true,
+            noiseSuppression: true,
+            autoGainControl: true
+          }
+        });
 
-      recognition.onstart = () => {
-        setIsRecording(true);
-      };
+        mediaStreamRef.current = stream;
+        micStreamAcquired = true;
+        setIsMicHardwareActive(true);
 
-      recognition.onresult = (event) => {
-        let currentTranscript = '';
-        for (let i = 0; i < event.results.length; i++) {
-          currentTranscript += event.results[i][0].transcript;
+        // Setup real AudioContext & Frequency Analyser
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        const audioCtx = new AudioCtx();
+        audioContextRef.current = audioCtx;
+
+        if (audioCtx.state === 'suspended') {
+          await audioCtx.resume();
         }
-        setTranscript(currentTranscript.trim());
-      };
 
-      recognition.onerror = (event) => {
-        console.warn("Speech recognition notice:", event.error);
-        if (event.error === 'not-allowed' || event.error === 'service-not-allowed') {
-          setErrorNotice("Microphone permission was denied. You can click 'Live Speech Demo' below to test it instantly!");
-        } else {
-          setErrorNotice("Voice listening completed. You can review or edit the text.");
+        const analyser = audioCtx.createAnalyser();
+        analyser.fftSize = 64;
+        const source = audioCtx.createMediaStreamSource(stream);
+        source.connect(analyser);
+
+        const dataArray = new Uint8Array(analyser.frequencyBinCount);
+
+        const updateLiveBars = () => {
+          analyser.getByteFrequencyData(dataArray);
+          const bars = [];
+          const step = Math.max(1, Math.floor(dataArray.length / 12));
+          let sum = 0;
+
+          for (let i = 0; i < 12; i++) {
+            const raw = dataArray[i * step] || 0;
+            sum += raw;
+            // scale 15% to 100%
+            const height = Math.max(15, Math.min(100, Math.round((raw / 255) * 100)));
+            bars.push(height);
+          }
+
+          const avgVol = Math.round((sum / (12 * 255)) * 100);
+          setLiveVolume(avgVol);
+          setLiveFrequencies(bars);
+
+          animFrameRef.current = requestAnimationFrame(updateLiveBars);
+        };
+
+        updateLiveBars();
+
+        // Setup MediaRecorder to record audio chunks
+        try {
+          audioChunksRef.current = [];
+          const recorder = new MediaRecorder(stream);
+          recorder.ondataavailable = (e) => {
+            if (e.data.size > 0) audioChunksRef.current.push(e.data);
+          };
+          recorder.start(250);
+          mediaRecorderRef.current = recorder;
+        } catch (recErr) {
+          console.warn("MediaRecorder note:", recErr);
         }
-        setIsRecording(false);
-      };
-
-      recognition.onend = () => {
-        setIsRecording(false);
-      };
-
-      recognitionRef.current = recognition;
-      recognition.start();
+      }
     } catch (err) {
-      setErrorNotice("Could not access microphone directly. Starting live speech simulation.");
-      handleRunLiveSimulation();
+      console.warn("getUserMedia note:", err.message);
+      setErrorNotice("ब्राउज़र ने माइक की अनुमति नहीं दी या माइक्रोफ़ोन कनेक्ट नहीं है। आप नीचे 'Live Demo चलाएँ' से भी सीधे टेस्ट कर सकते हैं।");
     }
+
+    // 2. Start Speech Recognition (Hindi / Bundeli / English)
+    if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+      try {
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        const recognition = new SpeechRecognition();
+        
+        recognition.lang = currentSpeechLang || 'hi-IN';
+        recognition.continuous = true; // Continuous listening
+        recognition.interimResults = true;
+        recognition.maxAlternatives = 1;
+
+        recognition.onstart = () => {
+          setIsRecording(true);
+        };
+
+        recognition.onresult = (event) => {
+          let currentTranscript = '';
+          for (let i = 0; i < event.results.length; i++) {
+            currentTranscript += event.results[i][0].transcript + ' ';
+          }
+          if (currentTranscript.trim()) {
+            setTranscript(currentTranscript.trim());
+          }
+        };
+
+        recognition.onerror = (event) => {
+          console.warn("Speech recognition notice:", event.error);
+          if (event.error === 'not-allowed') {
+            setErrorNotice("माइक अनुमति अस्वीकृत हुई। कृपया ब्राउज़र URL बार में 🔒 पर क्लिक कर Microphone Allow करें।");
+          }
+        };
+
+        recognition.onend = () => {
+          // If user hasn't clicked stop yet, keep listening
+          if (isRecording && mediaStreamRef.current) {
+            try { recognition.start(); } catch (e) {}
+          }
+        };
+
+        recognitionRef.current = recognition;
+        recognition.start();
+      } catch (err) {
+        console.warn("SpeechRecognition init note:", err);
+      }
+    }
+
+    setIsRecording(true);
   };
 
   const handleStopRecording = () => {
+    // Stop Speech Recognition
     if (recognitionRef.current) {
-      try {
-        recognitionRef.current.stop();
-      } catch (e) {}
+      try { recognitionRef.current.stop(); } catch (e) {}
     }
+
+    // Stop Web Audio Visualizer
+    if (animFrameRef.current) {
+      cancelAnimationFrame(animFrameRef.current);
+      animFrameRef.current = null;
+    }
+    if (audioContextRef.current) {
+      audioContextRef.current.close().catch(() => {});
+      audioContextRef.current = null;
+    }
+
+    // Stop MediaRecorder
+    if (mediaRecorderRef.current && mediaRecorderRef.current.state !== 'inactive') {
+      try { mediaRecorderRef.current.stop(); } catch (e) {}
+    }
+
+    // Stop Microphone Hardware Tracks
+    if (mediaStreamRef.current) {
+      mediaStreamRef.current.getTracks().forEach(track => track.stop());
+      mediaStreamRef.current = null;
+    }
+
     setIsRecording(false);
+    setIsMicHardwareActive(false);
     setIsSimulating(false);
+    setLiveVolume(0);
+    setLiveFrequencies([20, 25, 20, 30, 25, 20, 25, 30, 20, 25, 20, 25]);
+
+    // Analyze captured speech
+    const textToAnalyze = transcript.trim();
+    if (textToAnalyze) {
+      handleAnalyzeWithAI(textToAnalyze);
+    } else {
+      setErrorNotice("कोई आवाज स्पष्ट रूप से प्राप्त नहीं हुई। कृपया दोबारा बोलें या नीचे दिए गए किसी भी उदाहरण पर टैप करें।");
+    }
   };
 
   // Live Speech Simulation (Works 100% even if microphone is unavailable or blocked)
   const handleRunLiveSimulation = (customText) => {
     const textToSimulate = customText || "जिला अस्पताल बांदा में आपातकालीन ऑपरेशन के लिए B+ ब्लड डोनर की तुरंत ज़रूरत है।";
-    setIsRecording(false);
+    cleanupAudio();
     setIsSimulating(true);
     setRecordDuration(0);
     setErrorNotice(null);
@@ -128,6 +282,12 @@ export default function VoiceRecorderModal({ isOpen, onClose, onApplyExtracted }
       window.speechSynthesis.speak(utterance);
     }
 
+    // Simulated waveform animation
+    const waveInterval = setInterval(() => {
+      setLiveFrequencies(Array.from({ length: 12 }, () => Math.floor(Math.random() * 70) + 20));
+      setLiveVolume(Math.floor(Math.random() * 60) + 25);
+    }, 120);
+
     // Typewriter effect simulation
     let currentIdx = 0;
     const interval = setInterval(() => {
@@ -135,7 +295,10 @@ export default function VoiceRecorderModal({ isOpen, onClose, onApplyExtracted }
       setTranscript(textToSimulate.slice(0, currentIdx));
       if (currentIdx >= textToSimulate.length) {
         clearInterval(interval);
+        clearInterval(waveInterval);
         setIsSimulating(false);
+        setLiveVolume(0);
+        setLiveFrequencies([20, 25, 20, 30, 25, 20, 25, 30, 20, 25, 20, 25]);
         // Automatically run AI triage analysis
         setTimeout(() => {
           handleAnalyzeWithAI(textToSimulate);
@@ -148,7 +311,7 @@ export default function VoiceRecorderModal({ isOpen, onClose, onApplyExtracted }
   const handleAnalyzeWithAI = async (textToAnalyze) => {
     const text = textToAnalyze || transcript;
     if (!text) {
-      setErrorNotice("Please speak or select a sample need first.");
+      setErrorNotice("कृपया पहले बोलें या कोई उदाहरण चुनें।");
       return;
     }
 
@@ -179,9 +342,6 @@ export default function VoiceRecorderModal({ isOpen, onClose, onApplyExtracted }
         urgency = "High";
       } else if (lower.includes('solar') || lower.includes('सोलर') || lower.includes('लालटेन') || lower.includes('multimeter') || lower.includes('tool') || lower.includes('उपकरण')) {
         category = "Electronics";
-        urgency = "High";
-      } else if (lower.includes('wheelchair') || lower.includes('व्हीलचेयर') || lower.includes('crutch') || lower.includes('बैसाखी')) {
-        category = "Medical & Mobility";
         urgency = "High";
       }
 
@@ -229,6 +389,7 @@ export default function VoiceRecorderModal({ isOpen, onClose, onApplyExtracted }
     if (onApplyExtracted) {
       onApplyExtracted(extractedData);
     }
+    cleanupAudio();
     onClose();
     navigate('/new-request', { state: { prefilled: extractedData } });
   };
@@ -265,18 +426,21 @@ export default function VoiceRecorderModal({ isOpen, onClose, onApplyExtracted }
             </div>
             <div>
               <h3 className="font-black text-sm sm:text-base text-white flex items-center gap-2">
-                <span>AI Voice Recorder (आवाज रिकॉर्डर)</span>
+                <span>AI Voice Recorder (लाइव माइक रिकॉर्डर)</span>
                 <span className="px-2 py-0.2 rounded-full bg-softYellow/20 text-softYellow text-[10px] font-extrabold border border-softYellow/30">
                   {currentDialect?.name?.split(' ')[0] || 'बुंदेली'}
                 </span>
               </h3>
               <p className="text-[11px] text-cream/70 font-semibold">
-                Speech-to-Text & Automatic AI Triage · Pilot: REC Banda
+                Live Web Audio & Speech-to-Text · Pilot: REC Banda
               </p>
             </div>
           </div>
           <button 
-            onClick={onClose} 
+            onClick={() => {
+              cleanupAudio();
+              onClose();
+            }} 
             className="p-1.5 rounded-xl hover:bg-white/10 text-cream/70 hover:text-white transition"
           >
             <X className="w-5 h-5" />
@@ -285,25 +449,36 @@ export default function VoiceRecorderModal({ isOpen, onClose, onApplyExtracted }
 
         {/* Body */}
         <div className="p-5 sm:p-6 space-y-4 overflow-y-auto bg-cream/20">
-          {/* Visual Waveform & Timer Card */}
+          {/* Live Audio Waveform & Volume Visualizer Card */}
           <div className="p-5 rounded-3xl bg-white border border-darkbrown/10 text-center space-y-3 shadow-xs">
-            <div className="flex items-center justify-center gap-1.5 h-12">
-              {[30, 60, 95, 55, 100, 45, 85, 40, 90, 65, 35, 75, 50].map((h, idx) => (
+            {/* 12 DYNAMIC EQUALIZER WAVEFORM BARS REACTING TO REAL AUDIO */}
+            <div className="flex items-end justify-center gap-2 h-16 px-4">
+              {liveFrequencies.map((heightPct, idx) => (
                 <div
                   key={idx}
-                  className={`w-1.5 rounded-full transition-all duration-300 ${
-                    isRecording || isSimulating ? 'bg-terracotta animate-pulse' : 'bg-darkbrown/20'
+                  className={`w-2 rounded-full transition-all duration-75 ${
+                    isRecording
+                      ? 'bg-gradient-to-t from-teal to-terracotta shadow-xs'
+                      : isSimulating
+                      ? 'bg-terracotta'
+                      : 'bg-darkbrown/20'
                   }`}
-                  style={{ height: isRecording || isSimulating ? `${h}%` : '20%' }}
+                  style={{ height: `${heightPct}%` }}
                 />
               ))}
             </div>
 
+            {/* Mic Live Status Badge */}
             <div className="flex items-center justify-center gap-2">
-              <span className={`w-2 h-2 rounded-full ${isRecording || isSimulating ? 'bg-red-500 animate-ping' : 'bg-darkbrown/30'}`} />
+              <span className={`w-2.5 h-2.5 rounded-full ${isRecording || isSimulating ? 'bg-red-500 animate-ping' : 'bg-darkbrown/30'}`} />
               <div className="font-mono font-black text-xl text-darkbrown">
                 {formatTimer(recordDuration)}
               </div>
+              {isMicHardwareActive && (
+                <span className="ml-2 px-2.5 py-0.5 rounded-full bg-teal-light text-teal text-[10px] font-black border border-teal/20 animate-pulse">
+                  🟢 MIC ACTIVE · {liveVolume}%
+                </span>
+              )}
             </div>
 
             {/* Main Action Buttons */}
@@ -313,16 +488,16 @@ export default function VoiceRecorderModal({ isOpen, onClose, onApplyExtracted }
                   <button
                     type="button"
                     onClick={handleStartRecording}
-                    className="px-5 py-3 rounded-2xl bg-terracotta hover:bg-terracotta-hover text-white font-black text-xs sm:text-sm shadow-md transition flex items-center gap-2 tap-target"
+                    className="px-6 py-3.5 rounded-2xl bg-terracotta hover:bg-terracotta-hover text-white font-black text-xs sm:text-sm shadow-md transition flex items-center gap-2 tap-target"
                   >
                     <Mic className="w-4 h-4 stroke-[2.5]" />
-                    <span>माइक से बोलें (Record Mic)</span>
+                    <span>माइक से बोलें (Start Live Mic)</span>
                   </button>
 
                   <button
                     type="button"
                     onClick={() => handleRunLiveSimulation()}
-                    className="px-4 py-3 rounded-2xl bg-teal hover:bg-teal-hover text-white font-extrabold text-xs sm:text-sm shadow-sm transition flex items-center gap-1.5 tap-target"
+                    className="px-4 py-3.5 rounded-2xl bg-teal hover:bg-teal-hover text-white font-extrabold text-xs sm:text-sm shadow-sm transition flex items-center gap-1.5 tap-target"
                     title="Run live simulated speech with audio playback"
                   >
                     <Play className="w-4 h-4 fill-white" />
@@ -333,10 +508,10 @@ export default function VoiceRecorderModal({ isOpen, onClose, onApplyExtracted }
                 <button
                   type="button"
                   onClick={handleStopRecording}
-                  className="px-6 py-3 rounded-2xl bg-darkbrown text-white font-black text-xs sm:text-sm shadow-md transition flex items-center gap-2 mic-listening tap-target"
+                  className="px-6 py-3.5 rounded-2xl bg-darkbrown text-white font-black text-xs sm:text-sm shadow-md transition flex items-center gap-2 mic-listening tap-target"
                 >
                   <Square className="w-4 h-4 fill-white" />
-                  <span>रिकॉर्डिंग रोकें (Stop & Analyze)</span>
+                  <span>रिकॉर्डिंग रोकें व विश्लेषण करें (Stop & Analyze)</span>
                 </button>
               )}
             </div>
@@ -380,70 +555,83 @@ export default function VoiceRecorderModal({ isOpen, onClose, onApplyExtracted }
               rows={3}
               value={transcript}
               onChange={(e) => setTranscript(e.target.value)}
-              placeholder="माइक से बोली गई बात यहाँ टाइप होगी... या नीचे दिए गए किसी भी उदाहरण पर टैप करें।"
-              className="w-full p-3.5 rounded-2xl border border-darkbrown/15 bg-white text-xs sm:text-sm font-medium text-darkbrown outline-none focus:ring-2 focus:ring-terracotta shadow-xs"
+              placeholder="बोलना शुरू करें... आपके शब्द यहाँ लाइव टाइप होंगे (उदा. 'मुझे परीक्षा के लिए Casio कैलकुलेटर चाहिए')"
+              className="w-full p-3.5 rounded-2xl border border-darkbrown/15 bg-white text-xs font-semibold text-darkbrown outline-none focus:ring-2 focus:ring-terracotta"
             />
           </div>
 
-          {/* AI Extraction Trigger Button */}
-          {transcript && !extractedData && (
+          {/* Manual Analyze Button if text exists */}
+          {transcript && !extractedData && !isRecording && (
             <button
               type="button"
               disabled={analyzing}
-              onClick={() => handleAnalyzeWithAI()}
-              className="w-full py-3.5 rounded-2xl bg-teal hover:bg-teal-hover text-white font-black text-xs sm:text-sm shadow-md transition flex items-center justify-center gap-2"
+              onClick={() => handleAnalyzeWithAI(transcript)}
+              className="w-full py-2.5 rounded-xl bg-darkbrown text-white font-extrabold text-xs shadow-sm transition flex items-center justify-center gap-2"
             >
-              <Sparkles className="w-4 h-4" />
-              <span>{analyzing ? 'AI श्रेणी व तात्कालिकता पहचान रहा है...' : 'Analyze with AI (AI द्वारा विश्लेषण करें)'}</span>
+              <Sparkles className="w-3.5 h-3.5 text-softYellow" />
+              <span>{analyzing ? 'AI विश्लेषण हो रहा है...' : 'AI से आवश्यकता छांटें (Analyze Need)'}</span>
             </button>
           )}
 
-          {/* Extracted Result Card */}
+          {/* Extracted Triage Result Card */}
           {extractedData && (
-            <div className="p-4 sm:p-5 rounded-3xl bg-teal-light border-2 border-teal/30 space-y-3 animate-in fade-in">
-              <div className="flex items-center justify-between text-xs font-black text-teal">
-                <span className="flex items-center gap-1.5">
-                  <Sparkles className="w-4 h-4 text-teal" />
-                  AI Triage Result (विश्लेषण परिणाम):
+            <div className="p-4 rounded-3xl bg-teal-light border border-teal/30 space-y-3 animate-in fade-in">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-black text-teal uppercase tracking-wider flex items-center gap-1.5">
+                  <Check className="w-4 h-4 stroke-[3]" />
+                  <span>AI द्वारा विश्लेषित विवरण (Extracted)</span>
                 </span>
-                <span className="px-3 py-1 rounded-full bg-teal text-white text-[11px] font-black uppercase tracking-wider">
+                <span className={`px-2 py-0.5 rounded-full text-[10px] font-black uppercase ${
+                  extractedData.urgency === 'Urgent'
+                    ? 'bg-red-600 text-white animate-pulse'
+                    : 'bg-teal text-white'
+                }`}>
                   {extractedData.urgency}
                 </span>
               </div>
 
-              <div className="text-xs text-darkbrown space-y-1 bg-white p-3 rounded-2xl border border-teal/15 font-semibold">
-                <div><span className="text-darkbrown/60">पहचानी गई श्रेणी:</span> <strong>{extractedData.category}</strong></div>
-                <div><span className="text-darkbrown/60">ज़रूरत का शीर्षक:</span> {extractedData.suggestedTitle || extractedData.description}</div>
+              <div className="space-y-1 text-xs">
+                <div>
+                  <span className="font-bold text-darkbrown/70">शीर्षक:</span>{' '}
+                  <strong className="text-darkbrown">{extractedData.suggestedTitle}</strong>
+                </div>
+                <div>
+                  <span className="font-bold text-darkbrown/70">श्रेणी (Category):</span>{' '}
+                  <strong className="text-teal font-extrabold">{extractedData.category}</strong>
+                </div>
               </div>
 
               <button
                 type="button"
                 onClick={handleApplyToRequest}
-                className="w-full py-3.5 rounded-2xl bg-terracotta hover:bg-terracotta-hover text-white font-black text-xs sm:text-sm shadow-md transition flex items-center justify-center gap-2 tap-target"
+                className="w-full py-3 rounded-2xl bg-teal hover:bg-teal-hover text-white font-black text-xs sm:text-sm shadow-md transition flex items-center justify-center gap-1.5 tap-target"
               >
-                <Check className="w-4 h-4 stroke-[3]" />
-                <span>फॉर्म में भरें और आगे बढ़ें (Apply to Form) &rarr;</span>
+                <span>यह फॉर्म में भरें और आगे बढ़ें (Apply & Post Need)</span>
               </button>
             </div>
           )}
 
-          {/* 1-Click Interactive Community Need Samples */}
-          <div className="space-y-2 pt-1">
-            <div className="text-[11px] font-black text-darkbrown/60 uppercase tracking-wider">
-              तुरंत टेस्ट करने के लिए उदाहरण पर टैप करें (1-Click Preset Demos):
+          {/* 1-Click Preset Samples for Instant Testing */}
+          <div className="space-y-2 pt-1 border-t border-darkbrown/10">
+            <div className="text-xs font-black text-darkbrown/70 flex items-center justify-between">
+              <span>त्वरित परीक्षण हेतु बोलें (Quick 1-Click Voice Presets):</span>
+              <span className="text-[10px] text-teal font-bold">आवाज़ टेस्ट</span>
             </div>
+
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-              {samplePrompts.map((p, idx) => (
+              {samplePrompts.map((s, idx) => (
                 <button
                   key={idx}
                   type="button"
-                  onClick={() => {
-                    handleRunLiveSimulation(p.text);
-                  }}
-                  className="p-3 rounded-2xl bg-white hover:bg-cream-dark text-left border border-darkbrown/10 text-xs font-bold text-darkbrown transition flex flex-col justify-between shadow-2xs group"
+                  onClick={() => handleRunLiveSimulation(s.text)}
+                  className="p-2.5 rounded-2xl bg-white hover:bg-cream border border-darkbrown/10 text-left transition text-xs font-semibold text-darkbrown group"
                 >
-                  <span className="text-terracotta group-hover:underline font-black">{p.label}</span>
-                  <span className="text-[10px] text-darkbrown/60 mt-1 line-clamp-1">{p.text}</span>
+                  <div className="font-extrabold text-[11px] text-teal group-hover:text-terracotta">
+                    {s.label}
+                  </div>
+                  <div className="text-[10px] text-darkbrown/60 truncate mt-0.5">
+                    {s.text}
+                  </div>
                 </button>
               ))}
             </div>
