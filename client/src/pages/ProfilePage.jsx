@@ -10,7 +10,7 @@ import { useLanguage } from '../contexts/LanguageContext';
 import KycBadge from '../components/common/KycBadge';
 
 export default function ProfilePage() {
-  const { user, logout, openAuthModal } = useAuth();
+  const { user, logout, openAuthModal, openAadhaarModal, isAadhaarVerified } = useAuth();
   const { t } = useLanguage();
   const navigate = useNavigate();
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
@@ -128,6 +128,85 @@ export default function ProfilePage() {
 
         {/* Right Details Card */}
         <div className="md:col-span-2 space-y-5">
+          {/* mAadhaar Digital Identity Verification Card */}
+          <div className="bg-white rounded-3xl p-6 shadow-md border border-darkbrown/10 overflow-hidden relative">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-sm font-black text-darkbrown uppercase tracking-wider flex items-center gap-2">
+                <ShieldCheck className="w-4 h-4 text-teal" />
+                <span>mAadhaar डिजिटल सत्यापन (UIDAI Secure QR)</span>
+              </h3>
+              {user?.aadhaarVerification?.verified ? (
+                <span className="px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 text-xs font-black flex items-center gap-1.5 border border-emerald-300">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                  <span>सत्यापित (Verified)</span>
+                </span>
+              ) : (
+                <span className="px-3 py-1 rounded-full bg-amber-100 text-amber-800 text-xs font-black flex items-center gap-1.5 border border-amber-300">
+                  <AlertTriangle className="w-3.5 h-3.5 text-amber-600" />
+                  <span>असत्यापित (Pending)</span>
+                </span>
+              )}
+            </div>
+
+            {user?.aadhaarVerification?.verified ? (
+              <div className="space-y-3">
+                <div className="p-4 rounded-2xl bg-gradient-to-r from-emerald-50 via-teal-light/30 to-emerald-50 border border-emerald-200">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                    <div>
+                      <div className="text-[10px] uppercase font-bold text-darkbrown/50">आधार पर प्रमाणित नाम:</div>
+                      <div className="font-black text-darkbrown text-sm">{user.aadhaarVerification.name}</div>
+                    </div>
+                    <div>
+                      <div className="text-[10px] uppercase font-bold text-darkbrown/50">मास्क्ड आधार संख्या:</div>
+                      <div className="font-mono font-black text-darkbrown text-sm">XXXX XXXX {user.aadhaarVerification.last4}</div>
+                    </div>
+                    <div>
+                      <div className="text-[10px] uppercase font-bold text-darkbrown/50">जन्मतिथि एवं लिंग:</div>
+                      <div className="font-bold text-darkbrown">{user.aadhaarVerification.dob || '01-01-1990'} · {user.aadhaarVerification.gender === 'F' ? 'महिला (Female)' : 'पुरुष (Male)'}</div>
+                    </div>
+                    <div>
+                      <div className="text-[10px] uppercase font-bold text-darkbrown/50">हस्ताक्षर विधि:</div>
+                      <div className="font-semibold text-emerald-800">UIDAI 2048-bit RSA Validated</div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-between text-xs pt-1">
+                  <div className="flex items-center gap-1.5 text-emerald-800 font-bold text-[11px]">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+                    <span>अधिकृत: आप समुदाय में वस्तुएं देने एवं लेने के लिए पात्र हैं।</span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={openAadhaarModal}
+                    className="px-3 py-1 rounded-full bg-cream hover:bg-cream-dark text-darkbrown/70 hover:text-darkbrown text-[11px] font-bold border border-darkbrown/10 transition"
+                  >
+                    पुनः जांचें
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <div className="p-4 rounded-2xl bg-amber-50/80 border border-amber-200 space-y-3">
+                <div className="text-xs text-amber-900 leading-relaxed font-medium">
+                  <strong>महत्वपूर्ण सूचना:</strong> सुरक्षा एवं विश्वास नियमों के तहत, जब तक आप अपने mAadhaar QR कोड को स्कैन या अपलोड कर डिजिटल रूप से सत्यापित नहीं करते, <strong>आप समुदाय में वस्तुएं नहीं दे अथवा ले सकते।</strong>
+                </div>
+                <div className="flex items-center justify-between pt-1">
+                  <span className="text-[11px] text-amber-800/80 font-bold">
+                    केवल नाम व अंतिम 4 अंक सत्यापित होते हैं।
+                  </span>
+                  <button
+                    type="button"
+                    onClick={openAadhaarModal}
+                    className="px-4 py-2 rounded-2xl bg-teal hover:bg-teal-hover text-white text-xs font-black shadow-sm transition flex items-center gap-1.5"
+                  >
+                    <ShieldCheck className="w-4 h-4 text-softYellow" />
+                    <span>mAadhaar QR अभी सत्यापित करें</span>
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+
           {/* Contact & Location Card */}
           <div className="bg-white rounded-3xl p-6 shadow-md border border-darkbrown/10">
             <h3 className="text-sm font-black text-darkbrown uppercase tracking-wider mb-4 flex items-center gap-2">

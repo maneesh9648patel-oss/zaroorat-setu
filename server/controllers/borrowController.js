@@ -17,10 +17,19 @@ export const borrowController = {
     });
   },
 
-  // Create new lendable item (Requires KYC Level 2)
+  // Create new lendable item (Requires mAadhaar Verification)
   createItem(req, res) {
     const { name, category, condition, loanPeriodDays } = req.body;
     const user = req.user;
+
+    // Enforce mAadhaar verification rule: Unverified users cannot give items
+    if (!user || !user.aadhaarVerification?.verified) {
+      return res.status(403).json({
+        success: false,
+        error: "mAadhaar QR digital verification is required before giving/lending items.",
+        code: "AADHAAR_VERIFICATION_REQUIRED"
+      });
+    }
 
     if (!name || !category) {
       return res.status(400).json({
@@ -61,10 +70,19 @@ export const borrowController = {
     });
   },
 
-  // Generate single-use handover QR token
+  // Generate single-use handover QR token (Requires mAadhaar Verification)
   generateHandoverToken(req, res) {
     const { requestId, itemId } = req.body;
     const user = req.user;
+
+    // Enforce mAadhaar verification rule: Unverified users cannot take items
+    if (!user || !user.aadhaarVerification?.verified) {
+      return res.status(403).json({
+        success: false,
+        error: "mAadhaar QR digital verification is required before taking/borrowing items.",
+        code: "AADHAAR_VERIFICATION_REQUIRED"
+      });
+    }
 
     const request = requestId ? db.getRequestById(requestId) : null;
     const item = itemId ? db.getItemById(itemId) : null;

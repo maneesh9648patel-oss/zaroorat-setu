@@ -19,6 +19,7 @@ import borrowRoutes from './routes/borrowRoutes.js';
 import matchingRoutes from './routes/matchingRoutes.js';
 import aiRoutes from './routes/aiRoutes.js';
 import offlineRoutes from './routes/offlineRoutes.js';
+import aadhaarRoutes from './routes/aadhaarRoutes.js';
 import { apiRateLimiter } from './middleware/rateLimiter.js';
 
 dotenv.config();
@@ -70,6 +71,7 @@ app.use('/api/borrow', borrowRoutes);
 app.use('/api/matching', matchingRoutes);
 app.use('/api/ai', aiRoutes);
 app.use('/api/offline', offlineRoutes);
+app.use('/api/aadhaar', aadhaarRoutes);
 
 // Serve Frontend Client Static Assets (from client/dist)
 const clientDistPath = path.resolve(__dirname, '..', 'client', 'dist');

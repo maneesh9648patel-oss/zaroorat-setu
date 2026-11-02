@@ -74,6 +74,16 @@ export const api = {
     })
   },
 
+  // mAadhaar / UIDAI Secure QR Verification
+  aadhaar: {
+    verifyQr: (qrData) => request('/aadhaar/verify-qr', {
+      method: 'POST',
+      body: JSON.stringify({ qrData })
+    }),
+    getStatus: () => request('/aadhaar/status'),
+    getSampleQrs: () => request('/aadhaar/sample-qrs')
+  },
+
   // Requests
   requests: {
     getAll: (params = {}) => {

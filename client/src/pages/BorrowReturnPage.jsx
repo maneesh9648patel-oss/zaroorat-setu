@@ -12,7 +12,7 @@ import { useAuth } from '../contexts/AuthContext';
 export default function BorrowReturnPage({ onOpenLens, prefilledLensItem, onClearPrefill }) {
   const navigate = useNavigate();
   const { t } = useLanguage();
-  const { user } = useAuth();
+  const { user, openAadhaarModal } = useAuth();
 
   const [activeCategory, setActiveCategory] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
@@ -47,6 +47,11 @@ export default function BorrowReturnPage({ onOpenLens, prefilledLensItem, onClea
   // Listen for AI Lens pre-fill
   useEffect(() => {
     if (prefilledLensItem) {
+      if (!user?.aadhaarVerification?.verified) {
+        openAadhaarModal();
+        if (onClearPrefill) onClearPrefill();
+        return;
+      }
       setNewItemName(prefilledLensItem.name || '');
       setNewItemCategory(prefilledLensItem.category || 'Study Material');
       setNewItemCondition(prefilledLensItem.condition || 'Grade A+');
@@ -406,6 +411,10 @@ export default function BorrowReturnPage({ onOpenLens, prefilledLensItem, onClea
 
   // Handover single-use token logic
   const handleStartBorrow = (item) => {
+    if (!user?.aadhaarVerification?.verified) {
+      openAadhaarModal();
+      return;
+    }
     setSelectedItem(item);
     setEscrowStep('deposit');
     setIsDepositPaid(false);
@@ -548,7 +557,13 @@ export default function BorrowReturnPage({ onOpenLens, prefilledLensItem, onClea
           )}
 
           <button
-            onClick={() => setShowLendModal(true)}
+            onClick={() => {
+              if (!user?.aadhaarVerification?.verified) {
+                openAadhaarModal();
+                return;
+              }
+              setShowLendModal(true);
+            }}
             className="px-5 py-3 rounded-2xl bg-terracotta hover:bg-terracotta-hover text-white text-xs sm:text-sm font-extrabold shadow-md transition flex items-center gap-2 tap-target"
           >
             <Plus className="w-4 h-4 stroke-[3]" />
@@ -556,6 +571,35 @@ export default function BorrowReturnPage({ onOpenLens, prefilledLensItem, onClea
           </button>
         </div>
       </div>
+
+      {/* mAadhaar Verification Warning Banner if User is Not Verified */}
+      {!user?.aadhaarVerification?.verified && (
+        <div className="p-4 sm:p-5 rounded-3xl bg-amber-50 border-2 border-amber-300 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4 animate-in fade-in">
+          <div className="flex items-center gap-3.5">
+            <div className="w-12 h-12 rounded-2xl bg-amber-500 text-white flex items-center justify-center shadow-md shrink-0">
+              <ShieldCheck className="w-6 h-6 text-white" />
+            </div>
+            <div>
+              <div className="font-black text-sm sm:text-base text-amber-950 flex items-center gap-2">
+                <span>mAadhaar सत्यापन आवश्यक (mAadhaar Verification Required)</span>
+                <span className="px-2 py-0.5 rounded-full bg-amber-200 text-amber-900 text-[10px] font-extrabold">
+                  UIDAI Rule
+                </span>
+              </div>
+              <p className="text-xs text-amber-800 font-medium mt-1 leading-relaxed">
+                नियम: केवल mAadhaar QR सत्यापित नागरिक ही समुदाय में सामान उधार दे या ले सकते हैं।
+              </p>
+            </div>
+          </div>
+          <button
+            onClick={openAadhaarModal}
+            className="px-5 py-2.5 rounded-2xl bg-teal hover:bg-teal-hover text-white text-xs font-black shadow-md transition flex items-center justify-center gap-2 shrink-0"
+          >
+            <ShieldCheck className="w-4 h-4 text-softYellow" />
+            <span>mAadhaar QR अभी सत्यापित करें</span>
+          </button>
+        </div>
+      )}
 
       {/* 50% Security Money & Escrow Refund Policy Banner */}
       <div className="p-4 sm:p-5 rounded-3xl bg-gradient-to-r from-teal-light via-cream to-white border-2 border-teal/30 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">

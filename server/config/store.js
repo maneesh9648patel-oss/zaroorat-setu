@@ -719,6 +719,7 @@ class DataStore {
       kycStatus: user.kycStatus,
       area: user.area || "Civil Lines",
       city: user.city || "Banda",
+      isAadhaarVerified: Boolean(user.aadhaarVerification && user.aadhaarVerification.verified),
       ngoDetails: user.ngoDetails ? { regNumber: user.ngoDetails.regNumber, verified: true } : null,
       createdAt: user.createdAt
     };
@@ -726,6 +727,7 @@ class DataStore {
     if (isOwner) {
       sanitized.phone = user.phone || null;
       sanitized.email = user.email || null;
+      sanitized.aadhaarVerification = user.aadhaarVerification || null;
     }
 
     return sanitized;

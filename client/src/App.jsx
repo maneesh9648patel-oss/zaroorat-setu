@@ -20,6 +20,7 @@ import VerifierDashboard from './pages/VerifierDashboard';
 import VolunteerAssistPage from './pages/VolunteerAssistPage';
 import AuthPortalPage from './pages/AuthPortalPage';
 import ProfilePage from './pages/ProfilePage';
+import AadhaarQRScannerModal from './components/aadhaar/AadhaarQRScannerModal';
 
 function AppContent() {
   const [isVoiceRecorderOpen, setIsVoiceRecorderOpen] = useState(false);
@@ -131,6 +132,8 @@ function AppContent() {
       />
       {/* Settings Modal (Theme Dark/Light & Hardware Permissions) */}
       <SettingsModal />
+      {/* mAadhaar / UIDAI Secure QR Verification Modal */}
+      <AadhaarQRScannerModal />
     </div>
   );
 }

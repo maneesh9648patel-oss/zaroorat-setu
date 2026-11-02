@@ -7,8 +7,8 @@
       "displayName": "Aarav Kumar",
       "publicName": "Aarav K.",
       "role": "needer",
-      "kycLevel": "level_1",
-      "kycStatus": "basic_verified",
+      "kycLevel": "level_2",
+      "kycStatus": "fully_verified",
       "area": "Civil Lines",
       "city": "Banda",
       "coordinates": {
@@ -20,7 +20,17 @@
         "provider": "Authorized Partner (Coming Soon)"
       },
       "createdAt": "2026-11-02T04:32:13.212Z",
-      "passwordHash": "5980c957dea89af54b104ca37044efc6:b9ef8975a943be9ea05c6cc8c74dc04a6f52078d8eb7864a60f644c4ee77a726dce1fe0b727f4ef6a09b9d1fb0ef4a9fcbadaa24748e3a551ecaff43cf036650"
+      "passwordHash": "5980c957dea89af54b104ca37044efc6:b9ef8975a943be9ea05c6cc8c74dc04a6f52078d8eb7864a60f644c4ee77a726dce1fe0b727f4ef6a09b9d1fb0ef4a9fcbadaa24748e3a551ecaff43cf036650",
+      "aadhaarVerification": {
+        "verified": true,
+        "name": "Aarav Kumar",
+        "dob": "15-08-1995",
+        "gender": "M",
+        "last4": "9842",
+        "verifiedAt": "2026-11-02T05:10:51.214Z",
+        "issuer": "UIDAI Secure QR (RSA-2048 Digital Signature)"
+      },
+      "updatedAt": "2026-11-02T05:10:51.214Z"
     },
     {
       "uid": "usr_ngo_01",
@@ -277,10 +287,10 @@
       "updatedAt": "2026-11-02T04:44:36.246Z"
     },
     {
-      "uid": "usr_mvys58j7_wsgf",
-      "phone": "+919810592191",
-      "email": "newuser_mvys58hq@example.com",
-      "passwordHash": "0fc8db737fd2c39115d6f0e1d5308373:a36c9a5a735f3fbe390a97a5217875aec83e34a57ee59bec3661f2dcb17b186833c18521956c9ab6812410e505e8af080a1a0d0351de74d9cf80af9b53b472a2",
+      "uid": "usr_mvyskzkm_fe9a",
+      "phone": "+919810947827",
+      "email": "newuser_mvyskzjf@example.com",
+      "passwordHash": "5de91490e4b3ecf26889db962c5cfd6f:2b1425a1daa7ae1574b1f397043ef47e6c54c8424235ee9f8470d8a09723f68c37f5114fa6de42ee2e5df089171331a55306104746cb854d432b100bb6c0e0a6",
       "displayName": "Ramesh Sharma",
       "publicName": "Ramesh S.",
       "role": "needer",
@@ -296,14 +306,14 @@
         "status": "not_submitted",
         "provider": "Authorized Partner (Coming Soon)"
       },
-      "createdAt": "2026-11-02T04:49:46.099Z",
-      "updatedAt": "2026-11-02T04:49:46.099Z"
+      "createdAt": "2026-11-02T05:02:00.982Z",
+      "updatedAt": "2026-11-02T05:02:00.982Z"
     },
     {
-      "uid": "usr_mvys58ld_i9la",
-      "phone": "+919955779939",
-      "email": "login_mvys58ju@example.com",
-      "passwordHash": "2107114ea9fd9b3775b0619509c8fc04:5f4730182d93c0763ab3794ed7d4c9bd1a9c7d0d87e95f21d3edea0e1b497251e2bcff0f489ff167abf6c20f4397dcf6b8a01309f08e7ddeb857eca25dedb6dd",
+      "uid": "usr_mvyskzme_xuxo",
+      "phone": "+919955722070",
+      "email": "login_mvyskzl7@example.com",
+      "passwordHash": "595b0aa456232500a960436c7a9e0d49:5f23f8f1a9a8a3721f0834fedc36cc3cb7c1e24fc1f95cfac0d7fbbc5be1c2a7d24433ed428c60d741e344b04544981170ff2e895888fc577b9dea44a345bf3e",
       "displayName": "Kavita Devi",
       "publicName": "Kavita D.",
       "role": "needer",
@@ -319,8 +329,77 @@
         "status": "not_submitted",
         "provider": "Authorized Partner (Coming Soon)"
       },
-      "createdAt": "2026-11-02T04:49:46.177Z",
-      "updatedAt": "2026-11-02T04:49:46.177Z"
+      "createdAt": "2026-11-02T05:02:01.046Z",
+      "updatedAt": "2026-11-02T05:02:01.046Z"
+    },
+    {
+      "uid": "usr_mvysxblr_62hr",
+      "phone": "+919811728756",
+      "email": "unverified_20261102104136@test.com",
+      "passwordHash": "4ef1b48adeb035152e39bb4c6b1b7c34:3aa2ccc02e93fb6ee5726bbd12c83342e7f963a7446a674f65daa5f200248eed19a5a58b5c2282aa37509e0b5bd549666b8eeee1aba94d6a190651b9580416a2",
+      "displayName": "Unverified User",
+      "publicName": "Unverified U.",
+      "role": "needer",
+      "kycLevel": "level_1",
+      "kycStatus": "basic_verified",
+      "area": "Civil Lines",
+      "city": "Banda",
+      "coordinates": {
+        "lat": 25.4764,
+        "lng": 80.3344
+      },
+      "idDocumentPlaceholder": {
+        "status": "not_submitted",
+        "provider": "Authorized Partner (Coming Soon)"
+      },
+      "createdAt": "2026-11-02T05:11:36.448Z",
+      "updatedAt": "2026-11-02T05:11:36.448Z"
+    },
+    {
+      "uid": "usr_mvysxi2v_eepd",
+      "phone": "+919810199463",
+      "email": "newuser_mvysxi1p@example.com",
+      "passwordHash": "eeb43cd3355a832d00da3becda7ac6be:9ab0d25258d53a1a98b4e664d63c50079f243641415f09ba9cb416c7859aa120941109ebfa45b2f3f6ef54e705814e80a41c7c9deacb47b7977d5f71d38e73ab",
+      "displayName": "Ramesh Sharma",
+      "publicName": "Ramesh S.",
+      "role": "needer",
+      "kycLevel": "level_1",
+      "kycStatus": "basic_verified",
+      "area": "Civil Lines",
+      "city": "Banda",
+      "coordinates": {
+        "lat": 25.4764,
+        "lng": 80.3344
+      },
+      "idDocumentPlaceholder": {
+        "status": "not_submitted",
+        "provider": "Authorized Partner (Coming Soon)"
+      },
+      "createdAt": "2026-11-02T05:11:44.839Z",
+      "updatedAt": "2026-11-02T05:11:44.839Z"
+    },
+    {
+      "uid": "usr_mvysxi50_zivv",
+      "phone": "+919955786960",
+      "email": "login_mvysxi3m@example.com",
+      "passwordHash": "49d2a2ad24f78e822bc365a77956787b:37d1c0b200ad23b49f53b0b1d530529ed7a69724f9e968e608f72a032943af386e864c2a056e00d7c41e4786b9245fb82c1b2c630e20994e6b7e20036ffca5cf",
+      "displayName": "Kavita Devi",
+      "publicName": "Kavita D.",
+      "role": "needer",
+      "kycLevel": "level_1",
+      "kycStatus": "basic_verified",
+      "area": "Civil Lines",
+      "city": "Banda",
+      "coordinates": {
+        "lat": 25.4764,
+        "lng": 80.3344
+      },
+      "idDocumentPlaceholder": {
+        "status": "not_submitted",
+        "provider": "Authorized Partner (Coming Soon)"
+      },
+      "createdAt": "2026-11-02T05:11:44.916Z",
+      "updatedAt": "2026-11-02T05:11:44.916Z"
     }
   ],
   "requests": [
@@ -484,6 +563,21 @@
     }
   ],
   "items": [
+    {
+      "ownerId": "usr_aarav",
+      "ownerPublicName": "Aarav K.",
+      "ownerArea": "Civil Lines",
+      "name": "Digital Oscilloscope & Logic Probe",
+      "category": "Electronics",
+      "condition": "Excellent",
+      "loanPeriodDays": 14,
+      "status": "available",
+      "currentBorrowerId": null,
+      "returnDeadline": null,
+      "disputeFlag": false,
+      "id": "itm_1793596267517",
+      "createdAt": "2026-11-02T05:11:07.517Z"
+    },
     {
       "id": "itm_study_01",
       "ownerId": "usr_student_rec",
@@ -805,59 +899,180 @@
   ],
   "audit_logs": [
     {
-      "id": "aud_1793594986403_606",
+      "id": "aud_1793596305084_940",
       "action": "USER_LOGIN",
       "entityType": "user",
-      "entityId": "usr_mvys58ld_i9la",
-      "performedBy": "usr_mvys58ld_i9la",
+      "entityId": "usr_mvysxi50_zivv",
+      "performedBy": "usr_mvysxi50_zivv",
       "performerName": "Kavita Devi",
       "performerRole": "needer",
       "details": "User logged in successfully via email",
-      "timestamp": "2026-11-02T04:49:46.403Z"
+      "timestamp": "2026-11-02T05:11:45.084Z"
     },
     {
-      "id": "aud_1793594986293_617",
+      "id": "aud_1793596305000_581",
       "action": "USER_LOGIN",
       "entityType": "user",
-      "entityId": "usr_mvys58ld_i9la",
-      "performedBy": "usr_mvys58ld_i9la",
+      "entityId": "usr_mvysxi50_zivv",
+      "performedBy": "usr_mvysxi50_zivv",
       "performerName": "Kavita Devi",
       "performerRole": "needer",
       "details": "User logged in successfully via phone",
-      "timestamp": "2026-11-02T04:49:46.293Z"
+      "timestamp": "2026-11-02T05:11:45.000Z"
     },
     {
-      "id": "aud_1793594986233_319",
+      "id": "aud_1793596304959_283",
       "action": "USER_LOGIN",
       "entityType": "user",
-      "entityId": "usr_mvys58ld_i9la",
-      "performedBy": "usr_mvys58ld_i9la",
+      "entityId": "usr_mvysxi50_zivv",
+      "performedBy": "usr_mvysxi50_zivv",
       "performerName": "Kavita Devi",
       "performerRole": "needer",
       "details": "User logged in successfully via email",
-      "timestamp": "2026-11-02T04:49:46.233Z"
+      "timestamp": "2026-11-02T05:11:44.959Z"
     },
     {
-      "id": "aud_1793594986179_534",
+      "id": "aud_1793596304917_814",
       "action": "USER_SIGNUP",
       "entityType": "user",
-      "entityId": "usr_mvys58ld_i9la",
-      "performedBy": "usr_mvys58ld_i9la",
+      "entityId": "usr_mvysxi50_zivv",
+      "performedBy": "usr_mvysxi50_zivv",
       "performerName": "Kavita Devi",
       "performerRole": "needer",
-      "details": "New account registered: Kavita Devi (+919955779939)",
-      "timestamp": "2026-11-02T04:49:46.179Z"
+      "details": "New account registered: Kavita Devi (+919955786960)",
+      "timestamp": "2026-11-02T05:11:44.917Z"
     },
     {
-      "id": "aud_1793594986102_82",
+      "id": "aud_1793596304850_427",
       "action": "USER_SIGNUP",
       "entityType": "user",
-      "entityId": "usr_mvys58j7_wsgf",
-      "performedBy": "usr_mvys58j7_wsgf",
+      "entityId": "usr_mvysxi2v_eepd",
+      "performedBy": "usr_mvysxi2v_eepd",
       "performerName": "Ramesh Sharma",
       "performerRole": "needer",
-      "details": "New account registered: Ramesh Sharma (+919810592191)",
-      "timestamp": "2026-11-02T04:49:46.102Z"
+      "details": "New account registered: Ramesh Sharma (+919810199463)",
+      "timestamp": "2026-11-02T05:11:44.850Z"
+    },
+    {
+      "id": "aud_1793596296449_582",
+      "action": "USER_SIGNUP",
+      "entityType": "user",
+      "entityId": "usr_mvysxblr_62hr",
+      "performedBy": "usr_mvysxblr_62hr",
+      "performerName": "Unverified User",
+      "performerRole": "needer",
+      "details": "New account registered: Unverified User (+919811728756)",
+      "timestamp": "2026-11-02T05:11:36.449Z"
+    },
+    {
+      "id": "aud_1793596267525_139",
+      "action": "ITEM_LISTED",
+      "entityType": "item",
+      "entityId": "itm_1793596267517",
+      "performedBy": "usr_aarav",
+      "performerName": "Aarav Kumar",
+      "performerRole": "needer",
+      "details": "Listed 'Digital Oscilloscope & Logic Probe' for community lending (14 days loan period).",
+      "timestamp": "2026-11-02T05:11:07.525Z"
+    },
+    {
+      "id": "aud_1793596267507_368",
+      "action": "USER_LOGIN",
+      "entityType": "user",
+      "entityId": "usr_aarav",
+      "performedBy": "usr_aarav",
+      "performerName": "Aarav Kumar",
+      "performerRole": "needer",
+      "details": "User logged in successfully via email",
+      "timestamp": "2026-11-02T05:11:07.507Z"
+    },
+    {
+      "id": "aud_1793596251216_259",
+      "action": "AADHAAR_SECURE_QR_VERIFIED",
+      "entityType": "user",
+      "entityId": "usr_aarav",
+      "performedBy": "usr_aarav",
+      "performerName": "Aarav Kumar",
+      "performerRole": "needer",
+      "details": "mAadhaar QR digitally verified for Aarav Kumar. Masked: XXXX XXXX 9842",
+      "timestamp": "2026-11-02T05:10:51.216Z"
+    },
+    {
+      "id": "aud_1793596251166_137",
+      "action": "USER_LOGIN",
+      "entityType": "user",
+      "entityId": "usr_aarav",
+      "performedBy": "usr_aarav",
+      "performerName": "Aarav Kumar",
+      "performerRole": "needer",
+      "details": "User logged in successfully via email",
+      "timestamp": "2026-11-02T05:10:51.166Z"
+    },
+    {
+      "id": "aud_1793595721255_260",
+      "action": "USER_LOGIN",
+      "entityType": "user",
+      "entityId": "usr_mvyskzme_xuxo",
+      "performedBy": "usr_mvyskzme_xuxo",
+      "performerName": "Kavita Devi",
+      "performerRole": "needer",
+      "details": "User logged in successfully via email",
+      "timestamp": "2026-11-02T05:02:01.255Z"
+    },
+    {
+      "id": "aud_1793595721169_197",
+      "action": "USER_LOGIN",
+      "entityType": "user",
+      "entityId": "usr_mvyskzme_xuxo",
+      "performedBy": "usr_mvyskzme_xuxo",
+      "performerName": "Kavita Devi",
+      "performerRole": "needer",
+      "details": "User logged in successfully via phone",
+      "timestamp": "2026-11-02T05:02:01.169Z"
+    },
+    {
+      "id": "aud_1793595721127_766",
+      "action": "USER_LOGIN",
+      "entityType": "user",
+      "entityId": "usr_mvyskzme_xuxo",
+      "performedBy": "usr_mvyskzme_xuxo",
+      "performerName": "Kavita Devi",
+      "performerRole": "needer",
+      "details": "User logged in successfully via email",
+      "timestamp": "2026-11-02T05:02:01.127Z"
+    },
+    {
+      "id": "aud_1793595721058_230",
+      "action": "USER_SIGNUP",
+      "entityType": "user",
+      "entityId": "usr_mvyskzme_xuxo",
+      "performedBy": "usr_mvyskzme_xuxo",
+      "performerName": "Kavita Devi",
+      "performerRole": "needer",
+      "details": "New account registered: Kavita Devi (+919955722070)",
+      "timestamp": "2026-11-02T05:02:01.058Z"
+    },
+    {
+      "id": "aud_1793595720984_184",
+      "action": "USER_SIGNUP",
+      "entityType": "user",
+      "entityId": "usr_mvyskzkm_fe9a",
+      "performedBy": "usr_mvyskzkm_fe9a",
+      "performerName": "Ramesh Sharma",
+      "performerRole": "needer",
+      "details": "New account registered: Ramesh Sharma (+919810947827)",
+      "timestamp": "2026-11-02T05:02:00.984Z"
+    },
+    {
+      "id": "aud_1793595044472_27",
+      "action": "USER_LOGIN",
+      "entityType": "user",
+      "entityId": "usr_mvyrylg5_hy5o",
+      "performedBy": "usr_mvyrylg5_hy5o",
+      "performerName": "Aditya Singh",
+      "performerRole": "needer",
+      "details": "User logged in successfully via email",
+      "timestamp": "2026-11-02T04:50:44.472Z"
     },
     {
       "id": "aud_1793594782955_838",

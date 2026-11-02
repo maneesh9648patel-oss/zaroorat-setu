@@ -20,6 +20,7 @@ export function AuthProvider({ children }) {
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [authMode, setAuthMode] = useState('login'); // 'login' | 'signup' | 'otp' | 'kyc'
   const [authStep, setAuthStep] = useState(1);
+  const [isAadhaarModalOpen, setIsAadhaarModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
@@ -50,6 +51,32 @@ export function AuthProvider({ children }) {
   const closeAuthModal = () => {
     setIsAuthModalOpen(false);
     setError(null);
+  };
+
+  const openAadhaarModal = () => {
+    setIsAadhaarModalOpen(true);
+    setError(null);
+  };
+
+  const closeAadhaarModal = () => {
+    setIsAadhaarModalOpen(false);
+    setError(null);
+  };
+
+  // mAadhaar QR Verification
+  const verifyAadhaarQr = async (qrData) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const data = await api.aadhaar.verifyQr(qrData);
+      setUser(data.user);
+      setLoading(false);
+      return data;
+    } catch (err) {
+      setLoading(false);
+      setError(err.message);
+      throw err;
+    }
   };
 
   // 1. Password Signup
@@ -205,6 +232,7 @@ export function AuthProvider({ children }) {
         user,
         token,
         isAuthenticated: Boolean(user && token),
+        isAadhaarVerified: Boolean(user?.aadhaarVerification?.verified),
         kycLevel: user?.kycLevel || 'none',
         kycStatus: user?.kycStatus || 'unverified',
         isAuthModalOpen,
@@ -214,6 +242,10 @@ export function AuthProvider({ children }) {
         setAuthStep,
         openAuthModal,
         closeAuthModal,
+        isAadhaarModalOpen,
+        openAadhaarModal,
+        closeAadhaarModal,
+        verifyAadhaarQr,
         signup,
         login,
         logout,

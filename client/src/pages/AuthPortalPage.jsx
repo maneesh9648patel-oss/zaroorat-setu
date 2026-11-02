@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { 
   User, Mail, Phone, Lock, Eye, EyeOff, ShieldCheck, 
   ArrowRight, CheckCircle2, AlertCircle, Sparkles, Building2,
-  HeartHandshake, Heart, Shield, HelpCircle
+  HeartHandshake, Heart, Shield, HelpCircle, Camera
 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -13,11 +13,20 @@ export default function AuthPortalPage({ initialTab = 'login' }) {
   const [activeTab, setActiveTab] = useState(initialTab); // 'login' | 'signup'
   const navigate = useNavigate();
   const location = useLocation();
-  const { login, signup, loading } = useAuth();
+  const { login, signup, loading, openAadhaarModal, isAadhaarVerified } = useAuth();
   const { t } = useLanguage();
 
   // Redirect destination after successful login/signup
   const destination = location.state?.from?.pathname || '/';
+
+  // --- Post-Auth mAadhaar Step State ---
+  const [postAuthUser, setPostAuthUser] = useState(null);
+
+  useEffect(() => {
+    if (postAuthUser && isAadhaarVerified) {
+      navigate(destination, { replace: true });
+    }
+  }, [isAadhaarVerified, postAuthUser]);
 
   // --- Login Form State ---
   const [loginIdentifier, setLoginIdentifier] = useState('');
@@ -68,8 +77,12 @@ export default function AuthPortalPage({ initialTab = 'login' }) {
     }
 
     try {
-      await login({ identifier: cleanId, password: loginPassword });
-      navigate(destination, { replace: true });
+      const res = await login({ identifier: cleanId, password: loginPassword });
+      if (!res.user?.aadhaarVerification?.verified) {
+        setPostAuthUser(res.user);
+      } else {
+        navigate(destination, { replace: true });
+      }
     } catch (err) {
       setLoginError(err.message || "लॉग इन विफल रहा। कृपया विवरण जांचें। (Login failed)");
     }
@@ -125,10 +138,10 @@ export default function AuthPortalPage({ initialTab = 'login' }) {
         area: signupArea
       });
 
-      setSignupSuccess("खाता सफलतापूर्वक तैयार हो गया! आपको लॉगिन किया जा रहा है... (Account created successfully!)");
+      setSignupSuccess("खाता सफलतापूर्वक तैयार हो गया!");
       setTimeout(() => {
-        navigate(destination, { replace: true });
-      }, 1000);
+        setPostAuthUser(res.user);
+      }, 700);
     } catch (err) {
       setSignupError(err.message || "साइन अप विफल रहा। कृपया पुनः प्रयास करें। (Signup failed)");
     }
@@ -153,44 +166,104 @@ export default function AuthPortalPage({ initialTab = 'login' }) {
             सुरक्षित नागरिक सहायता एवं वस्तु विनिमय पोर्टल · Pilot: REC Banda
           </p>
 
-          {/* Tab Switcher: Log In vs Sign Up */}
-          <div className="mt-5 grid grid-cols-2 p-1 bg-black/25 rounded-2xl border border-white/10">
-            <button
-              type="button"
-              onClick={() => {
-                setActiveTab('login');
-                setLoginError('');
-              }}
-              className={`py-2 rounded-xl text-xs font-black transition ${
-                activeTab === 'login'
-                  ? 'bg-white text-darkbrown shadow-md'
-                  : 'text-cream/70 hover:text-white'
-              }`}
-            >
-              लॉग इन (Log In)
-            </button>
-            <button
-              type="button"
-              onClick={() => {
-                setActiveTab('signup');
-                setSignupError('');
-              }}
-              className={`py-2 rounded-xl text-xs font-black transition ${
-                activeTab === 'signup'
-                  ? 'bg-terracotta text-white shadow-md'
-                  : 'text-cream/70 hover:text-white'
-              }`}
-            >
-              नया खाता बनाएं (Sign Up)
-            </button>
-          </div>
+          {/* Tab Switcher: Log In vs Sign Up (Hidden when in postAuthUser step) */}
+          {!postAuthUser ? (
+            <div className="mt-5 grid grid-cols-2 p-1 bg-black/25 rounded-2xl border border-white/10">
+              <button
+                type="button"
+                onClick={() => {
+                  setActiveTab('login');
+                  setLoginError('');
+                }}
+                className={`py-2 rounded-xl text-xs font-black transition ${
+                  activeTab === 'login'
+                    ? 'bg-white text-darkbrown shadow-md'
+                    : 'text-cream/70 hover:text-white'
+                }`}
+              >
+                लॉग इन (Log In)
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setActiveTab('signup');
+                  setSignupError('');
+                }}
+                className={`py-2 rounded-xl text-xs font-black transition ${
+                  activeTab === 'signup'
+                    ? 'bg-terracotta text-white shadow-md'
+                    : 'text-cream/70 hover:text-white'
+                }`}
+              >
+                नया खाता बनाएं (Sign Up)
+              </button>
+            </div>
+          ) : (
+            <div className="mt-4 px-3 py-1.5 rounded-full bg-teal/30 text-softYellow text-xs font-extrabold inline-flex items-center gap-1.5 border border-teal/40">
+              <ShieldCheck className="w-4 h-4" />
+              <span>चरण 2: mAadhaar पहचान सत्यापन</span>
+            </div>
+          )}
         </div>
 
-        {/* Form Body */}
+        {/* Form Body or Post-Auth Step */}
         <div className="p-6">
-          {/* ========================================================= */}
-          {/* LOGIN TAB                                                  */}
-          {/* ========================================================= */}
+          {postAuthUser ? (
+            <div className="text-center space-y-4 animate-in fade-in">
+              <div className="w-16 h-16 rounded-3xl bg-teal/10 text-teal flex items-center justify-center mx-auto shadow-sm">
+                <ShieldCheck className="w-8 h-8 text-teal" />
+              </div>
+              <div>
+                <div className="text-[11px] font-black uppercase tracking-wider text-teal">
+                  लॉगिन सफल · अगला सुरक्षा चरण
+                </div>
+                <h2 className="text-lg font-black text-darkbrown mt-0.5">
+                  mAadhaar QR सत्यापन
+                </h2>
+                <p className="text-xs text-darkbrown/70 mt-1 leading-relaxed">
+                  नमस्ते <strong>{postAuthUser.displayName}</strong>! नागरिक सुरक्षा नियमों के अनुसार, समुदाय में वस्तुएं देने अथवा लेने के लिए mAadhaar QR सत्यापन अनिवार्य है।
+                </p>
+              </div>
+
+              <div className="p-3.5 rounded-2xl bg-cream/70 border border-darkbrown/10 text-left text-xs space-y-1.5">
+                <div className="flex items-center gap-2 text-darkbrown font-bold text-[11px]">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-teal shrink-0" />
+                  <span>कैमरा स्कैन या QR फोटो अपलोड समर्थित</span>
+                </div>
+                <div className="flex items-center gap-2 text-darkbrown font-bold text-[11px]">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-teal shrink-0" />
+                  <span>UIDAI 2048-bit डिजिटल हस्ताक्षर द्वारा प्रमाणित</span>
+                </div>
+                <div className="flex items-center gap-2 text-darkbrown/60 text-[10px]">
+                  <Lock className="w-3.5 h-3.5 text-darkbrown/40 shrink-0" />
+                  <span>केवल नाम और अंतिम 4 अंक सत्यापित होते हैं। पूरा आधार कभी स्टोर नहीं होता।</span>
+                </div>
+              </div>
+
+              <div className="space-y-2 pt-2">
+                <button
+                  type="button"
+                  onClick={() => openAadhaarModal()}
+                  className="w-full py-3 px-4 rounded-2xl bg-teal hover:bg-teal-hover text-white text-xs font-black shadow-md hover:shadow-lg transition flex items-center justify-center gap-2"
+                >
+                  <Camera className="w-4 h-4 text-softYellow" />
+                  <span>mAadhaar QR स्कैन / अपलोड करें</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => navigate(destination, { replace: true })}
+                  className="w-full py-2.5 px-4 rounded-2xl bg-transparent hover:bg-cream text-darkbrown/70 hover:text-darkbrown text-xs font-bold transition"
+                >
+                  बाद में करें (डैशबोर्ड पर आगे बढ़ें) &rarr;
+                </button>
+              </div>
+            </div>
+          ) : (
+            <div>
+              {/* ========================================================= */}
+              {/* LOGIN TAB                                                  */}
+              {/* ========================================================= */}
           {activeTab === 'login' && (
             <form onSubmit={handleLoginSubmit} className="space-y-4">
               {loginError && (
@@ -475,6 +548,8 @@ export default function AuthPortalPage({ initialTab = 'login' }) {
               </button>
             </form>
           )}
+          </div>
+        )}
 
           {/* Privacy & HackFest Footer Note */}
           <div className="mt-5 text-center text-[10px] text-darkbrown/50 border-t border-darkbrown/10 pt-3">
