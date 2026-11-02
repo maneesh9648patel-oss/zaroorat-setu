@@ -925,11 +925,55 @@ class DataStore {
     return this.data.items[idx];
   }
 
-  // Transactions Collection (id, item_id, giver_id, receiver_id, quantity, type: give/take, status, created_at)
+  // Dynamic Duration & Overdue Status Calculator
+  enrichTransaction(txn) {
+    if (!txn) return null;
+    const now = new Date();
+    const isReturned = txn.status === 'returned' || Boolean(txn.return_date);
+    const dueDate = txn.due_date ? new Date(txn.due_date) : null;
+    
+    let isOverdue = false;
+    let daysRemaining = null;
+    let daysOverdue = null;
+
+    if (dueDate) {
+      const diffMs = dueDate.getTime() - now.getTime();
+      const diffDays = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
+      
+      if (!isReturned) {
+        if (diffDays < 0) {
+          isOverdue = true;
+          daysOverdue = Math.abs(diffDays);
+          daysRemaining = 0;
+        } else {
+          isOverdue = false;
+          daysRemaining = diffDays;
+          daysOverdue = 0;
+        }
+      }
+    }
+
+    const effectiveStatus = isReturned ? 'returned' : (isOverdue ? 'overdue' : (txn.status || 'active'));
+
+    return {
+      ...txn,
+      is_overdue: isOverdue,
+      days_remaining: daysRemaining,
+      days_overdue: daysOverdue,
+      status: effectiveStatus,
+      raw_status: txn.status
+    };
+  }
+
+  // Transactions Collection (id, item_id, giver_id, receiver_id, quantity, type: give/take, status, created_at, issue_date, duration_days, due_date, return_date)
   createTransaction(txnData) {
     if (!Array.isArray(this.data.transactions)) {
       this.data.transactions = [];
     }
+
+    const durationDays = Math.max(1, Number(txnData.duration_days || 14));
+    const issueDate = txnData.issue_date || txnData.created_at || new Date().toISOString();
+    const dueDate = txnData.due_date || new Date(new Date(issueDate).getTime() + durationDays * 24 * 60 * 60 * 1000).toISOString();
 
     const newTxn = {
       id: txnData.id || `txn_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`,
@@ -938,8 +982,13 @@ class DataStore {
       receiver_id: txnData.receiver_id || null,
       quantity: Math.max(1, Number(txnData.quantity || 1)),
       type: txnData.type || "give", // "give" | "take"
-      status: txnData.status || "completed",
+      status: txnData.status || (txnData.type === 'take' ? 'active' : 'available'),
       created_at: txnData.created_at || new Date().toISOString(),
+      // Duration & Stock tracking fields
+      issue_date: issueDate,
+      duration_days: durationDays,
+      due_date: dueDate,
+      return_date: txnData.return_date || null,
       // Saved with both giver's and receiver's details
       item_name: txnData.item_name || "Community Resource",
       item_category: txnData.item_category || "General",
@@ -953,10 +1002,10 @@ class DataStore {
 
     this.data.transactions.unshift(newTxn);
     this.persist();
-    return newTxn;
+    return this.enrichTransaction(newTxn);
   }
 
-  takeItem({ itemId, quantity = 1, receiverUser }) {
+  takeItem({ itemId, quantity = 1, duration_days, receiverUser }) {
     const qty = Math.max(1, Number(quantity) || 1);
     const item = this.data.items.find(i => i.id === itemId);
     if (!item) {
@@ -964,11 +1013,12 @@ class DataStore {
     }
 
     const available = Number(item.quantity_available ?? item.quantity_total ?? 1);
+    // Block taking more than what is available
     if (available < qty) {
       throw new Error(`Only ${available} unit(s) available for '${item.name}'`);
     }
 
-    // Deduct available quantity
+    // Auto-update stock: decrease quantity_available
     item.quantity_available = available - qty;
     if (item.quantity_available === 0) {
       item.status = "borrowed";
@@ -976,15 +1026,22 @@ class DataStore {
 
     const giverId = item.owner_id || item.ownerId;
     const giverUser = this.getUserByUid(giverId);
+    const durationDays = Math.max(1, Number(duration_days || item.loanPeriodDays || 14));
+    const issueDate = new Date().toISOString();
+    const dueDate = new Date(Date.now() + durationDays * 24 * 60 * 60 * 1000).toISOString();
 
-    // Save transaction with both giver and receiver details
+    // Save transaction with issue_date, duration_days, auto-calculated due_date, and both counterparty details
     const txn = this.createTransaction({
       item_id: item.id,
       giver_id: giverId,
       receiver_id: receiverUser.uid,
       quantity: qty,
       type: "take",
-      status: "completed",
+      status: "active",
+      issue_date: issueDate,
+      duration_days: durationDays,
+      due_date: dueDate,
+      return_date: null,
       item_name: item.name,
       item_category: item.category,
       giver_name: giverUser?.displayName || item.ownerPublicName || "Community Lender",
@@ -999,15 +1056,63 @@ class DataStore {
     return { item, transaction: txn };
   }
 
+  // "Mark as returned": increases stock and marks transaction returned
+  returnItem({ transactionId, returningUser }) {
+    if (!Array.isArray(this.data.transactions)) {
+      this.data.transactions = [];
+    }
+
+    const txn = this.data.transactions.find(t => t.id === transactionId);
+    if (!txn) {
+      throw new Error("Transaction not found");
+    }
+
+    if (txn.status === 'returned' || txn.return_date) {
+      throw new Error("Transaction is already marked as returned");
+    }
+
+    // Only the giver (or admin) can mark item as returned
+    const isAdmin = returningUser && returningUser.role === 'admin';
+    const isGiver = returningUser && txn.giver_id === returningUser.uid;
+    const isReceiver = returningUser && txn.receiver_id === returningUser.uid;
+
+    if (!isAdmin && !isGiver && !isReceiver) {
+      throw new Error("Unauthorized: Only the giver of the item or an admin can mark it as returned");
+    }
+
+    // Update transaction
+    txn.status = 'returned';
+    txn.return_date = new Date().toISOString();
+
+    // Auto-update stock: increase quantity_available
+    const item = this.data.items.find(i => i.id === txn.item_id);
+    if (item) {
+      const currentAvail = Number(item.quantity_available ?? 0);
+      const total = Number(item.quantity_total ?? 1);
+      const returnedQty = Number(txn.quantity || 1);
+      item.quantity_available = Math.min(total, currentAvail + returnedQty);
+      if (item.quantity_available > 0) {
+        item.status = "available";
+      }
+    }
+
+    this.persist();
+    return { 
+      transaction: this.enrichTransaction(txn), 
+      item: item ? { ...item } : null 
+    };
+  }
+
   getTransactions(filter = {}) {
     if (!Array.isArray(this.data.transactions)) {
       this.data.transactions = [];
     }
-    let list = [...this.data.transactions];
+    let list = this.data.transactions.map(t => this.enrichTransaction(t));
     if (filter.giver_id) list = list.filter(t => t.giver_id === filter.giver_id);
     if (filter.receiver_id) list = list.filter(t => t.receiver_id === filter.receiver_id);
     if (filter.item_id) list = list.filter(t => t.item_id === filter.item_id);
     if (filter.type) list = list.filter(t => t.type === filter.type);
+    if (filter.status) list = list.filter(t => t.status === filter.status);
     return list;
   }
 
@@ -1017,15 +1122,73 @@ class DataStore {
     }
     const all = this.data.transactions;
     // Items I gave: where giver_id is userId
-    const gave = all.filter(t => t.giver_id === userId);
+    const gave = all.filter(t => t.giver_id === userId).map(t => this.enrichTransaction(t));
     // Items I took: where receiver_id is userId
-    const took = all.filter(t => t.receiver_id === userId);
+    const took = all.filter(t => t.receiver_id === userId).map(t => this.enrichTransaction(t));
 
     return {
       gave,
       took,
       totalGave: gave.reduce((acc, t) => acc + (Number(t.quantity) || 0), 0),
       totalTook: took.reduce((acc, t) => acc + (Number(t.quantity) || 0), 0)
+    };
+  }
+
+  // Admin / Dashboard: Full Records with Search & Filter
+  getAllExchangeRecords(filter = {}) {
+    if (!Array.isArray(this.data.transactions)) {
+      this.data.transactions = [];
+    }
+    let list = this.data.transactions.map(t => this.enrichTransaction(t));
+
+    if (filter.status && filter.status !== 'all') {
+      list = list.filter(t => t.status === filter.status);
+    }
+    if (filter.category && filter.category !== 'all') {
+      list = list.filter(t => t.item_category === filter.category);
+    }
+    if (filter.search) {
+      const q = filter.search.toLowerCase().trim();
+      list = list.filter(t => 
+        (t.item_name && t.item_name.toLowerCase().includes(q)) ||
+        (t.giver_name && t.giver_name.toLowerCase().includes(q)) ||
+        (t.receiver_name && t.receiver_name.toLowerCase().includes(q)) ||
+        (t.giver_phone && t.giver_phone.includes(q)) ||
+        (t.receiver_phone && t.receiver_phone.includes(q)) ||
+        (t.id && t.id.toLowerCase().includes(q))
+      );
+    }
+
+    return list;
+  }
+
+  // Admin / Dashboard Stock & Overdue Summary
+  getStockSummary() {
+    const items = this.getItems();
+    const transactions = this.getAllExchangeRecords();
+    
+    // Items currently given out: active take transactions
+    const currentlyGivenOut = transactions.filter(t => t.type === 'take' && t.status !== 'returned');
+    // Overdue items
+    const overdueItems = currentlyGivenOut.filter(t => t.is_overdue);
+
+    const totalStock = items.reduce((acc, i) => acc + Number(i.quantity_total || 0), 0);
+    const availableStock = items.reduce((acc, i) => acc + Number(i.quantity_available || 0), 0);
+    const borrowedStock = Math.max(0, totalStock - availableStock);
+
+    return {
+      summary: {
+        totalStock,
+        availableStock,
+        borrowedStock,
+        totalItemsCount: items.length,
+        activeGivenOutCount: currentlyGivenOut.length,
+        overdueCount: overdueItems.length
+      },
+      items,
+      currentlyGivenOut,
+      overdueItems,
+      allTransactions: transactions
     };
   }
 

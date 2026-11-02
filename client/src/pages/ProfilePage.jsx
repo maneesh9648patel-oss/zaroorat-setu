@@ -3,7 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { 
   User, Mail, Phone, MapPin, ShieldCheck, LogOut, 
   ArrowLeft, CheckCircle2, AlertTriangle, Box, ClipboardList,
-  Sparkles, ExternalLink, Calendar, Key, Shield, History
+  Sparkles, ExternalLink, Calendar, Key, Shield, History, Layers
 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -295,7 +295,7 @@ export default function ProfilePage() {
               <span>त्वरित नेविगेशन (Quick Access)</span>
             </h3>
 
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            <div className="grid grid-cols-2 sm:grid-cols-5 gap-2.5">
               <Link
                 to="/new-request"
                 className="p-3 rounded-2xl bg-cream hover:bg-cream-dark border border-darkbrown/10 text-center transition group"
@@ -312,6 +312,15 @@ export default function ProfilePage() {
                 <Box className="w-5 h-5 mx-auto text-teal mb-1 group-hover:scale-110 transition" />
                 <div className="text-xs font-bold text-darkbrown">सामान विनिमय</div>
                 <div className="text-[10px] text-darkbrown/50">लेंड एवं बॉरो हब</div>
+              </Link>
+
+              <Link
+                to="/dashboard"
+                className="p-3 rounded-2xl bg-cream hover:bg-cream-dark border border-darkbrown/10 text-center transition group"
+              >
+                <Layers className="w-5 h-5 mx-auto text-teal mb-1 group-hover:scale-110 transition" />
+                <div className="text-xs font-bold text-darkbrown">स्टॉक डैशबोर्ड</div>
+                <div className="text-[10px] text-darkbrown/50">इन्वेंट्री संतुलन</div>
               </Link>
 
               <Link

@@ -84,7 +84,7 @@ export const api = {
     getSampleQrs: () => request('/aadhaar/sample-qrs')
   },
 
-  // Item Exchange Database Layer (Give, Take, Transactions & My History)
+  // Item Exchange Database Layer (Give, Take, Transactions, Stock & History)
   exchange: {
     giveItem: (data) => request('/exchange/give', {
       method: 'POST',
@@ -94,8 +94,17 @@ export const api = {
       method: 'POST',
       body: JSON.stringify(data)
     }),
+    returnItem: (transactionId) => request('/exchange/return', {
+      method: 'POST',
+      body: JSON.stringify({ transactionId })
+    }),
     getHistory: () => request('/exchange/history'),
-    getItems: () => request('/exchange/items')
+    getItems: () => request('/exchange/items'),
+    getDashboard: () => request('/exchange/dashboard'),
+    getRecords: (params = {}) => {
+      const query = new URLSearchParams(params).toString();
+      return request(`/exchange/records${query ? `?${query}` : ''}`);
+    }
   },
 
   // Requests

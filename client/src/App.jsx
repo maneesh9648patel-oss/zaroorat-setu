@@ -21,6 +21,7 @@ import VolunteerAssistPage from './pages/VolunteerAssistPage';
 import AuthPortalPage from './pages/AuthPortalPage';
 import ProfilePage from './pages/ProfilePage';
 import MyHistoryPage from './pages/MyHistoryPage';
+import StockDashboardPage from './pages/StockDashboardPage';
 import AadhaarQRScannerModal from './components/aadhaar/AadhaarQRScannerModal';
 
 function AppContent() {
@@ -109,6 +110,22 @@ function AppContent() {
             element={
               <ProtectedRoute>
                 <MyHistoryPage />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/dashboard" 
+            element={
+              <ProtectedRoute>
+                <StockDashboardPage />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/admin/dashboard" 
+            element={
+              <ProtectedRoute>
+                <StockDashboardPage />
               </ProtectedRoute>
             } 
           />

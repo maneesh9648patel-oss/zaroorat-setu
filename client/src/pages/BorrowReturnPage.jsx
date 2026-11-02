@@ -22,6 +22,7 @@ export default function BorrowReturnPage({ onOpenLens, prefilledLensItem, onClea
   // Escrow & Handover QR flow states
   const [selectedItem, setSelectedItem] = useState(null);
   const [takeQuantity, setTakeQuantity] = useState(1);
+  const [takeDuration, setTakeDuration] = useState(14);
   const [isSubmittingTake, setIsSubmittingTake] = useState(false);
   const [takeError, setTakeError] = useState(null);
   const [takeSuccessTxn, setTakeSuccessTxn] = useState(null);
@@ -474,6 +475,7 @@ export default function BorrowReturnPage({ onOpenLens, prefilledLensItem, onClea
     }
     setSelectedItem(item);
     setTakeQuantity(1);
+    setTakeDuration(item.loanPeriodDays || 14);
     setEscrowStep('deposit');
     setIsDepositPaid(false);
     setTokenStatus('active');
@@ -494,7 +496,8 @@ export default function BorrowReturnPage({ onOpenLens, prefilledLensItem, onClea
     try {
       const res = await api.exchange.takeItem({
         itemId: selectedItem.id,
-        quantity: takeQuantity
+        quantity: takeQuantity,
+        duration_days: takeDuration
       });
 
       if (res?.data?.success) {
@@ -659,7 +662,16 @@ export default function BorrowReturnPage({ onOpenLens, prefilledLensItem, onClea
         </div>
 
         {/* Action Buttons */}
-        <div className="flex items-center gap-3 shrink-0 flex-wrap">
+        <div className="flex items-center gap-2.5 shrink-0 flex-wrap">
+          <Link
+            to="/dashboard"
+            className="px-4 py-3 rounded-2xl bg-teal-light hover:bg-teal/20 text-teal border border-teal/30 text-xs sm:text-sm font-extrabold shadow-sm transition flex items-center gap-2 tap-target"
+            title="स्टॉक एवं अतिदेय डैशबोर्ड देखें"
+          >
+            <Layers className="w-4 h-4" />
+            <span>स्टॉक डैशबोर्ड (Dashboard)</span>
+          </Link>
+
           <Link
             to="/history"
             className="px-4 py-3 rounded-2xl bg-white hover:bg-cream text-darkbrown text-xs sm:text-sm font-extrabold shadow-md transition flex items-center gap-2 border border-darkbrown/15 tap-target"
@@ -1144,8 +1156,8 @@ export default function BorrowReturnPage({ onOpenLens, prefilledLensItem, onClea
                     </p>
                   </div>
 
-                  {/* Quantity to Take Selector */}
-                  <div className="p-3.5 rounded-2xl bg-white border border-darkbrown/15 space-y-2">
+                  {/* Quantity & Duration Selector */}
+                  <div className="p-3.5 rounded-2xl bg-white border border-darkbrown/15 space-y-3">
                     <div className="flex items-center justify-between">
                       <span className="text-xs font-bold text-darkbrown flex items-center gap-1.5">
                         <Layers className="w-4 h-4 text-teal" />
@@ -1173,7 +1185,35 @@ export default function BorrowReturnPage({ onOpenLens, prefilledLensItem, onClea
                         </button>
                       </div>
                     </div>
-                    <div className="flex items-center justify-between text-[11px] text-darkbrown/60 pt-0.5 border-t border-darkbrown/10">
+
+                    {/* Duration & Auto-calculated Due Date */}
+                    <div className="pt-2 border-t border-darkbrown/10 flex items-center justify-between text-xs font-bold">
+                      <span className="flex items-center gap-1.5 text-darkbrown/80">
+                        <Clock className="w-4 h-4 text-terracotta" />
+                        <span>उधार अवधि (Duration):</span>
+                      </span>
+                      <select
+                        value={takeDuration}
+                        onChange={(e) => setTakeDuration(Number(e.target.value))}
+                        className="px-2.5 py-1 rounded-xl bg-cream border border-darkbrown/15 font-black text-xs text-darkbrown outline-none"
+                      >
+                        <option value="5">5 दिन (इवेंट / विशेष)</option>
+                        <option value="7">7 दिन (1 सप्ताह)</option>
+                        <option value="14">14 दिन (2 सप्ताह मानक)</option>
+                        <option value="30">30 दिन (1 माह)</option>
+                        <option value="60">60 दिन (2 माह)</option>
+                        <option value="90">90 दिन (सेमेस्टर पाठ्यपुस्तकें)</option>
+                      </select>
+                    </div>
+
+                    <div className="flex items-center justify-between text-[11px] text-darkbrown/70 pt-1 border-t border-darkbrown/10 bg-cream/40 p-2 rounded-xl">
+                      <span>स्वतः नियत वापसी (Due Date):</span>
+                      <span className="font-black text-teal">
+                        {new Date(Date.now() + takeDuration * 24 * 60 * 60 * 1000).toLocaleDateString('hi-IN', { day: 'numeric', month: 'short', year: 'numeric' })}
+                      </span>
+                    </div>
+
+                    <div className="flex items-center justify-between text-[11px] text-darkbrown/60 pt-0.5">
                       <span>कैटलॉग में उपलब्ध:</span>
                       <span className="font-bold text-teal">{selectedItem.quantity_available ?? 1} इकाइयाँ उपलब्ध</span>
                     </div>

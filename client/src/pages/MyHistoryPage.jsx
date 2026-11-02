@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { 
   ArrowLeft, ArrowUpRight, ArrowDownLeft, Clock, ShieldCheck, 
   Box, User, Phone, CheckCircle2, AlertCircle, RefreshCw, 
-  Calendar, Hash, Sparkles, Plus, ExternalLink
+  Calendar, Hash, Sparkles, Plus, ExternalLink, RotateCcw, Layers
 } from 'lucide-react';
 import { api } from '../services/api';
 import { useAuth } from '../contexts/AuthContext';
@@ -17,6 +17,8 @@ export default function MyHistoryPage() {
   const [historyData, setHistoryData] = useState({ gave: [], took: [], totalGave: 0, totalTook: 0 });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [successMsg, setSuccessMsg] = useState(null);
+  const [actionLoadingId, setActionLoadingId] = useState(null);
 
   const fetchHistory = async () => {
     setLoading(true);
@@ -35,6 +37,29 @@ export default function MyHistoryPage() {
   useEffect(() => {
     fetchHistory();
   }, []);
+
+  const handleMarkReturned = async (transactionId) => {
+    if (!window.confirm("क्या आप पुष्टि करते हैं कि यह सामान आपको वापस प्राप्त हो गया है? इससे उपलब्ध स्टॉक स्वतः बढ़ जाएगा।")) {
+      return;
+    }
+    setActionLoadingId(transactionId);
+    setError(null);
+    setSuccessMsg(null);
+    try {
+      const res = await api.exchange.returnItem(transactionId);
+      if (res.success) {
+        setSuccessMsg(res.message || "सामान सफलतापूर्वक वापस दर्ज हुआ और स्टॉक अपडेट हो गया!");
+        await fetchHistory();
+      } else {
+        throw new Error(res.error || "वापसी दर्ज करने में त्रुटि");
+      }
+    } catch (err) {
+      console.error("Mark as returned failed:", err);
+      setError(err.message || "वापसी दर्ज करने में असमर्थ");
+    } finally {
+      setActionLoadingId(null);
+    }
+  };
 
   const formatDate = (isoStr) => {
     if (!isoStr) return 'Recent';
@@ -81,7 +106,16 @@ export default function MyHistoryPage() {
           </p>
         </div>
 
-        <div className="flex items-center gap-2 shrink-0">
+        <div className="flex items-center gap-2 shrink-0 flex-wrap">
+          <Link
+            to="/dashboard"
+            className="px-3.5 py-2 rounded-2xl bg-teal-light hover:bg-teal/20 text-teal border border-teal/30 text-xs font-black shadow-sm transition flex items-center gap-1.5"
+            title="स्टॉक व इन्वेंट्री डैशबोर्ड देखें"
+          >
+            <Layers className="w-4 h-4" />
+            <span>स्टॉक डैशबोर्ड (Dashboard)</span>
+          </Link>
+
           <button
             onClick={fetchHistory}
             className="p-2 rounded-2xl bg-white hover:bg-cream text-darkbrown border border-darkbrown/10 shadow-sm transition"
@@ -89,6 +123,7 @@ export default function MyHistoryPage() {
           >
             <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin text-teal' : ''}`} />
           </button>
+
           <Link
             to="/borrow-return"
             className="px-4 py-2 rounded-2xl bg-terracotta hover:bg-terracotta-hover text-white text-xs font-black shadow-sm transition flex items-center gap-1.5"
@@ -195,9 +230,17 @@ export default function MyHistoryPage() {
         </button>
       </div>
 
+      {/* Success Notification */}
+      {successMsg && (
+        <div className="p-4 rounded-2xl bg-emerald-50 border border-emerald-300 text-emerald-900 text-xs flex items-center gap-2 mb-6 animate-in fade-in">
+          <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+          <span className="font-bold">{successMsg}</span>
+        </div>
+      )}
+
       {/* Error Banner */}
       {error && (
-        <div className="p-4 rounded-2xl bg-red-50 border border-red-200 text-red-900 text-xs flex items-center gap-2 mb-6">
+        <div className="p-4 rounded-2xl bg-red-50 border border-red-200 text-red-900 text-xs flex items-center gap-2 mb-6 animate-in fade-in">
           <AlertCircle className="w-4 h-4 text-red-600 shrink-0" />
           <span>{error}</span>
         </div>
@@ -249,31 +292,49 @@ export default function MyHistoryPage() {
             /* Transaction Cards */
             currentList.map((txn) => {
               const isGave = activeTab === 'gave';
+              const isOverdue = txn.is_overdue;
+              const isReturned = txn.status === 'returned';
+
               return (
                 <div
                   key={txn.id}
-                  className="p-5 sm:p-6 rounded-3xl bg-white border border-darkbrown/10 shadow-sm hover:shadow-md transition flex flex-col md:flex-row md:items-center justify-between gap-4"
+                  className={`p-5 sm:p-6 rounded-3xl border transition flex flex-col md:flex-row md:items-center justify-between gap-4 ${
+                    isOverdue 
+                      ? 'bg-red-50/60 border-red-300 shadow-sm' 
+                      : 'bg-white border-darkbrown/10 shadow-sm hover:shadow-md'
+                  }`}
                 >
-                  {/* Left: Item Info & Exchange Direction */}
+                  {/* Left: Item Info, Dates, Duration & Overdue Badge */}
                   <div className="flex items-start gap-4">
                     <div className={`w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 shadow-sm ${
-                      isGave ? 'bg-teal/10 text-teal' : 'bg-terracotta/10 text-terracotta'
+                      isOverdue 
+                        ? 'bg-red-100 text-red-700' 
+                        : (isGave ? 'bg-teal/10 text-teal' : 'bg-terracotta/10 text-terracotta')
                     }`}>
-                      {isGave ? <ArrowUpRight className="w-6 h-6" /> : <ArrowDownLeft className="w-6 h-6" />}
+                      {isOverdue ? <AlertCircle className="w-6 h-6 animate-pulse" /> : isGave ? <ArrowUpRight className="w-6 h-6" /> : <ArrowDownLeft className="w-6 h-6" />}
                     </div>
 
-                    <div className="space-y-1">
+                    <div className="space-y-1.5">
                       <div className="flex items-center gap-2 flex-wrap">
                         <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-cream border border-darkbrown/10 text-darkbrown/80">
                           {txn.item_category || 'General'}
                         </span>
-                        <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider ${
-                          txn.status === 'completed'
-                            ? 'bg-emerald-100 text-emerald-800'
-                            : 'bg-amber-100 text-amber-800'
-                        }`}>
-                          {txn.status === 'completed' ? '✓ लेन-देन पूर्ण' : txn.status}
-                        </span>
+
+                        {/* Status Badge */}
+                        {isReturned ? (
+                          <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-emerald-100 text-emerald-800 border border-emerald-300">
+                            ✓ वापस आ चुका (Returned)
+                          </span>
+                        ) : isOverdue ? (
+                          <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-red-600 text-white shadow-xs">
+                            🔴 अतिदेय: {txn.days_overdue} दिन (Overdue)
+                          </span>
+                        ) : (
+                          <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-teal text-white">
+                            🟢 सक्रिय उधार: {txn.days_remaining} दिन शेष
+                          </span>
+                        )}
+
                         <span className="text-[10px] font-mono text-darkbrown/40">
                           #{txn.id}
                         </span>
@@ -283,21 +344,34 @@ export default function MyHistoryPage() {
                         {txn.item_name}
                       </h4>
 
-                      <div className="flex items-center gap-3 text-xs text-darkbrown/60 flex-wrap">
+                      {/* Quantity & Dates Grid */}
+                      <div className="flex items-center gap-3 text-xs text-darkbrown/70 flex-wrap pt-0.5">
                         <span className="flex items-center gap-1 font-bold text-darkbrown">
                           <Box className="w-3.5 h-3.5 text-teal" />
-                          <span>मात्रा: {txn.quantity} इकाई (Units)</span>
+                          <span>मात्रा: {txn.quantity} इकाई</span>
                         </span>
+                        
                         <span className="flex items-center gap-1 text-[11px]">
-                          <Calendar className="w-3.5 h-3.5" />
-                          <span>{formatDate(txn.created_at)}</span>
+                          <Calendar className="w-3.5 h-3.5 text-darkbrown/50" />
+                          <span>जारी (Issue): <strong>{formatDate(txn.issue_date || txn.created_at)}</strong></span>
                         </span>
+
+                        <span className="flex items-center gap-1 text-[11px]">
+                          <Clock className="w-3.5 h-3.5 text-terracotta" />
+                          <span>नियत (Due): <strong className={isOverdue ? 'text-red-700 font-black' : 'text-darkbrown'}>{formatDate(txn.due_date)}</strong> ({txn.duration_days || 14}d)</span>
+                        </span>
+
+                        {txn.return_date && (
+                          <span className="text-[11px] text-emerald-800 font-bold">
+                            वापसी: {formatDate(txn.return_date)}
+                          </span>
+                        )}
                       </div>
                     </div>
                   </div>
 
-                  {/* Right: Counterparty Details (Giver & Receiver saved in DB) */}
-                  <div className="md:border-l md:border-darkbrown/10 md:pl-6 shrink-0 flex flex-col justify-center min-w-[220px]">
+                  {/* Right: Counterparty Details & "Mark as returned" Action for Giver */}
+                  <div className="md:border-l md:border-darkbrown/10 md:pl-6 shrink-0 flex flex-col justify-center min-w-[240px] space-y-2">
                     <div className="p-3 rounded-2xl bg-cream/50 border border-darkbrown/10 text-xs space-y-1">
                       <div className="text-[10px] font-black uppercase tracking-wider text-darkbrown/50">
                         {isGave ? 'सामान प्राप्तकर्ता (Receiver Details):' : 'सामान प्रदाता (Giver Details):'}
@@ -326,6 +400,19 @@ export default function MyHistoryPage() {
                         </div>
                       )}
                     </div>
+
+                    {/* "Mark as returned" Button: Visible to Giver on active take transactions */}
+                    {isGave && !isReturned && txn.type === 'take' && (
+                      <button
+                        onClick={() => handleMarkReturned(txn.id)}
+                        disabled={actionLoadingId === txn.id}
+                        className="w-full py-2.5 px-3 rounded-2xl bg-teal hover:bg-teal-hover disabled:opacity-50 text-white text-xs font-black shadow-sm transition flex items-center justify-center gap-1.5 tap-target"
+                        title="वस्तु वापस प्राप्त दर्ज करें और स्टॉक पुनः बढ़ाएं"
+                      >
+                        <RotateCcw className="w-3.5 h-3.5" />
+                        <span>{actionLoadingId === txn.id ? "स्टॉक अपडेट हो रहा है..." : "वापस प्राप्त हुआ (Mark as Returned)"}</span>
+                      </button>
+                    )}
                   </div>
                 </div>
               );

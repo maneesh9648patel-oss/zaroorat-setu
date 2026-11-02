@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { MapPin, Globe, ChevronDown, Check, Mic, Home, ClipboardList, Box, CheckSquare, PhoneCall, Bot, Sparkles, Camera, Settings, Sun, Moon, LogIn, LogOut, User as UserIcon, History } from 'lucide-react';
+import { MapPin, Globe, ChevronDown, Check, Mic, Home, ClipboardList, Box, CheckSquare, PhoneCall, Bot, Sparkles, Camera, Settings, Sun, Moon, LogIn, LogOut, User as UserIcon, History, Layers } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useSettings } from '../../contexts/SettingsContext';
@@ -27,6 +27,7 @@ export default function Navbar({ onOpenVoiceRecorder, onOpenAssistant, onOpenLen
     { to: '/', label: t('navHome'), icon: Home },
     { to: '/requests', label: t('navRequests'), icon: ClipboardList },
     { to: '/borrow-return', label: t('navItems'), icon: Box },
+    { to: '/dashboard', label: 'स्टॉक डैशबोर्ड', icon: Layers },
     { to: '/history', label: 'मेरा इतिहास', icon: History },
     { to: '/verifier', label: t('navVerifier'), icon: CheckSquare },
     { to: '/volunteer-assist', label: t('navOfflineAssist'), icon: PhoneCall },
