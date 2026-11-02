@@ -20,6 +20,7 @@ import VerifierDashboard from './pages/VerifierDashboard';
 import VolunteerAssistPage from './pages/VolunteerAssistPage';
 import AuthPortalPage from './pages/AuthPortalPage';
 import ProfilePage from './pages/ProfilePage';
+import MyHistoryPage from './pages/MyHistoryPage';
 import AadhaarQRScannerModal from './components/aadhaar/AadhaarQRScannerModal';
 
 function AppContent() {
@@ -100,6 +101,14 @@ function AppContent() {
             element={
               <ProtectedRoute>
                 <ProfilePage />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/history" 
+            element={
+              <ProtectedRoute>
+                <MyHistoryPage />
               </ProtectedRoute>
             } 
           />

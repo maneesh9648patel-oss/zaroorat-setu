@@ -1,11 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { 
   ArrowLeft, Clock, ShieldCheck, AlertCircle, QrCode, CheckCircle2, RotateCcw, 
   Search, BookOpen, Utensils, Cpu, Heart, Plus, Sparkles, Filter, Check, X,
-  Camera, Video, Image, Play, Pause, Shield, DollarSign, Upload, Eye, FileVideo
+  Camera, Video, Image, Play, Pause, Shield, DollarSign, Upload, Eye, FileVideo,
+  Layers, PackagePlus, ArrowRight
 } from 'lucide-react';
 import { QRCodeSVG } from 'qrcode.react';
+import { api } from '../services/api';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useAuth } from '../contexts/AuthContext';
 
@@ -19,6 +21,10 @@ export default function BorrowReturnPage({ onOpenLens, prefilledLensItem, onClea
   
   // Escrow & Handover QR flow states
   const [selectedItem, setSelectedItem] = useState(null);
+  const [takeQuantity, setTakeQuantity] = useState(1);
+  const [isSubmittingTake, setIsSubmittingTake] = useState(false);
+  const [takeError, setTakeError] = useState(null);
+  const [takeSuccessTxn, setTakeSuccessTxn] = useState(null);
   const [escrowStep, setEscrowStep] = useState('deposit'); // 'deposit' | 'qr'
   const [paymentMethod, setPaymentMethod] = useState('upi'); // 'upi' | 'wallet' | 'cash_hub'
   const [isDepositPaid, setIsDepositPaid] = useState(false);
@@ -32,17 +38,20 @@ export default function BorrowReturnPage({ onOpenLens, prefilledLensItem, onClea
   const [isVideoPlaying, setIsVideoPlaying] = useState(false);
   const videoPlayerRef = useRef(null);
 
-  // Lend/Sell Item Modal state
+  // Lend/Sell Item Modal state ("Give Item" form)
   const [showLendModal, setShowLendModal] = useState(false);
   const [newItemName, setNewItemName] = useState('');
   const [newItemCategory, setNewItemCategory] = useState('Study Material');
+  const [newItemQuantity, setNewItemQuantity] = useState(1);
   const [newItemCondition, setNewItemCondition] = useState('Grade A+ (Like New)');
   const [newItemEstimatedPrice, setNewItemEstimatedPrice] = useState(2200);
   const [newItemLoanDays, setNewItemLoanDays] = useState('30');
   const [newItemImages, setNewItemImages] = useState([]);
   const [newItemVideoUrl, setNewItemVideoUrl] = useState('');
   const [newItemVideoName, setNewItemVideoName] = useState('');
+  const [isSubmittingGive, setIsSubmittingGive] = useState(false);
   const [lendSuccess, setLendSuccess] = useState(false);
+  const [lendError, setLendError] = useState(null);
 
   // Listen for AI Lens pre-fill
   useEffect(() => {
@@ -409,6 +418,54 @@ export default function BorrowReturnPage({ onOpenLens, prefilledLensItem, onClea
     return matchesCategory && matchesQuery;
   });
 
+  // Sync with Exchange Database on mount
+  useEffect(() => {
+    const fetchDbItems = async () => {
+      try {
+        const res = await api.exchange.getItems();
+        if (res?.data?.items && Array.isArray(res.data.items) && res.data.items.length > 0) {
+          setItems(prev => {
+            const dbItems = res.data.items;
+            const dbItemMap = new Map(dbItems.map(i => [i.id, i]));
+            
+            // Update quantities of existing seed items
+            const updatedPrev = prev.map(item => {
+              if (dbItemMap.has(item.id)) {
+                const fromDb = dbItemMap.get(item.id);
+                return {
+                  ...item,
+                  ...fromDb,
+                  quantity_total: Number(fromDb.quantity_total || item.quantity_total || 1),
+                  quantity_available: Number(fromDb.quantity_available ?? fromDb.quantity_total ?? 1),
+                  status: fromDb.status || item.status
+                };
+              }
+              return item;
+            });
+
+            // Prepend new custom items from DB
+            const existingIds = new Set(prev.map(i => i.id));
+            const newFromDb = dbItems.filter(i => !existingIds.has(i.id)).map(i => ({
+              ...i,
+              icon: i.category === 'Study Material' ? '📚' : i.category === 'Family Utensils' ? '🍲' : i.category === 'Electronics' ? '⚡' : '♿',
+              estimatedValue: i.estimatedPrice || i.estimatedValue || 2000,
+              securityDeposit: Math.round((i.estimatedPrice || i.estimatedValue || 2000) * 0.5),
+              images: i.images?.length > 0 ? i.images : ["https://images.unsplash.com/photo-1584990347449-39908a8a91aa?w=600&auto=format&fit=crop&q=70"],
+              videoUrl: i.videoUrl || "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
+              videoNote: i.videoName || "सामान की स्थिति का जांच वीडियो"
+            }));
+
+            return [...newFromDb, ...updatedPrev];
+          });
+        }
+      } catch (err) {
+        console.warn("Could not fetch items from exchange DB:", err.message);
+      }
+    };
+
+    fetchDbItems();
+  }, []);
+
   // Handover single-use token logic
   const handleStartBorrow = (item) => {
     if (!user?.aadhaarVerification?.verified) {
@@ -416,16 +473,52 @@ export default function BorrowReturnPage({ onOpenLens, prefilledLensItem, onClea
       return;
     }
     setSelectedItem(item);
+    setTakeQuantity(1);
     setEscrowStep('deposit');
     setIsDepositPaid(false);
     setTokenStatus('active');
     setConfirmSuccess(false);
     setDisputeMessage(null);
+    setTakeError(null);
+    setTakeSuccessTxn(null);
   };
 
-  const handlePayEscrowDeposit = () => {
-    setIsDepositPaid(true);
-    setEscrowStep('qr');
+  const handlePayEscrowDeposit = async () => {
+    if (!user?.aadhaarVerification?.verified) {
+      openAadhaarModal();
+      return;
+    }
+    setIsSubmittingTake(true);
+    setTakeError(null);
+
+    try {
+      const res = await api.exchange.takeItem({
+        itemId: selectedItem.id,
+        quantity: takeQuantity
+      });
+
+      if (res?.data?.success) {
+        setTakeSuccessTxn(res.data.transaction);
+        const updatedItem = res.data.item;
+        setItems(prev => prev.map(i => i.id === selectedItem.id ? {
+          ...i,
+          quantity_available: updatedItem.quantity_available,
+          status: updatedItem.status
+        } : i));
+        setSelectedItem(prev => ({
+          ...prev,
+          quantity_available: updatedItem.quantity_available,
+          status: updatedItem.status
+        }));
+        setIsDepositPaid(true);
+        setEscrowStep('qr');
+      }
+    } catch (err) {
+      console.error("Take item failed:", err);
+      setTakeError(err.response?.data?.error || err.message || "सामान लेने में त्रुटि हुई।");
+    } finally {
+      setIsSubmittingTake(false);
+    }
   };
 
   const handleConfirmHandover = () => {
@@ -472,41 +565,63 @@ export default function BorrowReturnPage({ onOpenLens, prefilledLensItem, onClea
     setNewItemVideoName("Working_Condition_Inspection.mp4");
   };
 
-  const handleAddNewItem = (e) => {
+  const handleAddNewItem = async (e) => {
     e.preventDefault();
+    if (!user?.aadhaarVerification?.verified) {
+      openAadhaarModal();
+      return;
+    }
+
     const estVal = Number(newItemEstimatedPrice) || 2000;
-    const deposit50 = Math.round(estVal * 0.5);
+    const qty = Math.max(1, Number(newItemQuantity) || 1);
 
-    const newItem = {
-      id: `itm_${Date.now()}`,
-      name: newItemName,
-      category: newItemCategory,
-      condition: newItemCondition,
-      conditionGrade: "Grade A",
-      loanPeriodDays: Number(newItemLoanDays),
-      ownerPublicName: user?.publicName || user?.displayName || "Community Member",
-      ownerArea: user?.area || "Civil Lines, Banda",
-      status: "available",
-      icon: newItemCategory === 'Study Material' ? '📚' : newItemCategory === 'Family Utensils' ? '🍲' : newItemCategory === 'Electronics' ? '⚡' : '♿',
-      estimatedValue: estVal,
-      securityDeposit: deposit50,
-      images: newItemImages.length > 0 ? newItemImages : [
-        "https://images.unsplash.com/photo-1584990347449-39908a8a91aa?w=600&auto=format&fit=crop&q=70"
-      ],
-      videoUrl: newItemVideoUrl || "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
-      videoNote: newItemVideoName ? `जांच वीडियो: ${newItemVideoName}` : "सामान की कार्यप्रणाली व स्थिति का जांच वीडियो"
-    };
+    setIsSubmittingGive(true);
+    setLendError(null);
 
-    setItems(prev => [newItem, ...prev]);
-    setLendSuccess(true);
-    setTimeout(() => {
-      setLendSuccess(false);
-      setShowLendModal(false);
-      setNewItemName('');
-      setNewItemImages([]);
-      setNewItemVideoUrl('');
-      setNewItemVideoName('');
-    }, 1500);
+    try {
+      const res = await api.exchange.giveItem({
+        name: newItemName,
+        category: newItemCategory,
+        quantity: qty,
+        condition: newItemCondition,
+        loanPeriodDays: Number(newItemLoanDays),
+        estimatedPrice: estVal,
+        images: newItemImages.length > 0 ? newItemImages : [
+          "https://images.unsplash.com/photo-1584990347449-39908a8a91aa?w=600&auto=format&fit=crop&q=70"
+        ],
+        videoUrl: newItemVideoUrl || "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
+        videoName: newItemVideoName || "जांच वीडियो"
+      });
+
+      if (res?.data?.item) {
+        const created = {
+          ...res.data.item,
+          icon: newItemCategory === 'Study Material' ? '📚' : newItemCategory === 'Family Utensils' ? '🍲' : newItemCategory === 'Electronics' ? '⚡' : '♿',
+          estimatedValue: estVal,
+          securityDeposit: Math.round(estVal * 0.5),
+          images: res.data.item.images?.length > 0 ? res.data.item.images : (newItemImages.length > 0 ? newItemImages : ["https://images.unsplash.com/photo-1584990347449-39908a8a91aa?w=600&auto=format&fit=crop&q=70"]),
+          videoUrl: res.data.item.videoUrl || newItemVideoUrl || "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
+          videoNote: newItemVideoName ? `जांच वीडियो: ${newItemVideoName}` : "सामान की कार्यप्रणाली व स्थिति का जांच वीडियो"
+        };
+        setItems(prev => [created, ...prev]);
+      }
+
+      setLendSuccess(true);
+      setTimeout(() => {
+        setLendSuccess(false);
+        setShowLendModal(false);
+        setNewItemName('');
+        setNewItemQuantity(1);
+        setNewItemImages([]);
+        setNewItemVideoUrl('');
+        setNewItemVideoName('');
+      }, 1500);
+    } catch (err) {
+      console.error("Give item failed:", err);
+      setLendError(err.response?.data?.error || err.message || "सामान जोड़ने में विफल।");
+    } finally {
+      setIsSubmittingGive(false);
+    }
   };
 
   const qrPayload = selectedItem ? JSON.stringify({
@@ -545,6 +660,15 @@ export default function BorrowReturnPage({ onOpenLens, prefilledLensItem, onClea
 
         {/* Action Buttons */}
         <div className="flex items-center gap-3 shrink-0 flex-wrap">
+          <Link
+            to="/history"
+            className="px-4 py-3 rounded-2xl bg-white hover:bg-cream text-darkbrown text-xs sm:text-sm font-extrabold shadow-md transition flex items-center gap-2 border border-darkbrown/15 tap-target"
+            title="मेरा आदान-प्रदान इतिहास देखें"
+          >
+            <Clock className="w-4 h-4 text-terracotta" />
+            <span>मेरा इतिहास (My History)</span>
+          </Link>
+
           {onOpenLens && (
             <button
               onClick={onOpenLens}
@@ -567,7 +691,7 @@ export default function BorrowReturnPage({ onOpenLens, prefilledLensItem, onClea
             className="px-5 py-3 rounded-2xl bg-terracotta hover:bg-terracotta-hover text-white text-xs sm:text-sm font-extrabold shadow-md transition flex items-center gap-2 tap-target"
           >
             <Plus className="w-4 h-4 stroke-[3]" />
-            <span>समान बेचें / उधार दें (Lend/Sell)</span>
+            <span>सामान दें (Give Item)</span>
           </button>
         </div>
       </div>
@@ -731,13 +855,13 @@ export default function BorrowReturnPage({ onOpenLens, prefilledLensItem, onClea
                     </span>
                   </div>
 
-                  <div className="absolute top-2 right-2">
+                  <div className="absolute top-2 right-2 flex items-center gap-1">
                     <span className={`px-2 py-0.5 rounded-full text-[10px] font-black uppercase ${
-                      item.status === 'available'
+                      item.status === 'available' && (item.quantity_available ?? item.quantity_total ?? 1) > 0
                         ? 'bg-teal text-white shadow-xs'
                         : 'bg-softYellow text-darkbrown border border-softYellow'
                     }`}>
-                      {item.status === 'available' ? 'उपलब्ध' : 'उधार पर'}
+                      {item.status === 'available' && (item.quantity_available ?? item.quantity_total ?? 1) > 0 ? 'उपलब्ध' : 'उधार पर'}
                     </span>
                   </div>
 
@@ -763,6 +887,20 @@ export default function BorrowReturnPage({ onOpenLens, prefilledLensItem, onClea
                   <div className="text-[11px] text-darkbrown/65 mt-1">
                     {t('lentBy')} <strong>{item.ownerPublicName}</strong> · {item.ownerArea}
                   </div>
+                </div>
+
+                {/* Database Tracked Quantity Badge */}
+                <div className="flex items-center justify-between text-xs bg-cream/70 px-3 py-1.5 rounded-2xl border border-darkbrown/10">
+                  <span className="text-[11px] font-bold text-darkbrown/70 flex items-center gap-1">
+                    <Layers className="w-3.5 h-3.5 text-teal" />
+                    <span>मात्रा (Quantity):</span>
+                  </span>
+                  <span className="font-black text-xs">
+                    <span className={(item.quantity_available ?? item.quantity_total ?? 1) > 0 ? "text-teal font-extrabold" : "text-terracotta font-extrabold"}>
+                      {item.quantity_available ?? item.quantity_total ?? 1}
+                    </span>
+                    <span className="text-darkbrown/50 font-semibold"> / {item.quantity_total ?? 1} उपलब्ध</span>
+                  </span>
                 </div>
 
                 {/* 50% Security Deposit Card Section */}
@@ -805,13 +943,13 @@ export default function BorrowReturnPage({ onOpenLens, prefilledLensItem, onClea
                   <span>फोटो व वीडियो जांचें (Inspect)</span>
                 </button>
 
-                {item.status === 'available' ? (
+                {item.status === 'available' && (item.quantity_available ?? item.quantity_total ?? 1) > 0 ? (
                   <button
                     onClick={() => handleStartBorrow(item)}
                     className="w-full py-2.5 rounded-xl bg-teal hover:bg-teal-hover text-white font-extrabold text-xs shadow-sm transition flex items-center justify-center gap-1.5 tap-target"
                   >
                     <QrCode className="w-4 h-4" />
-                    <span>50% धरोहर सहित लें (Borrow)</span>
+                    <span>50% धरोहर सहित लें (Take Item)</span>
                   </button>
                 ) : (
                   <button
@@ -1006,11 +1144,46 @@ export default function BorrowReturnPage({ onOpenLens, prefilledLensItem, onClea
                     </p>
                   </div>
 
+                  {/* Quantity to Take Selector */}
+                  <div className="p-3.5 rounded-2xl bg-white border border-darkbrown/15 space-y-2">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-bold text-darkbrown flex items-center gap-1.5">
+                        <Layers className="w-4 h-4 text-teal" />
+                        <span>लेने हेतु मात्रा (Quantity to Take):</span>
+                      </span>
+                      <div className="flex items-center gap-2">
+                        <button
+                          type="button"
+                          onClick={() => setTakeQuantity(q => Math.max(1, q - 1))}
+                          disabled={takeQuantity <= 1 || isSubmittingTake}
+                          className="w-8 h-8 rounded-xl bg-cream hover:bg-cream-dark disabled:opacity-40 font-black text-base flex items-center justify-center border border-darkbrown/15 transition text-darkbrown"
+                        >
+                          -
+                        </button>
+                        <span className="font-mono font-black text-base text-terracotta px-2">
+                          {takeQuantity}
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() => setTakeQuantity(q => Math.min(selectedItem.quantity_available ?? 1, q + 1))}
+                          disabled={takeQuantity >= (selectedItem.quantity_available ?? 1) || isSubmittingTake}
+                          className="w-8 h-8 rounded-xl bg-cream hover:bg-cream-dark disabled:opacity-40 font-black text-base flex items-center justify-center border border-darkbrown/15 transition text-darkbrown"
+                        >
+                          +
+                        </button>
+                      </div>
+                    </div>
+                    <div className="flex items-center justify-between text-[11px] text-darkbrown/60 pt-0.5 border-t border-darkbrown/10">
+                      <span>कैटलॉग में उपलब्ध:</span>
+                      <span className="font-bold text-teal">{selectedItem.quantity_available ?? 1} इकाइयाँ उपलब्ध</span>
+                    </div>
+                  </div>
+
                   {/* Pricing Breakdown Card */}
                   <div className="p-4 rounded-2xl bg-cream/70 border border-darkbrown/10 space-y-2.5 text-xs">
                     <div className="flex items-center justify-between text-darkbrown/80">
-                      <span>सामान का कुल मूल्य:</span>
-                      <span className="font-bold">₹{selectedItem.estimatedValue}</span>
+                      <span>सामान का कुल मूल्य ({takeQuantity} इकाई):</span>
+                      <span className="font-bold">₹{(selectedItem.estimatedValue || 2000) * takeQuantity}</span>
                     </div>
                     <div className="flex items-center justify-between text-darkbrown/80">
                       <span>सामुदायिक उपयोग शुल्क:</span>
@@ -1022,7 +1195,7 @@ export default function BorrowReturnPage({ onOpenLens, prefilledLensItem, onClea
                         50% रिफंडेबल सुरक्षा राशि:
                       </span>
                       <span className="text-base text-terracotta font-black">
-                        ₹{selectedItem.securityDeposit}
+                        ₹{(selectedItem.securityDeposit || Math.round((selectedItem.estimatedValue || 2000) * 0.5)) * takeQuantity}
                       </span>
                     </div>
                   </div>
@@ -1076,17 +1249,32 @@ export default function BorrowReturnPage({ onOpenLens, prefilledLensItem, onClea
                   <div className="p-3 rounded-2xl bg-teal-light/50 border border-teal/20 text-[11px] text-darkbrown/80 leading-relaxed flex items-start gap-2">
                     <ShieldCheck className="w-4 h-4 text-teal shrink-0 mt-0.5" />
                     <div>
-                      <strong>100% रिफंड आश्वासन:</strong> सामान की सुरक्षित वापसी और QR स्कैन होते ही ₹{selectedItem.securityDeposit} तुरंत आपके खाते में वापस कर दिए जाएंगे।
+                      <strong>100% रिफंड आश्वासन:</strong> सामान की सुरक्षित वापसी और QR स्कैन होते ही ₹{(selectedItem.securityDeposit || Math.round((selectedItem.estimatedValue || 2000) * 0.5)) * takeQuantity} तुरंत आपके खाते में वापस कर दिए जाएंगे।
                     </div>
                   </div>
+
+                  {/* Error Notification */}
+                  {takeError && (
+                    <div className="p-3 rounded-2xl bg-red-50 text-red-800 text-xs border border-red-200 flex items-center gap-2">
+                      <AlertCircle className="w-4 h-4 text-red-600 shrink-0" />
+                      <span>{takeError}</span>
+                    </div>
+                  )}
 
                   {/* Proceed Button */}
                   <button
                     onClick={handlePayEscrowDeposit}
-                    className="w-full py-3.5 rounded-2xl bg-teal hover:bg-teal-hover text-white font-black text-sm shadow-md transition flex items-center justify-center gap-2 tap-target"
+                    disabled={isSubmittingTake}
+                    className="w-full py-3.5 rounded-2xl bg-teal hover:bg-teal-hover disabled:opacity-60 text-white font-black text-sm shadow-md transition flex items-center justify-center gap-2 tap-target"
                   >
-                    <Check className="w-4 h-4" />
-                    <span>₹{selectedItem.securityDeposit} एस्क्रो में जमा करें व QR कोड पाएं</span>
+                    {isSubmittingTake ? (
+                      <span>डेटाबेस में दर्ज हो रहा है...</span>
+                    ) : (
+                      <>
+                        <Check className="w-4 h-4" />
+                        <span>₹{(selectedItem.securityDeposit || Math.round((selectedItem.estimatedValue || 2000) * 0.5)) * takeQuantity} एस्क्रो में जमा करें व QR कोड पाएं</span>
+                      </>
+                    )}
                   </button>
                 </div>
               )}
@@ -1094,10 +1282,48 @@ export default function BorrowReturnPage({ onOpenLens, prefilledLensItem, onClea
               {/* STEP 2: VERIFIED SINGLE-USE HANDOVER QR CODE */}
               {escrowStep === 'qr' && (
                 <div className="space-y-4">
+                  {/* Database Ledger Log Badge */}
+                  {takeSuccessTxn && (
+                    <div className="p-3.5 rounded-2xl bg-emerald-50 border border-emerald-200 text-left text-xs space-y-1.5 animate-in fade-in">
+                      <div className="flex items-center gap-1.5 font-black text-emerald-900 text-xs">
+                        <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+                        <span>लेनदेन डेटाबेस में सफलतापूर्वक दर्ज (Saved in DB)</span>
+                      </div>
+                      <div className="grid grid-cols-2 gap-2 text-[11px] text-emerald-800 pt-1">
+                        <div>
+                          <span className="text-emerald-700/80">देने वाला (Giver):</span>
+                          <div className="font-bold text-darkbrown truncate">{takeSuccessTxn.giver_name}</div>
+                        </div>
+                        <div>
+                          <span className="text-emerald-700/80">लेने वाला (Receiver):</span>
+                          <div className="font-bold text-darkbrown truncate">{takeSuccessTxn.receiver_name}</div>
+                        </div>
+                        <div>
+                          <span className="text-emerald-700/80">ली गई मात्रा:</span>
+                          <div className="font-bold text-darkbrown">{takeSuccessTxn.quantity} इकाई</div>
+                        </div>
+                        <div>
+                          <span className="text-emerald-700/80">प्रकार / स्थिति:</span>
+                          <div className="font-bold text-emerald-900 uppercase">{takeSuccessTxn.type} · {takeSuccessTxn.status}</div>
+                        </div>
+                      </div>
+                      <div className="pt-1 flex items-center justify-between border-t border-emerald-200/60">
+                        <span className="text-[10px] text-emerald-700 font-mono">ID: {takeSuccessTxn.id}</span>
+                        <Link
+                          to="/history"
+                          className="inline-flex items-center gap-1 text-[11px] font-black text-teal hover:underline"
+                        >
+                          <span>मेरा इतिहास देखें</span>
+                          <ArrowRight className="w-3 h-3" />
+                        </Link>
+                      </div>
+                    </div>
+                  )}
+
                   <div>
                     <div className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-teal-light text-teal text-xs font-black border border-teal/30 mb-2">
                       <Check className="w-3.5 h-3.5" />
-                      <span>50% धरोहर राशि एस्क्रो में लॉक: ₹{selectedItem.securityDeposit}</span>
+                      <span>50% धरोहर राशि एस्क्रो में लॉक: ₹{(selectedItem.securityDeposit || Math.round((selectedItem.estimatedValue || 2000) * 0.5)) * takeQuantity}</span>
                     </div>
                     <div className="font-extrabold text-sm text-darkbrown">
                       {t('showCodePickup')}
@@ -1135,7 +1361,7 @@ export default function BorrowReturnPage({ onOpenLens, prefilledLensItem, onClea
                   <div className="p-3.5 rounded-2xl bg-softYellow/40 border border-softYellow/80 flex items-start gap-2 text-left">
                     <Clock className="w-4 h-4 text-darkbrown shrink-0 mt-0.5" />
                     <p className="text-xs text-darkbrown font-medium leading-relaxed">
-                      <strong>वापसी स्मरण:</strong> {selectedItem.loanPeriodDays} दिनों में सामान वापस करने पर <strong>₹{selectedItem.securityDeposit} तुरंत रिफंड</strong> हो जाएंगे।
+                      <strong>वापसी स्मरण:</strong> {selectedItem.loanPeriodDays} दिनों में सामान वापस करने पर <strong>₹{(selectedItem.securityDeposit || Math.round((selectedItem.estimatedValue || 2000) * 0.5)) * takeQuantity} तुरंत रिफंड</strong> हो जाएंगे।
                     </p>
                   </div>
 
@@ -1217,17 +1443,35 @@ export default function BorrowReturnPage({ onOpenLens, prefilledLensItem, onClea
                 </div>
               )}
 
-              {/* Item Name */}
-              <div>
-                <label className="block font-bold text-darkbrown uppercase mb-1">सामान का नाम (Item Name)</label>
-                <input
-                  type="text"
-                  required
-                  value={newItemName}
-                  onChange={(e) => setNewItemName(e.target.value)}
-                  placeholder="उदा. Casio fx-991EX Calculator या 50L बड़ा पतीला या व्हीलचेयर"
-                  className="w-full px-3 py-2.5 rounded-xl border border-darkbrown/20 bg-white font-semibold outline-none focus:ring-2 focus:ring-terracotta"
-                />
+              {/* Item Name & Quantity */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div className="sm:col-span-2">
+                  <label className="block font-bold text-darkbrown uppercase mb-1">सामान का नाम (Item Name)</label>
+                  <input
+                    type="text"
+                    required
+                    value={newItemName}
+                    onChange={(e) => setNewItemName(e.target.value)}
+                    placeholder="उदा. Casio fx-991EX Calculator या 50L बड़ा पतीला या व्हीलचेयर"
+                    className="w-full px-3 py-2.5 rounded-xl border border-darkbrown/20 bg-white font-semibold outline-none focus:ring-2 focus:ring-terracotta"
+                  />
+                </div>
+
+                <div>
+                  <label className="block font-bold text-darkbrown uppercase mb-1 flex items-center gap-1">
+                    <Layers className="w-3.5 h-3.5 text-teal" />
+                    <span>मात्रा (Quantity)</span>
+                  </label>
+                  <input
+                    type="number"
+                    required
+                    min="1"
+                    max="100"
+                    value={newItemQuantity}
+                    onChange={(e) => setNewItemQuantity(Math.max(1, parseInt(e.target.value, 10) || 1))}
+                    className="w-full px-3 py-2.5 rounded-xl border border-darkbrown/20 bg-white font-black text-darkbrown outline-none focus:ring-2 focus:ring-terracotta"
+                  />
+                </div>
               </div>
 
               {/* Category & Condition */}
@@ -1399,6 +1643,13 @@ export default function BorrowReturnPage({ onOpenLens, prefilledLensItem, onClea
                 </select>
               </div>
 
+              {lendError && (
+                <div className="p-3 rounded-2xl bg-red-50 text-red-800 text-xs border border-red-200 flex items-center gap-2">
+                  <AlertCircle className="w-4 h-4 text-red-600 shrink-0" />
+                  <span>{lendError}</span>
+                </div>
+              )}
+
               {lendSuccess ? (
                 <div className="p-3.5 rounded-2xl bg-teal text-white font-bold text-center text-sm shadow-md animate-in fade-in">
                   ✓ सामान फोटो, वीडियो व 50% सुरक्षा धरोहर के साथ कैटलॉग में जुड़ गया!
@@ -1406,9 +1657,10 @@ export default function BorrowReturnPage({ onOpenLens, prefilledLensItem, onClea
               ) : (
                 <button
                   type="submit"
-                  className="w-full py-3.5 rounded-2xl bg-terracotta hover:bg-terracotta-hover text-white font-black text-sm shadow-md transition tap-target"
+                  disabled={isSubmittingGive}
+                  className="w-full py-3.5 rounded-2xl bg-terracotta hover:bg-terracotta-hover disabled:opacity-60 text-white font-black text-sm shadow-md transition tap-target"
                 >
-                  सामान कैटलॉग में प्रकाशित करें (Publish with 50% Escrow)
+                  {isSubmittingGive ? "डेटाबेस में दर्ज हो रहा है..." : "सामान कैटलॉग में प्रकाशित करें (Publish with 50% Escrow)"}
                 </button>
               )}
             </form>

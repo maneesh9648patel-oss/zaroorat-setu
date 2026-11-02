@@ -84,6 +84,20 @@ export const api = {
     getSampleQrs: () => request('/aadhaar/sample-qrs')
   },
 
+  // Item Exchange Database Layer (Give, Take, Transactions & My History)
+  exchange: {
+    giveItem: (data) => request('/exchange/give', {
+      method: 'POST',
+      body: JSON.stringify(data)
+    }),
+    takeItem: (data) => request('/exchange/take', {
+      method: 'POST',
+      body: JSON.stringify(data)
+    }),
+    getHistory: () => request('/exchange/history'),
+    getItems: () => request('/exchange/items')
+  },
+
   // Requests
   requests: {
     getAll: (params = {}) => {

@@ -400,6 +400,273 @@
       },
       "createdAt": "2026-11-02T05:11:44.916Z",
       "updatedAt": "2026-11-02T05:11:44.916Z"
+    },
+    {
+      "uid": "usr_mvyt5u1a_kpz8",
+      "phone": "+919810301775",
+      "email": "newuser_mvyt5u02@example.com",
+      "passwordHash": "0b23056510a6f5f59914cef02fd43303:317be69d88be7dd62569f5a566d3ced10742f3ce09061163edf5fb632c98368374d04240fe204cddbd6da8b07777997cd3cfe95622411b56a64d01fa331d264f",
+      "displayName": "Ramesh Sharma",
+      "publicName": "Ramesh S.",
+      "role": "needer",
+      "kycLevel": "level_1",
+      "kycStatus": "basic_verified",
+      "area": "Civil Lines",
+      "city": "Banda",
+      "coordinates": {
+        "lat": 25.4764,
+        "lng": 80.3344
+      },
+      "idDocumentPlaceholder": {
+        "status": "not_submitted",
+        "provider": "Authorized Partner (Coming Soon)"
+      },
+      "createdAt": "2026-11-02T05:18:13.583Z",
+      "updatedAt": "2026-11-02T05:18:13.583Z"
+    },
+    {
+      "uid": "usr_mvyt5u2n_97nx",
+      "phone": "+919955425620",
+      "email": "login_mvyt5u1h@example.com",
+      "passwordHash": "ff74ee1b02acee55d2b88b6ef90433fb:af91d0d4cb25c329091eadcd39fada7c04a340c00eade5342be4500a219f28e56d6d300fe37858fab2b9a25420140a10cfa6eab083670483f22ab59c7e446538",
+      "displayName": "Kavita Devi",
+      "publicName": "Kavita D.",
+      "role": "needer",
+      "kycLevel": "level_1",
+      "kycStatus": "basic_verified",
+      "area": "Civil Lines",
+      "city": "Banda",
+      "coordinates": {
+        "lat": 25.4764,
+        "lng": 80.3344
+      },
+      "idDocumentPlaceholder": {
+        "status": "not_submitted",
+        "provider": "Authorized Partner (Coming Soon)"
+      },
+      "createdAt": "2026-11-02T05:18:13.631Z",
+      "updatedAt": "2026-11-02T05:18:13.631Z"
+    },
+    {
+      "uid": "usr_test_aadhaar_1793596693755",
+      "displayName": "Anil Verma",
+      "phone": "+919811524671",
+      "email": "anil_1793596693755@test.com",
+      "role": "needer",
+      "kycLevel": "level_2",
+      "kycStatus": "fully_verified",
+      "aadhaarVerification": {
+        "verified": true,
+        "name": "Anil Verma",
+        "dob": "10-10-1998",
+        "gender": "M",
+        "last4": "3344",
+        "verifiedAt": "2026-11-02T05:18:13.760Z",
+        "issuer": "UIDAI Secure QR (RSA-2048 Digital Signature)"
+      },
+      "createdAt": "2026-11-02T05:18:13.755Z",
+      "updatedAt": "2026-11-02T05:18:13.760Z",
+      "passwordHash": "3a2943a26ea5e9c9351f37a38d18c075:e231e8511a19f25573dafe66ed581e3c807877b760dd6b12baffe90ecb4a08d645087439fe2ce7844af02173f1645615d2cbc868a7602dc7cf089f47d7de832d"
+    },
+    {
+      "uid": "usr_test_aadhaar_1793597430367",
+      "displayName": "Anil Verma",
+      "phone": "+919811630903",
+      "email": "anil_1793597430367@test.com",
+      "role": "needer",
+      "kycLevel": "level_2",
+      "kycStatus": "fully_verified",
+      "aadhaarVerification": {
+        "verified": true,
+        "name": "Anil Verma",
+        "dob": "10-10-1998",
+        "gender": "M",
+        "last4": "3344",
+        "verifiedAt": "2026-11-02T05:30:30.372Z",
+        "issuer": "UIDAI Secure QR (RSA-2048 Digital Signature)"
+      },
+      "createdAt": "2026-11-02T05:30:30.367Z",
+      "updatedAt": "2026-11-02T05:30:30.372Z",
+      "passwordHash": "d697863ad7b9112b09600b407f41a7ea:c5a29e0a240a1e36f6c046c961c4f8be70b43c8fa3783276304043e0c715d40bbdbd026f8e1fa1f9c45889278ad410ebf67539f8f61ec171562b714484658db1"
+    },
+    {
+      "uid": "usr_mvytlna0_16lm",
+      "phone": "+919810408971",
+      "email": "newuser_mvytln8t@example.com",
+      "passwordHash": "d76d2601a8f995a63ca3998ca906d8f0:8770f57a4948cb5717aed41a63117848fc9af03f588aba9c7668a23d4f2b022b50650c0214bc11cba25f3ffe251bf9ad4e7368034e6d7c83123e44248d5c3d77",
+      "displayName": "Ramesh Sharma",
+      "publicName": "Ramesh S.",
+      "role": "needer",
+      "kycLevel": "level_1",
+      "kycStatus": "basic_verified",
+      "area": "Civil Lines",
+      "city": "Banda",
+      "coordinates": {
+        "lat": 25.4764,
+        "lng": 80.3344
+      },
+      "idDocumentPlaceholder": {
+        "status": "not_submitted",
+        "provider": "Authorized Partner (Coming Soon)"
+      },
+      "createdAt": "2026-11-02T05:30:31.320Z",
+      "updatedAt": "2026-11-02T05:30:31.320Z"
+    },
+    {
+      "uid": "usr_mvytlnb8_b1bv",
+      "phone": "+919955350857",
+      "email": "login_mvytlna4@example.com",
+      "passwordHash": "8b5b8e5b22a0794866dae0e8d5728c42:a344d87e4fa57221f14a1a952e642a0c28921317808ce30239a4186f2d19257767dba3bfdfd18f9c03283388c789b236db4b432ba42e82bdb0bd4851eace4305",
+      "displayName": "Kavita Devi",
+      "publicName": "Kavita D.",
+      "role": "needer",
+      "kycLevel": "level_1",
+      "kycStatus": "basic_verified",
+      "area": "Civil Lines",
+      "city": "Banda",
+      "coordinates": {
+        "lat": 25.4764,
+        "lng": 80.3344
+      },
+      "idDocumentPlaceholder": {
+        "status": "not_submitted",
+        "provider": "Authorized Partner (Coming Soon)"
+      },
+      "createdAt": "2026-11-02T05:30:31.364Z",
+      "updatedAt": "2026-11-02T05:30:31.364Z"
+    },
+    {
+      "uid": "usr_mvytn62l_t4dj",
+      "phone": "+919876543211",
+      "email": "suresh_receiver_169135690@example.com",
+      "passwordHash": "d60dd1e3610fbc78cb9fbfe8de5a3aa7:d0083e577eb5f26e6d69bf71c84d8e945ab5c3adf7bddf8c96649ce8d248a328f51550ac607b53198a7972c5dcf2dd20262b4cb76e85625876c538d5a907f605",
+      "displayName": "Suresh Patel Student",
+      "publicName": "Suresh P.",
+      "role": "needer",
+      "kycLevel": "level_1",
+      "kycStatus": "basic_verified",
+      "area": "Civil Lines",
+      "city": "Banda",
+      "coordinates": {
+        "lat": 25.4764,
+        "lng": 80.3344
+      },
+      "idDocumentPlaceholder": {
+        "status": "not_submitted",
+        "provider": "Authorized Partner (Coming Soon)"
+      },
+      "createdAt": "2026-11-02T05:31:42.333Z",
+      "updatedAt": "2026-11-02T05:31:42.333Z"
+    },
+    {
+      "uid": "usr_mvyto9qs_09az",
+      "phone": "+919859750528",
+      "email": "ramesh_622894@example.com",
+      "passwordHash": "37529eaed4aa17241c78d9a7fdbe9cbe:2efcc3ec75e516c6034e346429693aa05eac0fe74f0c20a7559d8e205ebd6c23778778ee804af13f1ad10d8aa6ae8be08f0d67312dada907d96c092fa5b5ad1e",
+      "displayName": "Ramesh Kumar Sharma",
+      "publicName": "Ramesh K.",
+      "role": "needer",
+      "kycLevel": "level_1",
+      "kycStatus": "basic_verified",
+      "area": "Civil Lines",
+      "city": "Banda",
+      "coordinates": {
+        "lat": 25.4764,
+        "lng": 80.3344
+      },
+      "idDocumentPlaceholder": {
+        "status": "not_submitted",
+        "provider": "Authorized Partner (Coming Soon)"
+      },
+      "createdAt": "2026-11-02T05:32:33.748Z",
+      "updatedAt": "2026-11-02T05:32:33.748Z"
+    },
+    {
+      "uid": "usr_mvyto9ve_j9lj",
+      "phone": "+919717298267",
+      "email": "suresh_622894@example.com",
+      "passwordHash": "aa9ec6fd27c52608eabe140be8c7e03a:21ceae88ee41d2dcb17c36d5f382ca7a7aac8a9f709465ea1d1475c327e4696e8a4c121856410a24715153ee7a800035d9d7371d2a3e89eae8f3901b47e8d4d1",
+      "displayName": "Suresh Patel Student",
+      "publicName": "Suresh P.",
+      "role": "needer",
+      "kycLevel": "level_1",
+      "kycStatus": "basic_verified",
+      "area": "Civil Lines",
+      "city": "Banda",
+      "coordinates": {
+        "lat": 25.4764,
+        "lng": 80.3344
+      },
+      "idDocumentPlaceholder": {
+        "status": "not_submitted",
+        "provider": "Authorized Partner (Coming Soon)"
+      },
+      "createdAt": "2026-11-02T05:32:33.915Z",
+      "updatedAt": "2026-11-02T05:32:33.915Z"
+    },
+    {
+      "uid": "usr_mvytoxtk_03jh",
+      "phone": "+919879293323",
+      "email": "ramesh_220647@example.com",
+      "passwordHash": "1e5e1add1b8c4c3adfd7d0133a1953a8:11b6ecf774913d2fa2f7240f80a8fd410426ed2992045b48824b71d0c9d0315455fc337cb67f289a25bed77e790f8ddc4111b7b461397029832b1c95d5311f3a",
+      "displayName": "Ramesh Kumar Sharma",
+      "publicName": "Ramesh K.",
+      "role": "needer",
+      "kycLevel": "level_2",
+      "kycStatus": "fully_verified",
+      "area": "Civil Lines",
+      "city": "Banda",
+      "coordinates": {
+        "lat": 25.4764,
+        "lng": 80.3344
+      },
+      "idDocumentPlaceholder": {
+        "status": "not_submitted",
+        "provider": "Authorized Partner (Coming Soon)"
+      },
+      "createdAt": "2026-11-02T05:33:04.952Z",
+      "updatedAt": "2026-11-02T05:33:04.996Z",
+      "aadhaarVerification": {
+        "verified": true,
+        "name": "Ramesh Kumar Sharma",
+        "dob": "15-08-1995",
+        "gender": "M",
+        "last4": "9842",
+        "verifiedAt": "2026-11-02T05:33:04.996Z",
+        "issuer": "UIDAI Secure QR (RSA-2048 Digital Signature)"
+      }
+    },
+    {
+      "uid": "usr_mvytoxx2_x5v8",
+      "phone": "+919795352096",
+      "email": "suresh_220647@example.com",
+      "passwordHash": "2c4aeeef6539e4562bfc861bda063d7a:a11b5ef59c339208c299d299dcdbdba01faf4a8f0dcc230d795676e6c75190751edb5a49aa8eba659d5ee1e661ad479c3cb2f907e97129d4e3c9cf9d3dc4bdd2",
+      "displayName": "Suresh Patel Student",
+      "publicName": "Suresh P.",
+      "role": "needer",
+      "kycLevel": "level_2",
+      "kycStatus": "fully_verified",
+      "area": "Civil Lines",
+      "city": "Banda",
+      "coordinates": {
+        "lat": 25.4764,
+        "lng": 80.3344
+      },
+      "idDocumentPlaceholder": {
+        "status": "not_submitted",
+        "provider": "Authorized Partner (Coming Soon)"
+      },
+      "createdAt": "2026-11-02T05:33:05.079Z",
+      "updatedAt": "2026-11-02T05:33:05.116Z",
+      "aadhaarVerification": {
+        "verified": true,
+        "name": "Ramesh Kumar Sharma",
+        "dob": "20-04-1992",
+        "gender": "F",
+        "last4": "7654",
+        "verifiedAt": "2026-11-02T05:33:05.116Z",
+        "issuer": "UIDAI Secure QR (RSA-2048 Digital Signature)"
+      }
     }
   ],
   "requests": [
@@ -564,6 +831,90 @@
   ],
   "items": [
     {
+      "name": "Oxford Engineering Mathematics 5th Edition",
+      "category": "Study Material",
+      "quantity_total": 4,
+      "quantity_available": 2,
+      "owner_id": "usr_mvytoxtk_03jh",
+      "ownerId": "usr_mvytoxtk_03jh",
+      "ownerPublicName": "Ramesh K.",
+      "condition": "Grade A+",
+      "loanPeriodDays": 45,
+      "estimatedPrice": 1600,
+      "images": [],
+      "videoUrl": "",
+      "videoName": "",
+      "id": "itm_1793597585011",
+      "status": "available",
+      "createdAt": "2026-11-02T05:33:05.011Z"
+    },
+    {
+      "name": "Physics Lab Kit",
+      "category": "Education",
+      "quantity_total": 4,
+      "quantity_available": 4,
+      "owner_id": "usr_verified_exchange",
+      "ownerId": "usr_verified_exchange",
+      "ownerPublicName": "Verified Person",
+      "condition": "Grade A+",
+      "loanPeriodDays": 30,
+      "estimatedPrice": 1000,
+      "images": [],
+      "videoUrl": "",
+      "videoName": "",
+      "id": "itm_1793597432005",
+      "status": "available",
+      "createdAt": "2026-11-02T05:30:32.005Z"
+    },
+    {
+      "name": "Emergency First Aid Kits",
+      "category": "Medical",
+      "quantity_total": 5,
+      "quantity_available": 3,
+      "owner_id": "usr_donor_priya",
+      "id": "itm_1793597431928",
+      "ownerId": "usr_donor_priya",
+      "ownerPublicName": "Priya Verma",
+      "status": "available",
+      "createdAt": "2026-11-02T05:30:31.928Z"
+    },
+    {
+      "ownerId": "usr_test_aadhaar_1793597430367",
+      "ownerPublicName": "Anil Verma",
+      "ownerArea": "Civil Lines, Banda",
+      "name": "Study Books",
+      "category": "Education",
+      "condition": "Good",
+      "loanPeriodDays": 14,
+      "status": "available",
+      "currentBorrowerId": null,
+      "returnDeadline": null,
+      "disputeFlag": false,
+      "id": "itm_1793597430388",
+      "quantity_total": 1,
+      "quantity_available": 1,
+      "owner_id": "usr_test_aadhaar_1793597430367",
+      "createdAt": "2026-11-02T05:30:30.388Z"
+    },
+    {
+      "ownerId": "usr_test_aadhaar_1793596693755",
+      "ownerPublicName": "Anil Verma",
+      "ownerArea": "Civil Lines, Banda",
+      "name": "Study Books",
+      "category": "Education",
+      "condition": "Good",
+      "loanPeriodDays": 14,
+      "status": "available",
+      "currentBorrowerId": null,
+      "returnDeadline": null,
+      "disputeFlag": false,
+      "id": "itm_1793596693776",
+      "quantity_total": 1,
+      "quantity_available": 1,
+      "owner_id": "usr_test_aadhaar_1793596693755",
+      "createdAt": "2026-11-02T05:18:13.776Z"
+    },
+    {
       "ownerId": "usr_aarav",
       "ownerPublicName": "Aarav K.",
       "ownerArea": "Civil Lines",
@@ -576,7 +927,10 @@
       "returnDeadline": null,
       "disputeFlag": false,
       "id": "itm_1793596267517",
-      "createdAt": "2026-11-02T05:11:07.517Z"
+      "createdAt": "2026-11-02T05:11:07.517Z",
+      "owner_id": "usr_aarav",
+      "quantity_total": 1,
+      "quantity_available": 1
     },
     {
       "id": "itm_study_01",
@@ -592,7 +946,10 @@
       "returnDeadline": null,
       "disputeFlag": false,
       "tag": "books",
-      "createdAt": "2026-11-02T04:32:13.216Z"
+      "createdAt": "2026-11-02T04:32:13.216Z",
+      "owner_id": "usr_student_rec",
+      "quantity_total": 1,
+      "quantity_available": 1
     },
     {
       "id": "itm_study_02",
@@ -608,7 +965,10 @@
       "returnDeadline": null,
       "disputeFlag": false,
       "tag": "calculator",
-      "createdAt": "2026-11-02T04:32:13.216Z"
+      "createdAt": "2026-11-02T04:32:13.216Z",
+      "owner_id": "usr_student_rec",
+      "quantity_total": 1,
+      "quantity_available": 1
     },
     {
       "id": "itm_study_03",
@@ -624,7 +984,10 @@
       "returnDeadline": null,
       "disputeFlag": false,
       "tag": "notes",
-      "createdAt": "2026-11-02T04:32:13.216Z"
+      "createdAt": "2026-11-02T04:32:13.216Z",
+      "owner_id": "usr_verifier_01",
+      "quantity_total": 1,
+      "quantity_available": 1
     },
     {
       "id": "itm_study_04",
@@ -640,7 +1003,10 @@
       "returnDeadline": null,
       "disputeFlag": false,
       "tag": "drafter",
-      "createdAt": "2026-11-02T04:32:13.216Z"
+      "createdAt": "2026-11-02T04:32:13.216Z",
+      "owner_id": "usr_student_rec",
+      "quantity_total": 1,
+      "quantity_available": 1
     },
     {
       "id": "itm_study_05",
@@ -656,7 +1022,10 @@
       "returnDeadline": null,
       "disputeFlag": false,
       "tag": "ncert",
-      "createdAt": "2026-11-02T04:32:13.216Z"
+      "createdAt": "2026-11-02T04:32:13.216Z",
+      "owner_id": "usr_ngo_01",
+      "quantity_total": 1,
+      "quantity_available": 1
     },
     {
       "id": "itm_utensil_01",
@@ -672,7 +1041,10 @@
       "returnDeadline": null,
       "disputeFlag": false,
       "tag": "patila",
-      "createdAt": "2026-11-02T04:32:13.216Z"
+      "createdAt": "2026-11-02T04:32:13.216Z",
+      "owner_id": "usr_kitchen_banda",
+      "quantity_total": 1,
+      "quantity_available": 1
     },
     {
       "id": "itm_utensil_02",
@@ -688,7 +1060,10 @@
       "returnDeadline": null,
       "disputeFlag": false,
       "tag": "thali",
-      "createdAt": "2026-11-02T04:32:13.216Z"
+      "createdAt": "2026-11-02T04:32:13.216Z",
+      "owner_id": "usr_kitchen_banda",
+      "quantity_total": 1,
+      "quantity_available": 1
     },
     {
       "id": "itm_utensil_03",
@@ -704,7 +1079,10 @@
       "returnDeadline": null,
       "disputeFlag": false,
       "tag": "kadhai",
-      "createdAt": "2026-11-02T04:32:13.216Z"
+      "createdAt": "2026-11-02T04:32:13.216Z",
+      "owner_id": "usr_kitchen_banda",
+      "quantity_total": 1,
+      "quantity_available": 1
     },
     {
       "id": "itm_utensil_04",
@@ -720,7 +1098,10 @@
       "returnDeadline": null,
       "disputeFlag": false,
       "tag": "camper",
-      "createdAt": "2026-11-02T04:32:13.216Z"
+      "createdAt": "2026-11-02T04:32:13.216Z",
+      "owner_id": "usr_ngo_01",
+      "quantity_total": 1,
+      "quantity_available": 1
     },
     {
       "id": "itm_utensil_05",
@@ -736,7 +1117,10 @@
       "returnDeadline": null,
       "disputeFlag": false,
       "tag": "brass",
-      "createdAt": "2026-11-02T04:32:13.216Z"
+      "createdAt": "2026-11-02T04:32:13.216Z",
+      "owner_id": "usr_ngo_01",
+      "quantity_total": 1,
+      "quantity_available": 1
     },
     {
       "id": "itm_elec_01",
@@ -752,7 +1136,10 @@
       "returnDeadline": null,
       "disputeFlag": false,
       "tag": "soldering",
-      "createdAt": "2026-11-02T04:32:13.216Z"
+      "createdAt": "2026-11-02T04:32:13.216Z",
+      "owner_id": "usr_student_rec",
+      "quantity_total": 1,
+      "quantity_available": 1
     },
     {
       "id": "itm_elec_02",
@@ -768,7 +1155,10 @@
       "returnDeadline": null,
       "disputeFlag": false,
       "tag": "solar",
-      "createdAt": "2026-11-02T04:32:13.216Z"
+      "createdAt": "2026-11-02T04:32:13.216Z",
+      "owner_id": "usr_ngo_01",
+      "quantity_total": 1,
+      "quantity_available": 1
     },
     {
       "id": "itm_elec_03",
@@ -784,7 +1174,10 @@
       "returnDeadline": null,
       "disputeFlag": false,
       "tag": "nebulizer",
-      "createdAt": "2026-11-02T04:32:13.216Z"
+      "createdAt": "2026-11-02T04:32:13.216Z",
+      "owner_id": "usr_donor_priya",
+      "quantity_total": 1,
+      "quantity_available": 1
     },
     {
       "id": "itm_elec_04",
@@ -800,7 +1193,10 @@
       "returnDeadline": null,
       "disputeFlag": false,
       "tag": "bp_monitor",
-      "createdAt": "2026-11-02T04:32:13.216Z"
+      "createdAt": "2026-11-02T04:32:13.216Z",
+      "owner_id": "usr_donor_priya",
+      "quantity_total": 1,
+      "quantity_available": 1
     },
     {
       "id": "itm_elec_05",
@@ -816,7 +1212,10 @@
       "returnDeadline": null,
       "disputeFlag": false,
       "tag": "projector",
-      "createdAt": "2026-11-02T04:32:13.216Z"
+      "createdAt": "2026-11-02T04:32:13.216Z",
+      "owner_id": "usr_student_rec",
+      "quantity_total": 1,
+      "quantity_available": 1
     },
     {
       "id": "itm_elec_06",
@@ -832,7 +1231,10 @@
       "returnDeadline": null,
       "disputeFlag": false,
       "tag": "megaphone",
-      "createdAt": "2026-11-02T04:32:13.216Z"
+      "createdAt": "2026-11-02T04:32:13.216Z",
+      "owner_id": "usr_ngo_01",
+      "quantity_total": 1,
+      "quantity_available": 1
     },
     {
       "id": "itm_501",
@@ -848,7 +1250,10 @@
       "returnDeadline": "Saturday, 8 Nov",
       "disputeFlag": false,
       "tag": "wheelchair",
-      "createdAt": "2026-11-02T04:32:13.216Z"
+      "createdAt": "2026-11-02T04:32:13.216Z",
+      "owner_id": "usr_ngo_01",
+      "quantity_total": 1,
+      "quantity_available": 1
     },
     {
       "id": "itm_502",
@@ -864,7 +1269,10 @@
       "returnDeadline": null,
       "disputeFlag": false,
       "tag": "crutches",
-      "createdAt": "2026-11-02T04:32:13.216Z"
+      "createdAt": "2026-11-02T04:32:13.216Z",
+      "owner_id": "usr_donor_priya",
+      "quantity_total": 1,
+      "quantity_available": 1
     },
     {
       "id": "itm_503",
@@ -880,7 +1288,10 @@
       "returnDeadline": null,
       "disputeFlag": false,
       "tag": "backrest",
-      "createdAt": "2026-11-02T04:32:13.216Z"
+      "createdAt": "2026-11-02T04:32:13.216Z",
+      "owner_id": "usr_ngo_01",
+      "quantity_total": 1,
+      "quantity_available": 1
     }
   ],
   "handover_tokens": [
@@ -895,9 +1306,265 @@
       "nonce": "demo_nonce_77",
       "createdAt": "2026-11-02T04:32:13.216Z",
       "expiresAt": "2026-11-03T04:32:13.216Z"
+    },
+    {
+      "tokenId": "tok_d2044d2ac7d9",
+      "requestId": "req_1042",
+      "itemId": "itm_501",
+      "lenderId": "usr_ngo_01",
+      "receiverId": "usr_test_aadhaar_1793596693755",
+      "nonce": "7e3da73dcad29d5f",
+      "expiresAt": "2026-11-02T06:18:13.822Z",
+      "signature": "48f1e4e691e58f3f71e5d4a17309a46a959ff561650c78a195ca290985ecbb1a",
+      "qrPayload": "{\"tokenId\":\"tok_d2044d2ac7d9\",\"requestId\":\"req_1042\",\"itemId\":\"itm_501\",\"nonce\":\"7e3da73dcad29d5f\",\"signature\":\"48f1e4e691e58f3f71e5d4a17309a46a959ff561650c78a195ca290985ecbb1a\",\"v\":1}",
+      "status": "active",
+      "createdAt": "2026-11-02T05:18:13.823Z"
+    },
+    {
+      "tokenId": "tok_c69ee13b7bf6",
+      "requestId": "req_1042",
+      "itemId": "itm_501",
+      "lenderId": "usr_ngo_01",
+      "receiverId": "usr_test_aadhaar_1793597430367",
+      "nonce": "cf321aa255c762b0",
+      "expiresAt": "2026-11-02T06:30:30.439Z",
+      "signature": "715c3f9ed345d2942ff29687e9e408fa349e0d009f45386c0362554b14a31aa8",
+      "qrPayload": "{\"tokenId\":\"tok_c69ee13b7bf6\",\"requestId\":\"req_1042\",\"itemId\":\"itm_501\",\"nonce\":\"cf321aa255c762b0\",\"signature\":\"715c3f9ed345d2942ff29687e9e408fa349e0d009f45386c0362554b14a31aa8\",\"v\":1}",
+      "status": "active",
+      "createdAt": "2026-11-02T05:30:30.440Z"
     }
   ],
   "audit_logs": [
+    {
+      "id": "aud_1793597585151_845",
+      "action": "EXCHANGE_ITEM_TAKEN",
+      "entityType": "transaction",
+      "entityId": "txn_1793597585138_e41c",
+      "performedBy": "usr_mvytoxx2_x5v8",
+      "performerName": "Suresh Patel Student",
+      "performerRole": "needer",
+      "details": "Took 2 unit(s) of 'Oxford Engineering Mathematics 5th Edition' from Ramesh Kumar Sharma.",
+      "timestamp": "2026-11-02T05:33:05.151Z"
+    },
+    {
+      "id": "aud_1793597585125_347",
+      "action": "AADHAAR_SECURE_QR_VERIFIED",
+      "entityType": "user",
+      "entityId": "usr_mvytoxx2_x5v8",
+      "performedBy": "usr_mvytoxx2_x5v8",
+      "performerName": "Suresh Patel Student",
+      "performerRole": "needer",
+      "details": "mAadhaar QR digitally verified for Ramesh Kumar Sharma. Masked: XXXX XXXX 7654",
+      "timestamp": "2026-11-02T05:33:05.125Z"
+    },
+    {
+      "id": "aud_1793597585081_133",
+      "action": "USER_SIGNUP",
+      "entityType": "user",
+      "entityId": "usr_mvytoxx2_x5v8",
+      "performedBy": "usr_mvytoxx2_x5v8",
+      "performerName": "Suresh Patel Student",
+      "performerRole": "needer",
+      "details": "New account registered: Suresh Patel Student (+919795352096)",
+      "timestamp": "2026-11-02T05:33:05.081Z"
+    },
+    {
+      "id": "aud_1793597585017_226",
+      "action": "EXCHANGE_ITEM_GIVEN",
+      "entityType": "item",
+      "entityId": "itm_1793597585011",
+      "performedBy": "usr_mvytoxtk_03jh",
+      "performerName": "Ramesh Kumar Sharma",
+      "performerRole": "needer",
+      "details": "Listed 'Oxford Engineering Mathematics 5th Edition' (Quantity: 4) for community exchange.",
+      "timestamp": "2026-11-02T05:33:05.017Z"
+    },
+    {
+      "id": "aud_1793597584997_664",
+      "action": "AADHAAR_SECURE_QR_VERIFIED",
+      "entityType": "user",
+      "entityId": "usr_mvytoxtk_03jh",
+      "performedBy": "usr_mvytoxtk_03jh",
+      "performerName": "Ramesh Kumar Sharma",
+      "performerRole": "needer",
+      "details": "mAadhaar QR digitally verified for Ramesh Kumar Sharma. Masked: XXXX XXXX 9842",
+      "timestamp": "2026-11-02T05:33:04.997Z"
+    },
+    {
+      "id": "aud_1793597584954_121",
+      "action": "USER_SIGNUP",
+      "entityType": "user",
+      "entityId": "usr_mvytoxtk_03jh",
+      "performedBy": "usr_mvytoxtk_03jh",
+      "performerName": "Ramesh Kumar Sharma",
+      "performerRole": "needer",
+      "details": "New account registered: Ramesh Kumar Sharma (+919879293323)",
+      "timestamp": "2026-11-02T05:33:04.954Z"
+    },
+    {
+      "id": "aud_1793597553916_358",
+      "action": "USER_SIGNUP",
+      "entityType": "user",
+      "entityId": "usr_mvyto9ve_j9lj",
+      "performedBy": "usr_mvyto9ve_j9lj",
+      "performerName": "Suresh Patel Student",
+      "performerRole": "needer",
+      "details": "New account registered: Suresh Patel Student (+919717298267)",
+      "timestamp": "2026-11-02T05:32:33.916Z"
+    },
+    {
+      "id": "aud_1793597553749_69",
+      "action": "USER_SIGNUP",
+      "entityType": "user",
+      "entityId": "usr_mvyto9qs_09az",
+      "performedBy": "usr_mvyto9qs_09az",
+      "performerName": "Ramesh Kumar Sharma",
+      "performerRole": "needer",
+      "details": "New account registered: Ramesh Kumar Sharma (+919859750528)",
+      "timestamp": "2026-11-02T05:32:33.749Z"
+    },
+    {
+      "id": "aud_1793597502336_421",
+      "action": "USER_SIGNUP",
+      "entityType": "user",
+      "entityId": "usr_mvytn62l_t4dj",
+      "performedBy": "usr_mvytn62l_t4dj",
+      "performerName": "Suresh Patel Student",
+      "performerRole": "needer",
+      "details": "New account registered: Suresh Patel Student (+919876543211)",
+      "timestamp": "2026-11-02T05:31:42.336Z"
+    },
+    {
+      "id": "aud_1793597432019_500",
+      "action": "EXCHANGE_ITEM_GIVEN",
+      "entityType": "item",
+      "entityId": "itm_1793597432005",
+      "performedBy": "usr_verified_exchange",
+      "performerName": "Verified Person",
+      "details": "Listed 'Physics Lab Kit' (Quantity: 4) for community exchange.",
+      "timestamp": "2026-11-02T05:30:32.019Z"
+    },
+    {
+      "id": "aud_1793597431536_733",
+      "action": "USER_LOGIN",
+      "entityType": "user",
+      "entityId": "usr_mvytlnb8_b1bv",
+      "performedBy": "usr_mvytlnb8_b1bv",
+      "performerName": "Kavita Devi",
+      "performerRole": "needer",
+      "details": "User logged in successfully via email",
+      "timestamp": "2026-11-02T05:30:31.536Z"
+    },
+    {
+      "id": "aud_1793597431451_36",
+      "action": "USER_LOGIN",
+      "entityType": "user",
+      "entityId": "usr_mvytlnb8_b1bv",
+      "performedBy": "usr_mvytlnb8_b1bv",
+      "performerName": "Kavita Devi",
+      "performerRole": "needer",
+      "details": "User logged in successfully via phone",
+      "timestamp": "2026-11-02T05:30:31.451Z"
+    },
+    {
+      "id": "aud_1793597431408_388",
+      "action": "USER_LOGIN",
+      "entityType": "user",
+      "entityId": "usr_mvytlnb8_b1bv",
+      "performedBy": "usr_mvytlnb8_b1bv",
+      "performerName": "Kavita Devi",
+      "performerRole": "needer",
+      "details": "User logged in successfully via email",
+      "timestamp": "2026-11-02T05:30:31.408Z"
+    },
+    {
+      "id": "aud_1793597431366_767",
+      "action": "USER_SIGNUP",
+      "entityType": "user",
+      "entityId": "usr_mvytlnb8_b1bv",
+      "performedBy": "usr_mvytlnb8_b1bv",
+      "performerName": "Kavita Devi",
+      "performerRole": "needer",
+      "details": "New account registered: Kavita Devi (+919955350857)",
+      "timestamp": "2026-11-02T05:30:31.366Z"
+    },
+    {
+      "id": "aud_1793597431321_114",
+      "action": "USER_SIGNUP",
+      "entityType": "user",
+      "entityId": "usr_mvytlna0_16lm",
+      "performedBy": "usr_mvytlna0_16lm",
+      "performerName": "Ramesh Sharma",
+      "performerRole": "needer",
+      "details": "New account registered: Ramesh Sharma (+919810408971)",
+      "timestamp": "2026-11-02T05:30:31.321Z"
+    },
+    {
+      "id": "aud_1793597430421_458",
+      "action": "ITEM_LISTED",
+      "entityType": "item",
+      "entityId": "itm_1793597430388",
+      "performedBy": "usr_test_aadhaar_1793597430367",
+      "performerName": "Anil Verma",
+      "performerRole": "needer",
+      "details": "Listed 'Study Books' for community lending (14 days loan period).",
+      "timestamp": "2026-11-02T05:30:30.421Z"
+    },
+    {
+      "id": "aud_1793597430386_872",
+      "action": "AADHAAR_SECURE_QR_VERIFIED",
+      "entityType": "user",
+      "entityId": "usr_test_aadhaar_1793597430367",
+      "performedBy": "usr_test_aadhaar_1793597430367",
+      "performerName": "Anil Verma",
+      "performerRole": "needer",
+      "details": "mAadhaar QR digitally verified for Anil Verma. Masked: XXXX XXXX 3344",
+      "timestamp": "2026-11-02T05:30:30.386Z"
+    },
+    {
+      "id": "aud_1793596693805_384",
+      "action": "ITEM_LISTED",
+      "entityType": "item",
+      "entityId": "itm_1793596693776",
+      "performedBy": "usr_test_aadhaar_1793596693755",
+      "performerName": "Anil Verma",
+      "performerRole": "needer",
+      "details": "Listed 'Study Books' for community lending (14 days loan period).",
+      "timestamp": "2026-11-02T05:18:13.805Z"
+    },
+    {
+      "id": "aud_1793596693775_983",
+      "action": "AADHAAR_SECURE_QR_VERIFIED",
+      "entityType": "user",
+      "entityId": "usr_test_aadhaar_1793596693755",
+      "performedBy": "usr_test_aadhaar_1793596693755",
+      "performerName": "Anil Verma",
+      "performerRole": "needer",
+      "details": "mAadhaar QR digitally verified for Anil Verma. Masked: XXXX XXXX 3344",
+      "timestamp": "2026-11-02T05:18:13.775Z"
+    },
+    {
+      "id": "aud_1793596693633_190",
+      "action": "USER_SIGNUP",
+      "entityType": "user",
+      "entityId": "usr_mvyt5u2n_97nx",
+      "performedBy": "usr_mvyt5u2n_97nx",
+      "performerName": "Kavita Devi",
+      "performerRole": "needer",
+      "details": "New account registered: Kavita Devi (+919955425620)",
+      "timestamp": "2026-11-02T05:18:13.633Z"
+    },
+    {
+      "id": "aud_1793596693585_776",
+      "action": "USER_SIGNUP",
+      "entityType": "user",
+      "entityId": "usr_mvyt5u1a_kpz8",
+      "performedBy": "usr_mvyt5u1a_kpz8",
+      "performerName": "Ramesh Sharma",
+      "performerRole": "needer",
+      "details": "New account registered: Ramesh Sharma (+919810301775)",
+      "timestamp": "2026-11-02T05:18:13.586Z"
+    },
     {
       "id": "aud_1793596305084_940",
       "action": "USER_LOGIN",
@@ -1249,6 +1916,188 @@
       "status": "pending-assist",
       "assignedVolunteerId": null,
       "createdAt": "2026-11-02T04:02:13.216Z"
+    }
+  ],
+  "transactions": [
+    {
+      "id": "txn_1793597585138_e41c",
+      "item_id": "itm_1793597585011",
+      "giver_id": "usr_mvytoxtk_03jh",
+      "receiver_id": "usr_mvytoxx2_x5v8",
+      "quantity": 2,
+      "type": "take",
+      "status": "completed",
+      "created_at": "2026-11-02T05:33:05.138Z",
+      "item_name": "Oxford Engineering Mathematics 5th Edition",
+      "item_category": "Study Material",
+      "giver_name": "Ramesh Kumar Sharma",
+      "giver_phone": "+919879293323",
+      "giver_aadhaar_last4": "9842",
+      "receiver_name": "Suresh Patel Student",
+      "receiver_phone": "+919795352096",
+      "receiver_aadhaar_last4": "7654"
+    },
+    {
+      "id": "txn_1793597585011_m4ov",
+      "item_id": "itm_1793597585011",
+      "giver_id": "usr_mvytoxtk_03jh",
+      "receiver_id": null,
+      "quantity": 4,
+      "type": "give",
+      "status": "available",
+      "created_at": "2026-11-02T05:33:05.011Z",
+      "item_name": "Oxford Engineering Mathematics 5th Edition",
+      "item_category": "Study Material",
+      "giver_name": "Ramesh Kumar Sharma",
+      "giver_phone": "+919879293323",
+      "giver_aadhaar_last4": "9842",
+      "receiver_name": "Community Catalog (Available to Take)",
+      "receiver_phone": null,
+      "receiver_aadhaar_last4": null
+    },
+    {
+      "id": "txn_1793597432005_xb6e",
+      "item_id": "itm_1793597432005",
+      "giver_id": "usr_verified_exchange",
+      "receiver_id": null,
+      "quantity": 4,
+      "type": "give",
+      "status": "available",
+      "created_at": "2026-11-02T05:30:32.005Z",
+      "item_name": "Physics Lab Kit",
+      "item_category": "Education",
+      "giver_name": "Verified Person",
+      "giver_phone": null,
+      "giver_aadhaar_last4": null,
+      "receiver_name": "Community Catalog (Available to Take)",
+      "receiver_phone": null,
+      "receiver_aadhaar_last4": null
+    },
+    {
+      "id": "txn_1793597431964_qvfv",
+      "item_id": "itm_1793597431928",
+      "giver_id": "usr_donor_priya",
+      "receiver_id": "usr_aarav",
+      "quantity": 2,
+      "type": "take",
+      "status": "completed",
+      "created_at": "2026-11-02T05:30:31.964Z",
+      "item_name": "Emergency First Aid Kits",
+      "item_category": "Medical",
+      "giver_name": "Priya Verma",
+      "giver_phone": "+919839054321",
+      "giver_aadhaar_last4": null,
+      "receiver_name": "Aarav Kumar",
+      "receiver_phone": "+919876543210",
+      "receiver_aadhaar_last4": "9842"
+    },
+    {
+      "id": "txn_1793597431928_7wtc",
+      "item_id": "itm_1793597431928",
+      "giver_id": "usr_donor_priya",
+      "receiver_id": null,
+      "quantity": 5,
+      "type": "give",
+      "status": "available",
+      "created_at": "2026-11-02T05:30:31.928Z",
+      "item_name": "Emergency First Aid Kits",
+      "item_category": "Medical",
+      "giver_name": "Priya Verma",
+      "giver_phone": "+919839054321",
+      "giver_aadhaar_last4": null,
+      "receiver_name": "Community Catalog (Available to Take)",
+      "receiver_phone": null,
+      "receiver_aadhaar_last4": null
+    },
+    {
+      "id": "txn_1793597430388_1179",
+      "item_id": "itm_1793597430388",
+      "giver_id": "usr_test_aadhaar_1793597430367",
+      "receiver_id": null,
+      "quantity": 1,
+      "type": "give",
+      "status": "available",
+      "created_at": "2026-11-02T05:30:30.388Z",
+      "item_name": "Study Books",
+      "item_category": "Education",
+      "giver_name": "Anil Verma",
+      "giver_phone": "+919811630903",
+      "giver_aadhaar_last4": "3344",
+      "receiver_name": "Community Catalog (Available to Take)",
+      "receiver_phone": null,
+      "receiver_aadhaar_last4": null
+    },
+    {
+      "id": "txn_1793596693776_ijmb",
+      "item_id": "itm_1793596693776",
+      "giver_id": "usr_test_aadhaar_1793596693755",
+      "receiver_id": null,
+      "quantity": 1,
+      "type": "give",
+      "status": "available",
+      "created_at": "2026-11-02T05:18:13.776Z",
+      "item_name": "Study Books",
+      "item_category": "Education",
+      "giver_name": "Anil Verma",
+      "giver_phone": "+919811524671",
+      "giver_aadhaar_last4": "3344",
+      "receiver_name": "Community Catalog (Available to Take)",
+      "receiver_phone": null,
+      "receiver_aadhaar_last4": null
+    },
+    {
+      "id": "txn_init_01",
+      "item_id": "itm_study_01",
+      "giver_id": "usr_student_rec",
+      "receiver_id": "usr_aarav",
+      "quantity": 1,
+      "type": "take",
+      "status": "completed",
+      "created_at": "2026-10-31T05:18:13.245Z",
+      "item_name": "B.Tech Engineering Mathematics & Mechanics (Sem 1-4) Book Set",
+      "item_category": "Study Material",
+      "giver_name": "REC Banda Maker Club",
+      "giver_phone": "+919838012345",
+      "giver_aadhaar_last4": "1234",
+      "receiver_name": "Aarav Kumar",
+      "receiver_phone": "+919876543210",
+      "receiver_aadhaar_last4": "9842"
+    },
+    {
+      "id": "txn_init_02",
+      "item_id": "itm_elec_02",
+      "giver_id": "usr_donor_priya",
+      "receiver_id": "usr_aarav",
+      "quantity": 1,
+      "type": "take",
+      "status": "completed",
+      "created_at": "2026-10-28T05:18:13.245Z",
+      "item_name": "Solar Emergency Lantern with Dual USB Phone Charging Bank",
+      "item_category": "Electronics",
+      "giver_name": "Priya Verma",
+      "giver_phone": "+919839054321",
+      "giver_aadhaar_last4": "8899",
+      "receiver_name": "Aarav Kumar",
+      "receiver_phone": "+919876543210",
+      "receiver_aadhaar_last4": "9842"
+    },
+    {
+      "id": "txn_init_03",
+      "item_id": "itm_utensil_01",
+      "giver_id": "usr_aarav",
+      "receiver_id": "usr_ngo_01",
+      "quantity": 2,
+      "type": "give",
+      "status": "completed",
+      "created_at": "2026-10-26T05:18:13.245Z",
+      "item_name": "Heavy Duty Stainless Steel Community Daawat Patila (50L)",
+      "item_category": "Family Utensils",
+      "giver_name": "Aarav Kumar",
+      "giver_phone": "+919876543210",
+      "giver_aadhaar_last4": "9842",
+      "receiver_name": "Seva Sahayata Trust",
+      "receiver_phone": "+919415112345",
+      "receiver_aadhaar_last4": "5566"
     }
   ]
 }

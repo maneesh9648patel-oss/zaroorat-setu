@@ -598,6 +598,62 @@ const INITIAL_DATA = {
       assignedVolunteerId: null,
       createdAt: new Date(Date.now() - 30 * 60 * 1000).toISOString()
     }
+  ],
+  transactions: [
+    {
+      id: "txn_init_01",
+      item_id: "itm_study_01",
+      giver_id: "usr_student_rec",
+      receiver_id: "usr_aarav",
+      quantity: 1,
+      type: "take",
+      status: "completed",
+      created_at: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
+      item_name: "B.Tech Engineering Mathematics & Mechanics (Sem 1-4) Book Set",
+      item_category: "Study Material",
+      giver_name: "REC Banda Maker Club",
+      giver_phone: "+919838012345",
+      giver_aadhaar_last4: "1234",
+      receiver_name: "Aarav Kumar",
+      receiver_phone: "+919876543210",
+      receiver_aadhaar_last4: "9842"
+    },
+    {
+      id: "txn_init_02",
+      item_id: "itm_elec_02",
+      giver_id: "usr_donor_priya",
+      receiver_id: "usr_aarav",
+      quantity: 1,
+      type: "take",
+      status: "completed",
+      created_at: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
+      item_name: "Solar Emergency Lantern with Dual USB Phone Charging Bank",
+      item_category: "Electronics",
+      giver_name: "Priya Verma",
+      giver_phone: "+919839054321",
+      giver_aadhaar_last4: "8899",
+      receiver_name: "Aarav Kumar",
+      receiver_phone: "+919876543210",
+      receiver_aadhaar_last4: "9842"
+    },
+    {
+      id: "txn_init_03",
+      item_id: "itm_utensil_01",
+      giver_id: "usr_aarav",
+      receiver_id: "usr_ngo_01",
+      quantity: 2,
+      type: "give",
+      status: "completed",
+      created_at: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
+      item_name: "Heavy Duty Stainless Steel Community Daawat Patila (50L)",
+      item_category: "Family Utensils",
+      giver_name: "Aarav Kumar",
+      giver_phone: "+919876543210",
+      giver_aadhaar_last4: "9842",
+      receiver_name: "Seva Sahayata Trust",
+      receiver_phone: "+919415112345",
+      receiver_aadhaar_last4: "5566"
+    }
   ]
 };
 
@@ -636,6 +692,22 @@ class DataStore {
           u.passwordHash = defaultHash;
         }
       }
+
+      // Ensure transactions collection is present
+      if (!Array.isArray(this.data.transactions) || this.data.transactions.length === 0) {
+        this.data.transactions = INITIAL_DATA.transactions;
+      }
+
+      // Ensure items have owner_id, quantity_total, and quantity_available
+      if (Array.isArray(this.data.items)) {
+        for (const item of this.data.items) {
+          item.owner_id = item.owner_id || item.ownerId;
+          item.ownerId = item.owner_id;
+          item.quantity_total = Number(item.quantity_total || 1);
+          item.quantity_available = Number(item.quantity_available ?? item.quantity_total ?? 1);
+        }
+      }
+
       this.persist();
     } catch (e) {
       console.warn("Using in-memory store (file sync fallback):", e.message);
@@ -775,23 +847,68 @@ class DataStore {
     return this.data.requests[idx];
   }
 
-  // Items
+  // Items Collection (id, name, category, quantity_total, quantity_available, owner_id)
   getItems() {
-    return [...this.data.items];
+    return this.data.items.map(item => ({
+      ...item,
+      owner_id: item.owner_id || item.ownerId,
+      ownerId: item.owner_id || item.ownerId,
+      quantity_total: Number(item.quantity_total || 1),
+      quantity_available: Number(item.quantity_available ?? item.quantity_total ?? 1)
+    }));
   }
 
   getItemById(id) {
-    return this.data.items.find(i => i.id === id) || null;
+    const item = this.data.items.find(i => i.id === id);
+    if (!item) return null;
+    return {
+      ...item,
+      owner_id: item.owner_id || item.ownerId,
+      ownerId: item.owner_id || item.ownerId,
+      quantity_total: Number(item.quantity_total || 1),
+      quantity_available: Number(item.quantity_available ?? item.quantity_total ?? 1)
+    };
   }
 
   createItem(itemData) {
+    const qty = Math.max(1, Number(itemData.quantity_total || itemData.quantity || 1));
+    const ownerId = itemData.owner_id || itemData.ownerId;
+    const giverUser = this.getUserByUid(ownerId);
+
     const newItem = {
       ...itemData,
       id: itemData.id || `itm_${Date.now()}`,
+      name: (itemData.name || "").trim(),
+      category: (itemData.category || "General").trim(),
+      quantity_total: qty,
+      quantity_available: qty,
+      owner_id: ownerId,
+      ownerId: ownerId,
+      ownerPublicName: itemData.ownerPublicName || giverUser?.displayName || "Community Member",
       status: "available",
       createdAt: new Date().toISOString()
     };
+
     this.data.items.unshift(newItem);
+
+    // Save initial give transaction in transactions collection
+    this.createTransaction({
+      item_id: newItem.id,
+      giver_id: ownerId,
+      receiver_id: null,
+      quantity: qty,
+      type: "give",
+      status: "available",
+      item_name: newItem.name,
+      item_category: newItem.category,
+      giver_name: giverUser?.displayName || newItem.ownerPublicName,
+      giver_phone: giverUser?.phone || null,
+      giver_aadhaar_last4: giverUser?.aadhaarVerification?.last4 || null,
+      receiver_name: "Community Catalog (Available to Take)",
+      receiver_phone: null,
+      receiver_aadhaar_last4: null
+    });
+
     this.persist();
     return newItem;
   }
@@ -806,6 +923,110 @@ class DataStore {
     };
     this.persist();
     return this.data.items[idx];
+  }
+
+  // Transactions Collection (id, item_id, giver_id, receiver_id, quantity, type: give/take, status, created_at)
+  createTransaction(txnData) {
+    if (!Array.isArray(this.data.transactions)) {
+      this.data.transactions = [];
+    }
+
+    const newTxn = {
+      id: txnData.id || `txn_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`,
+      item_id: txnData.item_id,
+      giver_id: txnData.giver_id,
+      receiver_id: txnData.receiver_id || null,
+      quantity: Math.max(1, Number(txnData.quantity || 1)),
+      type: txnData.type || "give", // "give" | "take"
+      status: txnData.status || "completed",
+      created_at: txnData.created_at || new Date().toISOString(),
+      // Saved with both giver's and receiver's details
+      item_name: txnData.item_name || "Community Resource",
+      item_category: txnData.item_category || "General",
+      giver_name: txnData.giver_name || "Community Lender",
+      giver_phone: txnData.giver_phone || null,
+      giver_aadhaar_last4: txnData.giver_aadhaar_last4 || null,
+      receiver_name: txnData.receiver_name || null,
+      receiver_phone: txnData.receiver_phone || null,
+      receiver_aadhaar_last4: txnData.receiver_aadhaar_last4 || null
+    };
+
+    this.data.transactions.unshift(newTxn);
+    this.persist();
+    return newTxn;
+  }
+
+  takeItem({ itemId, quantity = 1, receiverUser }) {
+    const qty = Math.max(1, Number(quantity) || 1);
+    const item = this.data.items.find(i => i.id === itemId);
+    if (!item) {
+      throw new Error("Item not found in catalog");
+    }
+
+    const available = Number(item.quantity_available ?? item.quantity_total ?? 1);
+    if (available < qty) {
+      throw new Error(`Only ${available} unit(s) available for '${item.name}'`);
+    }
+
+    // Deduct available quantity
+    item.quantity_available = available - qty;
+    if (item.quantity_available === 0) {
+      item.status = "borrowed";
+    }
+
+    const giverId = item.owner_id || item.ownerId;
+    const giverUser = this.getUserByUid(giverId);
+
+    // Save transaction with both giver and receiver details
+    const txn = this.createTransaction({
+      item_id: item.id,
+      giver_id: giverId,
+      receiver_id: receiverUser.uid,
+      quantity: qty,
+      type: "take",
+      status: "completed",
+      item_name: item.name,
+      item_category: item.category,
+      giver_name: giverUser?.displayName || item.ownerPublicName || "Community Lender",
+      giver_phone: giverUser?.phone || null,
+      giver_aadhaar_last4: giverUser?.aadhaarVerification?.last4 || null,
+      receiver_name: receiverUser.displayName || receiverUser.publicName || "Community Member",
+      receiver_phone: receiverUser.phone || null,
+      receiver_aadhaar_last4: receiverUser.aadhaarVerification?.last4 || null
+    });
+
+    this.persist();
+    return { item, transaction: txn };
+  }
+
+  getTransactions(filter = {}) {
+    if (!Array.isArray(this.data.transactions)) {
+      this.data.transactions = [];
+    }
+    let list = [...this.data.transactions];
+    if (filter.giver_id) list = list.filter(t => t.giver_id === filter.giver_id);
+    if (filter.receiver_id) list = list.filter(t => t.receiver_id === filter.receiver_id);
+    if (filter.item_id) list = list.filter(t => t.item_id === filter.item_id);
+    if (filter.type) list = list.filter(t => t.type === filter.type);
+    return list;
+  }
+
+  getMyHistory(userId) {
+    if (!Array.isArray(this.data.transactions)) {
+      this.data.transactions = [];
+    }
+    const all = this.data.transactions;
+    // Items I gave: where giver_id is userId
+    const gave = all.filter(t => t.giver_id === userId);
+    // Items I took: where receiver_id is userId
+    const took = all.filter(t => t.receiver_id === userId);
+
+    return {
+      gave,
+      took,
+      totalGave: gave.reduce((acc, t) => acc + (Number(t.quantity) || 0), 0),
+      totalTook: took.reduce((acc, t) => acc + (Number(t.quantity) || 0), 0)
+    };
   }
 
   // Handover tokens
