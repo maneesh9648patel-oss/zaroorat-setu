@@ -4,11 +4,12 @@ import {
   ArrowLeft, Download, Search, Filter, AlertTriangle, CheckCircle2, 
   Clock, Box, Layers, User, Phone, ShieldCheck, RefreshCw, 
   Calendar, RotateCcw, AlertCircle, TrendingUp, PackageCheck,
-  ChevronRight, ArrowUpRight, ArrowDownLeft, ShieldAlert
+  ChevronRight, ArrowUpRight, ArrowDownLeft, ShieldAlert, Sparkles
 } from 'lucide-react';
 import { api } from '../services/api';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
+import AdminMatchingAnalytics from '../components/matching/AdminMatchingAnalytics';
 
 export default function StockDashboardPage() {
   const { user } = useAuth();
@@ -19,6 +20,7 @@ export default function StockDashboardPage() {
   const [error, setError] = useState(null);
   const [successMsg, setSuccessMsg] = useState(null);
   const [actionLoadingId, setActionLoadingId] = useState(null);
+  const [activeTab, setActiveTab] = useState('stock'); // 'stock' | 'matching'
 
   // Filters for the Full Records Table
   const [searchQuery, setSearchQuery] = useState('');
@@ -226,7 +228,40 @@ export default function StockDashboardPage() {
         </div>
       </div>
 
-      {/* Alerts & Messages */}
+      {/* Admin Tab Switcher */}
+      <div className="flex items-center gap-2 border-b border-darkbrown/10 pb-2 overflow-x-auto no-scrollbar">
+        <button
+          type="button"
+          onClick={() => setActiveTab('stock')}
+          className={`px-4 py-2.5 rounded-2xl font-black text-xs sm:text-sm transition flex items-center gap-2 whitespace-nowrap ${
+            activeTab === 'stock'
+              ? 'bg-darkbrown text-cream shadow-sm'
+              : 'bg-white text-darkbrown/70 hover:bg-cream/60 border border-darkbrown/10'
+          }`}
+        >
+          <Box className="w-4 h-4" />
+          <span>स्टॉक एवं विनिमय लेज़र (Stock & Ledger)</span>
+        </button>
+
+        <button
+          type="button"
+          onClick={() => setActiveTab('matching')}
+          className={`px-4 py-2.5 rounded-2xl font-black text-xs sm:text-sm transition flex items-center gap-2 whitespace-nowrap ${
+            activeTab === 'matching'
+              ? 'bg-terracotta text-white shadow-sm'
+              : 'bg-white text-darkbrown/70 hover:bg-cream/60 border border-darkbrown/10'
+          }`}
+        >
+          <Sparkles className="w-4 h-4 text-softYellow" />
+          <span>⚡ AI स्मार्ट मैचिंग नियंत्रण (AI Matching Analytics)</span>
+        </button>
+      </div>
+
+      {activeTab === 'matching' ? (
+        <AdminMatchingAnalytics />
+      ) : (
+        <>
+          {/* Alerts & Messages */}
       {error && (
         <div className="p-4 rounded-2xl bg-red-50 border border-red-200 text-red-900 text-xs flex items-center gap-2.5 animate-in fade-in">
           <AlertCircle className="w-5 h-5 text-red-600 shrink-0" />
@@ -666,9 +701,9 @@ export default function StockDashboardPage() {
           </div>
         </div>
 
-        {/* Responsive Table */}
+        {/* Responsive Table with horizontal scroll wrapper */}
         <div className="overflow-x-auto rounded-2xl border border-darkbrown/10">
-          <table className="w-full text-left border-collapse text-xs">
+          <table className="w-full min-w-[850px] text-left border-collapse text-xs">
             <thead>
               <tr className="bg-darkbrown text-cream text-[11px] font-black uppercase tracking-wider">
                 <th className="py-3 px-3.5">ID / प्रकार</th>
@@ -798,6 +833,8 @@ export default function StockDashboardPage() {
           </table>
         </div>
       </div>
+      </>
+      )}
 
     </div>
   );

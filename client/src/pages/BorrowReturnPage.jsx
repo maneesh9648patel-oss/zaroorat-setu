@@ -662,7 +662,7 @@ export default function BorrowReturnPage({ onOpenLens, prefilledLensItem, onClea
         </div>
 
         {/* Action Buttons */}
-        <div className="flex items-center gap-2.5 shrink-0 flex-wrap">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:flex lg:flex-wrap items-center gap-2.5 w-full md:w-auto">
           <Link
             to="/dashboard"
             className="px-4 py-3 rounded-2xl bg-teal-light hover:bg-teal/20 text-teal border border-teal/30 text-xs sm:text-sm font-extrabold shadow-sm transition flex items-center gap-2 tap-target"

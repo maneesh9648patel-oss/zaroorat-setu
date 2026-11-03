@@ -18,7 +18,38 @@ export const USER_ROLES = {
   LENDER: "lender",
   VERIFIER: "verifier",
   NGO: "ngo",
-  ADMIN: "admin"
+  ADMIN: "admin",
+  MODERATOR: "moderator"
+};
+
+export const DISPUTE_STATUS = {
+  OPEN: "open",
+  UNDER_REVIEW: "under_review",
+  AWAITING_RESPONSE: "awaiting_response",
+  RESOLVED: "resolved",
+  ESCALATED: "escalated"
+};
+
+export const COMPLAINT_TYPES = {
+  DAMAGE: "damage",
+  ITEM_NOT_RETURNED: "item_not_returned",
+  NOT_AS_DESCRIBED: "not_as_described",
+  LATE_RETURN: "late_return",
+  OTHER: "other"
+};
+
+export const VERDICT_TYPES = {
+  IN_FAVOR_OF_LENDER: "in_favor_of_lender",
+  IN_FAVOR_OF_BORROWER: "in_favor_of_borrower",
+  PARTIAL: "partial",
+  INSUFFICIENT_EVIDENCE: "insufficient_evidence"
+};
+
+export const RESOLUTION_TYPES = {
+  REPAIR_COST_SPLIT: "repair_cost_split",
+  REPLACEMENT: "replacement",
+  REFUND: "refund",
+  WARNING: "warning"
 };
 
 export const KYC_TIERS = {

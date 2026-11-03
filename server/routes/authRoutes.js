@@ -14,7 +14,9 @@ router.post('/signup', authController.signup);
 router.post('/login', authController.login);
 router.post('/logout', authController.logout);
 router.post('/send-otp', otpRateLimiter, authController.sendOtp);
+router.post('/resend-otp', otpRateLimiter, authController.resendOtp);
 router.post('/verify-otp', authController.verifyOtp);
+router.post('/reset-password', otpRateLimiter, authController.resetPassword);
 router.post('/switch-demo-user', authController.switchDemoUser);
 
 // Authenticated auth & KYC endpoints

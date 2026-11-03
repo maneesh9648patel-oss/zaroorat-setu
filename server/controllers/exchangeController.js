@@ -33,6 +33,15 @@ export const exchangeController = {
         });
       }
 
+      // Fraud flag restriction check
+      if (user.isRestricted) {
+        return res.status(403).json({
+          success: false,
+          error: user.restrictionReason || "Your account has been restricted from lending items due to repeated dispute losses pending admin review.",
+          code: "ACCOUNT_RESTRICTED"
+        });
+      }
+
       if (!name || typeof name !== 'string' || !name.trim()) {
         return res.status(400).json({
           success: false,
@@ -98,6 +107,15 @@ export const exchangeController = {
           success: false,
           error: "mAadhaar QR digital verification is required before taking items.",
           code: "AADHAAR_VERIFICATION_REQUIRED"
+        });
+      }
+
+      // Fraud flag restriction check
+      if (user.isRestricted) {
+        return res.status(403).json({
+          success: false,
+          error: user.restrictionReason || "Your account has been restricted from borrowing items due to repeated dispute losses pending admin review.",
+          code: "ACCOUNT_RESTRICTED"
         });
       }
 

@@ -1,98 +1,135 @@
-import React from 'react';
-import { NavLink } from 'react-router-dom';
-import { Home, ClipboardList, Box, User, CheckSquare, Camera } from 'lucide-react';
-import { useLanguage } from '../../contexts/LanguageContext';
+import React, { useState } from 'react';
+import { NavLink, useLocation } from 'react-router-dom';
+import { MoreHorizontal } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
+import { useLanguage } from '../../contexts/LanguageContext';
+import { getPrimaryMobileTabs } from '../../config/navigationTabs';
+import MoreDrawer from '../navigation/MoreDrawer';
 
-export default function BottomNav({ onOpenLens }) {
-  const { t } = useLanguage();
-  const { user, openAuthModal } = useAuth();
+/**
+ * Mobile Fixed Bottom Tab Bar (< 768px)
+ * Displays top 4 primary tabs (Home, Requests, Items & Borrow, My History) + 1 'More' Tab
+ * Red accent active tab highlight matching dark theme.
+ * Bilingual labels and badges support.
+ */
+export default function BottomNav({
+  onOpenVoiceRecorder,
+  onOpenAssistant,
+  onOpenLens,
+  badges = {}
+}) {
+  const { user, isAuthenticated } = useAuth();
+  const { language } = useLanguage();
+  const location = useLocation();
+  const [isMoreOpen, setIsMoreOpen] = useState(false);
 
-  const isVerifierOrAdmin = user?.role === 'verifier' || user?.role === 'admin';
+  // If user is not logged in, do NOT render the bottom tab bar
+  if (!isAuthenticated || !user) {
+    return null;
+  }
+
+  const isHindi = language === 'hi' || language === 'bho' || language === 'awa' || language === 'bun';
+  const primaryTabs = getPrimaryMobileTabs(user?.role || 'needer');
 
   return (
-    <nav className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-darkbrown/10 pb-safe shadow-[0_-4px_20px_rgba(0,0,0,0.06)]">
-      <div className="max-w-md mx-auto grid grid-cols-5 h-16 items-center px-1">
-        {/* Home */}
-        <NavLink
-          to="/"
-          end
-          className={({ isActive }) =>
-            `flex flex-col items-center justify-center h-full transition ${
-              isActive ? 'text-terracotta font-extrabold' : 'text-darkbrown/60 hover:text-darkbrown'
-            }`
-          }
-        >
-          <Home className="w-5 h-5 mb-0.5" />
-          <span className="text-[10px] leading-none">{t('navHome')}</span>
-        </NavLink>
+    <>
+      <nav 
+        role="tablist"
+        aria-label="Mobile Navigation Tabs"
+        className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-darkbrown/95 backdrop-blur-md border-t border-white/10 pb-safe shadow-[0_-4px_25px_rgba(0,0,0,0.35)]"
+      >
+        <div className="max-w-md mx-auto grid grid-cols-5 h-16 items-center px-1">
+          {/* Primary Mobile Tabs */}
+          {primaryTabs.map((tab) => {
+            const Icon = tab.icon;
+            const primaryLabel = isHindi ? tab.labelHi : tab.labelEn;
+            const badgeCount = tab.badgeKey ? (badges[tab.badgeKey] || 0) : 0;
+            const isActive = tab.route === '/' 
+              ? location.pathname === '/' 
+              : location.pathname.startsWith(tab.route);
 
-        {/* Requests */}
-        <NavLink
-          to="/requests"
-          className={({ isActive }) =>
-            `flex flex-col items-center justify-center h-full transition ${
-              isActive ? 'text-terracotta font-extrabold' : 'text-darkbrown/60 hover:text-darkbrown'
-            }`
-          }
-        >
-          <ClipboardList className="w-5 h-5 mb-0.5" />
-          <span className="text-[10px] leading-none">{t('navRequests')}</span>
-        </NavLink>
+            return (
+              <NavLink
+                key={tab.id}
+                to={tab.route}
+                end={tab.route === '/'}
+                role="tab"
+                aria-selected={isActive}
+                id={`bottom-tab-${tab.id}`}
+                className={`relative flex flex-col items-center justify-center h-full transition-colors duration-150 ${
+                  isActive 
+                    ? 'text-red-400 font-black' 
+                    : 'text-cream/60 hover:text-cream'
+                }`}
+              >
+                {/* Active Indicator Top Line */}
+                {isActive && (
+                  <span 
+                    className="absolute top-0 left-1/2 -translate-x-1/2 w-8 h-1 rounded-full bg-red-500 shadow-sm shadow-red-500/50" 
+                    aria-hidden="true" 
+                  />
+                )}
 
-        {/* Center AI Lens Button */}
-        <button
-          onClick={onOpenLens}
-          className="flex flex-col items-center justify-center -mt-4 group tap-target"
-          title="Open AI Lens Camera (वस्तु स्कैनर व 50% धरोहर)"
-          aria-label="AI Lens Camera"
-        >
-          <div className="w-12 h-12 rounded-full bg-gradient-to-tr from-darkbrown via-teal to-terracotta text-white flex items-center justify-center shadow-lg group-active:scale-95 transition border-2 border-white">
-            <Camera className="w-5 h-5 text-softYellow" />
-          </div>
-          <span className="text-[10px] font-black text-darkbrown mt-0.5">AI Lens</span>
-        </button>
+                <div className="relative mb-0.5">
+                  <Icon className={`w-5 h-5 transition-transform duration-150 ${isActive ? 'scale-110' : ''}`} />
+                  {badgeCount > 0 && (
+                    <span 
+                      className="absolute -top-1 -right-2 px-1 py-0.2 rounded-full bg-red-600 text-white text-[8px] font-black leading-tight shadow-sm animate-pulse"
+                      aria-label={`${badgeCount} unread`}
+                    >
+                      {badgeCount > 99 ? '99+' : badgeCount}
+                    </span>
+                  )}
+                </div>
+                <span className="text-[10px] leading-tight truncate max-w-[62px]">
+                  {primaryLabel}
+                </span>
+              </NavLink>
+            );
+          })}
 
-        {/* Items (Borrow & Return) */}
-        <NavLink
-          to="/borrow-return"
-          className={({ isActive }) =>
-            `flex flex-col items-center justify-center h-full transition ${
-              isActive ? 'text-terracotta font-extrabold' : 'text-darkbrown/60 hover:text-darkbrown'
-            }`
-          }
-        >
-          <Box className="w-5 h-5 mb-0.5" />
-          <span className="text-[10px] leading-none">{t('navItems')}</span>
-        </NavLink>
-
-        {/* Profile / Verifier */}
-        {isVerifierOrAdmin ? (
-          <NavLink
-            to="/verifier"
-            className={({ isActive }) =>
-              `flex flex-col items-center justify-center h-full transition ${
-                isActive ? 'text-terracotta font-extrabold' : 'text-darkbrown/60 hover:text-darkbrown'
-              }`
-            }
+          {/* 5th Tab: "More (अधिक)" */}
+          <button
+            type="button"
+            role="tab"
+            aria-selected={isMoreOpen}
+            aria-haspopup="dialog"
+            onClick={() => setIsMoreOpen(true)}
+            className={`relative flex flex-col items-center justify-center h-full transition-colors duration-150 ${
+              isMoreOpen 
+                ? 'text-red-400 font-black' 
+                : 'text-cream/60 hover:text-cream'
+            }`}
           >
-            <CheckSquare className="w-5 h-5 mb-0.5 text-teal" />
-            <span className="text-[10px] leading-none text-teal font-semibold">Verifier</span>
-          </NavLink>
-        ) : (
-          <NavLink
-            to={user ? "/profile" : "/login"}
-            className={({ isActive }) =>
-              `flex flex-col items-center justify-center h-full transition ${
-                isActive ? 'text-terracotta font-extrabold' : 'text-darkbrown/60 hover:text-darkbrown'
-              }`
-            }
-          >
-            <User className="w-5 h-5 mb-0.5" />
-            <span className="text-[10px] leading-none">{user ? t('navProfile') : 'Login'}</span>
-          </NavLink>
-        )}
-      </div>
-    </nav>
+            {isMoreOpen && (
+              <span 
+                className="absolute top-0 left-1/2 -translate-x-1/2 w-8 h-1 rounded-full bg-red-500 shadow-sm shadow-red-500/50" 
+                aria-hidden="true" 
+              />
+            )}
+            <div className="relative mb-0.5">
+              <MoreHorizontal className="w-5 h-5" />
+              {/* If secondary tabs like offline queue or verifier have items, show small dot */}
+              {((badges.offlineQueue || 0) + (badges.verifierQueue || 0)) > 0 && (
+                <span className="absolute -top-0.5 -right-1 w-2 h-2 rounded-full bg-red-500 ring-2 ring-darkbrown animate-pulse" />
+              )}
+            </div>
+            <span className="text-[10px] leading-tight">
+              {isHindi ? 'अधिक' : 'More'}
+            </span>
+          </button>
+        </div>
+      </nav>
+
+      {/* Slide-Up More Drawer */}
+      <MoreDrawer
+        isOpen={isMoreOpen}
+        onClose={() => setIsMoreOpen(false)}
+        onOpenVoiceRecorder={onOpenVoiceRecorder}
+        onOpenAssistant={onOpenAssistant}
+        onOpenLens={onOpenLens}
+        badges={badges}
+      />
+    </>
   );
 }

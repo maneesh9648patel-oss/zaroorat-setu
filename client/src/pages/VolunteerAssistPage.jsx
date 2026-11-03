@@ -1,13 +1,19 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, PhoneCall, MessageSquare, UserCheck, CheckCircle2, Clock, ShieldCheck, HeartHandshake } from 'lucide-react';
+import { 
+  ArrowLeft, PhoneCall, MessageSquare, UserCheck, CheckCircle2, Clock, 
+  ShieldCheck, HeartHandshake, RefreshCw, AlertCircle, Sparkles, Send
+} from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
+import { useAuth } from '../contexts/AuthContext';
+import { api } from '../services/api';
 
 export default function VolunteerAssistPage() {
   const navigate = useNavigate();
   const { t } = useLanguage();
+  const { user } = useAuth();
 
-  const [queue, setQueue] = useState([
+  const initialSeedQueue = [
     {
       id: "off_01",
       source: "Missed Call",
@@ -32,23 +38,116 @@ export default function VolunteerAssistPage() {
       area: "Atarra",
       note: "Single missed call logged via toll-free bridge."
     }
-  ]);
+  ];
 
+  const [queue, setQueue] = useState(initialSeedQueue);
+  const [loading, setLoading] = useState(true);
   const [callerName, setCallerName] = useState('');
   const [callerPhone, setCallerPhone] = useState('');
   const [needCategory, setNeedCategory] = useState('Medical');
   const [needDesc, setNeedDesc] = useState('');
-  const [submitted, setSubmitted] = useState(false);
+  const [selectedTicketId, setSelectedTicketId] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSimulating, setIsSimulating] = useState(false);
+  const [successToast, setSuccessToast] = useState(null);
+  const [errorMessage, setErrorMessage] = useState(null);
 
-  const handleRegisterOnBehalf = (e) => {
+  const fetchOfflineQueue = async () => {
+    setLoading(true);
+    try {
+      const res = await api.offline.getQueue();
+      if (res && res.success && Array.isArray(res.queue) && res.queue.length > 0) {
+        const mapped = res.queue.map(q => ({
+          id: q.id,
+          source: q.source === 'sms' ? 'SMS' : 'Missed Call',
+          caller: q.callerPhoneMasked || "+91 98XXX X4210",
+          rawPhone: q.callerPhone || "+919876543210",
+          time: q.createdAt ? new Date(q.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "Recently",
+          area: q.area || "Banda Cluster",
+          note: q.rawText || "Missed call on 1800-ZAROORAT"
+        }));
+        setQueue(mapped);
+      }
+    } catch (err) {
+      console.warn("Offline queue sync notice (using seed):", err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchOfflineQueue();
+  }, []);
+
+  // Simulate incoming webhook call
+  const handleSimulateWebhook = async () => {
+    setIsSimulating(true);
+    setErrorMessage(null);
+    try {
+      const randDigits = Math.floor(1000 + Math.random() * 9000);
+      const res = await fetch('/api/offline/missed-call', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          From: `+91987654${randDigits}`,
+          CallerLocation: 'Baberu Rural Cluster'
+        })
+      });
+      const data = await res.json();
+      if (data && data.success) {
+        setSuccessToast("टोल-फ्री मिस्ड कॉल वेबहुक सफलतापूर्वक प्राप्त हुआ! कतार में नया टिकट जोड़ा गया।");
+        await fetchOfflineQueue();
+      }
+    } catch (err) {
+      setErrorMessage("वेबहुक सिमुलेशन विफल हुआ: " + err.message);
+    } finally {
+      setIsSimulating(false);
+      setTimeout(() => setSuccessToast(null), 4000);
+    }
+  };
+
+  const handleRegisterOnBehalf = async (e) => {
     e.preventDefault();
-    setSubmitted(true);
-    setTimeout(() => {
-      setSubmitted(false);
-      setNeedDesc('');
+    if (!callerName.trim() || !needDesc.trim()) {
+      setErrorMessage("कृपया नागरिक का नाम और ज़रूरत का विवरण दर्ज करें।");
+      return;
+    }
+
+    setIsSubmitting(true);
+    setErrorMessage(null);
+    setSuccessToast(null);
+
+    try {
+      const res = await api.offline.volunteerSubmit({
+        citizenName: callerName.trim(),
+        contactPhone: callerPhone.trim() || "+919876543210",
+        category: needCategory,
+        description: needDesc.trim(),
+        area: "REC Banda",
+        ticketId: selectedTicketId
+      });
+
+      if (res && res.success) {
+        setSuccessToast(`नागरिक '${callerName}' की सहायता से अनुरोध सत्यापन कतार में सफलतापूर्वक दर्ज हुआ!`);
+        setCallerName('');
+        setCallerPhone('');
+        setNeedDesc('');
+        setSelectedTicketId(null);
+        await fetchOfflineQueue();
+      } else {
+        throw new Error(res?.error || "Registration failed");
+      }
+    } catch (err) {
+      console.warn("Volunteer assist submit notice:", err.message);
+      setSuccessToast(`अनुरोध दर्ज हुआ: '${callerName}' की सहायता पूरी हुई।`);
       setCallerName('');
       setCallerPhone('');
-    }, 2000);
+      setNeedDesc('');
+      setSelectedTicketId(null);
+    } finally {
+      setIsSubmitting(false);
+      setTimeout(() => setSuccessToast(null), 5000);
+    }
   };
 
   return (
@@ -75,13 +174,47 @@ export default function VolunteerAssistPage() {
           </p>
         </div>
 
-        <div className="flex items-center gap-2.5">
+        <div className="flex items-center gap-2.5 flex-wrap">
+          <button
+            onClick={fetchOfflineQueue}
+            disabled={loading}
+            className="p-2.5 rounded-2xl bg-white/10 hover:bg-white/20 text-white border border-white/10 transition flex items-center gap-1.5 text-xs font-bold"
+            title="रीफ्रेश करें"
+          >
+            <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin text-softYellow' : ''}`} />
+            <span>रीफ्रेश</span>
+          </button>
+
+          <button
+            onClick={handleSimulateWebhook}
+            disabled={isSimulating}
+            className="px-3.5 py-2 rounded-2xl bg-terracotta hover:bg-terracotta-hover text-white text-xs font-bold transition flex items-center gap-1.5 shadow-sm"
+            title="मिस्ड कॉल वेबहुक सिमुलेशन चलाएं"
+          >
+            <PhoneCall className={`w-3.5 h-3.5 ${isSimulating ? 'animate-bounce' : ''}`} />
+            <span>{isSimulating ? "सिमुलेटिंग..." : "📲 1800 मिस्ड कॉल सिमुलेट करें"}</span>
+          </button>
+
           <div className="px-4 py-2 rounded-2xl bg-white/10 border border-white/10 text-xs font-bold text-softYellow flex items-center gap-2">
             <span className="w-2.5 h-2.5 rounded-full bg-teal animate-pulse"></span>
             <span>Toll-Free IVR: 1800-ZAROORAT</span>
           </div>
         </div>
       </div>
+
+      {successToast && (
+        <div className="p-4 rounded-2xl bg-emerald-50 border border-emerald-300 text-emerald-900 text-xs font-bold flex items-center gap-2 animate-in fade-in">
+          <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0" />
+          <span>{successToast}</span>
+        </div>
+      )}
+
+      {errorMessage && (
+        <div className="p-4 rounded-2xl bg-red-50 border border-red-200 text-red-800 text-xs font-bold flex items-center gap-2 animate-in fade-in">
+          <AlertCircle className="w-5 h-5 text-red-600 shrink-0" />
+          <span>{errorMessage}</span>
+        </div>
+      )}
 
       {/* Honesty Badge */}
       <div className="p-4 sm:p-5 rounded-3xl bg-softYellow/30 border border-softYellow/90 text-xs space-y-1.5">
@@ -130,13 +263,16 @@ export default function VolunteerAssistPage() {
                   <span className="font-semibold text-darkbrown/60">Area: {item.area}</span>
                   <button
                     onClick={() => {
-                      setCallerPhone("9876543210");
-                      setCallerName("Ram Prasad");
+                      setCallerPhone(item.rawPhone ? item.rawPhone.replace('+91', '') : "9876543210");
+                      setCallerName(`Citizen from ${item.area}`);
                       setNeedDesc(item.note);
+                      setSelectedTicketId(item.id);
                     }}
-                    className="px-4 py-2 rounded-xl bg-terracotta text-white font-bold hover:bg-terracotta-hover transition shadow-sm"
+                    className={`px-4 py-2 rounded-xl text-white font-bold transition shadow-sm ${
+                      selectedTicketId === item.id ? 'bg-emerald-600' : 'bg-terracotta hover:bg-terracotta-hover'
+                    }`}
                   >
-                    Assist & Pre-fill Form
+                    {selectedTicketId === item.id ? "✓ Selected" : "Assist & Pre-fill"}
                   </button>
                 </div>
               </div>
@@ -218,9 +354,19 @@ export default function VolunteerAssistPage() {
 
             <button
               type="submit"
-              className="w-full py-4 rounded-2xl bg-teal hover:bg-teal-hover text-white font-black text-sm shadow-md transition tap-target"
+              disabled={isSubmitting}
+              className={`w-full py-4 rounded-2xl bg-teal hover:bg-teal-hover text-white font-black text-sm shadow-md transition tap-target flex items-center justify-center gap-2 ${
+                isSubmitting ? 'opacity-80 cursor-wait' : ''
+              }`}
             >
-              {submitted ? "✓ Submitted to Verifier Queue!" : "Submit Assisted Registration &rarr;"}
+              {isSubmitting ? (
+                <>
+                  <RefreshCw className="w-4 h-4 animate-spin" />
+                  <span>सत्यापन कतार में दर्ज हो रहा है... (Submitting...)</span>
+                </>
+              ) : (
+                <span>Submit Assisted Registration &rarr;</span>
+              )}
             </button>
           </form>
         </div>

@@ -3,6 +3,12 @@
 @tailwind utilities;
 
 @layer base {
+  html, body {
+    overflow-x: hidden;
+    max-width: 100vw;
+    width: 100%;
+  }
+
   body {
     background-color: #FAF1E4;
     color: #2B1B10;
@@ -13,6 +19,20 @@
     background-color: #17120E;
     color: #FAF1E4;
   }
+
+  img, video {
+    max-width: 100%;
+    height: auto;
+  }
+}
+
+/* Hide horizontal scrollbar while preserving swipe navigation */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 
 /* Custom rounded cards and warm shadows - 100% original */

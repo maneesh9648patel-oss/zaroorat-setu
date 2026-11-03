@@ -10,10 +10,22 @@ import { useLanguage } from '../contexts/LanguageContext';
 import KycBadge from '../components/common/KycBadge';
 
 export default function ProfilePage() {
-  const { user, logout, openAuthModal, openAadhaarModal, isAadhaarVerified } = useAuth();
+  const { user, logout, openAuthModal, openAadhaarModal, isAadhaarVerified, switchRole } = useAuth();
   const { t } = useLanguage();
   const navigate = useNavigate();
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
+  const [switchingRole, setSwitchingRole] = useState(false);
+
+  const handleRoleSwitch = async (role) => {
+    setSwitchingRole(true);
+    try {
+      await switchRole(role);
+    } catch (e) {
+      console.warn("Role switch error:", e);
+    } finally {
+      setSwitchingRole(false);
+    }
+  };
 
   const handleLogout = async () => {
     await logout();
@@ -341,6 +353,53 @@ export default function ProfilePage() {
                 <div className="text-xs font-bold text-darkbrown">KYC अपग्रेड</div>
                 <div className="text-[10px] text-darkbrown/50">दस्तावेज सत्यापन</div>
               </button>
+            </div>
+          </div>
+
+          {/* 1-Click Role Switcher for Hackathon Evaluation */}
+          <div className="bg-white rounded-3xl p-6 shadow-md border border-darkbrown/10 space-y-3">
+            <div className="flex items-center justify-between">
+              <h3 className="text-sm font-black text-darkbrown uppercase tracking-wider flex items-center gap-2">
+                <Shield className="w-4 h-4 text-teal" />
+                <span>परीक्षण भूमिका बदलें (Switch Demo Role)</span>
+              </h3>
+              <span className="text-[10px] font-bold text-darkbrown/50 bg-cream px-2.5 py-1 rounded-full">
+                Hackathon Pilot Evaluation
+              </span>
+            </div>
+            <p className="text-xs text-darkbrown/70 leading-relaxed">
+              विभिन्न दृष्टिकोणों (नागरिक, दानी, सत्यापनकर्ता, एडमिन) से परीक्षण करने के लिए किसी भी भूमिका पर टैप करें:
+            </p>
+
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 pt-1">
+              {[
+                { role: 'needer', label: '👤 नागरिक (Needer)', name: 'Aarav Kumar' },
+                { role: 'donor', label: '🤝 दानी (Donor)', name: 'Priya Verma' },
+                { role: 'lender', label: '📚 प्रदाता (Lender)', name: 'REC Maker Club' },
+                { role: 'verifier', label: '⚖️ सत्यापनकर्ता (Verifier)', name: 'Manoj Tripathi' },
+                { role: 'ngo', label: '🏢 NGO संस्था', name: 'Seva Sahayata' },
+                { role: 'admin', label: '🛡️ प्लेटफॉर्म एडमिन', name: 'Admin Portal' }
+              ].map(r => (
+                <button
+                  key={r.role}
+                  type="button"
+                  disabled={switchingRole}
+                  onClick={() => handleRoleSwitch(r.role)}
+                  className={`p-3 rounded-2xl text-left border transition ${
+                    user?.role === r.role
+                      ? 'bg-darkbrown text-cream border-darkbrown font-black shadow-sm'
+                      : 'bg-cream/40 hover:bg-cream border-darkbrown/10 hover:border-darkbrown/30 text-darkbrown'
+                  }`}
+                >
+                  <div className="text-xs font-bold leading-tight">{r.label}</div>
+                  <div className="text-[10px] text-darkbrown/60 truncate mt-0.5">{r.name}</div>
+                  {user?.role === r.role && (
+                    <span className="inline-block mt-1 text-[9px] font-black text-softYellow uppercase">
+                      ✓ सक्रिय खाता
+                    </span>
+                  )}
+                </button>
+              ))}
             </div>
           </div>
         </div>

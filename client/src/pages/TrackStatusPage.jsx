@@ -1,6 +1,10 @@
-import React, { useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import { ArrowLeft, Check, Clock, Volume2, ShieldCheck, MapPin, Building2, User } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useParams, Link } from 'react-router-dom';
+import { 
+  ArrowLeft, Check, Clock, Volume2, ShieldCheck, MapPin, Building2, User, 
+  Sparkles, RefreshCw, AlertCircle, ChevronRight, XCircle
+} from 'lucide-react';
+import { api } from '../services/api';
 import { useLanguage } from '../contexts/LanguageContext';
 import PriorityBadge from '../components/common/PriorityBadge';
 
@@ -9,27 +13,107 @@ export default function TrackStatusPage() {
   const { id } = useParams();
   const { t } = useLanguage();
   const [isSpeakingTTS, setIsSpeakingTTS] = useState(false);
+  const [requestData, setRequestData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState(null);
+
+  // Fallback defaults for demo request req_1042 or network failures
+  const fallbackRequest = {
+    id: id || "req_1042",
+    title: "Wheelchair for 2 weeks",
+    description: "Rehabilitation support after leg fracture. Patient is elderly.",
+    category: "Items",
+    urgency: "High",
+    userArea: "Civil Lines, Banda",
+    distanceKm: 3,
+    status: "verified",
+    verifierStatus: "verified",
+    verifierNotes: "Duplicate check passed. Priority confirmed as High.",
+    verifierName: "Manoj Tripathi (Verifier #01)",
+    matchedProvider: {
+      name: "Seva Sahayata Trust",
+      tier: "Level 3 Verified NGO",
+      distance: "3 km away",
+      reg: "Reg #UP-BND-2021-0428",
+      hub: "Civil Lines Community Center"
+    },
+    createdAt: new Date().toISOString()
+  };
+
+  useEffect(() => {
+    let isMounted = true;
+    if (!id) {
+      setRequestData(fallbackRequest);
+      setLoading(false);
+      return;
+    }
+
+    setLoading(true);
+    setLoadError(null);
+    api.requests.getById(id)
+      .then(res => {
+        if (isMounted) {
+          if (res && res.success && res.request) {
+            setRequestData(res.request);
+          } else {
+            setRequestData(fallbackRequest);
+          }
+        }
+      })
+      .catch(err => {
+        console.warn("Fetch request by ID notice (using fallback):", err.message);
+        if (isMounted) setRequestData(fallbackRequest);
+      })
+      .finally(() => {
+        if (isMounted) setLoading(false);
+      });
+
+    return () => { isMounted = false; };
+  }, [id]);
+
+  const req = requestData || fallbackRequest;
+
+  // Determine stage progression
+  const isVerified = req.verifierStatus === 'verified' || req.status === 'verified' || req.status === 'matched' || req.status === 'completed';
+  const isPendingVerification = req.verifierStatus === 'pending' || req.status === 'submitted';
+  const isRejected = req.verifierStatus === 'rejected' || req.status === 'rejected';
+  const isMatched = req.status === 'matched' || req.status === 'completed';
+  const isCompleted = req.status === 'completed';
 
   const steps = [
     {
       title: t('reqSubmittedTitle'),
-      desc: "Received through the app at 10:12 am.",
-      status: "completed"
+      desc: `Received through the app at ${req.createdAt ? new Date(req.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '10:12 AM'}.`,
+      status: "completed",
+      time: req.createdAt ? new Date(req.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "Submitted"
     },
     {
       title: t('reqVerifiedTitle'),
-      desc: "Duplicate check passed. Priority confirmed as High.",
-      status: "completed"
+      desc: isRejected
+        ? "Request review: Rejected or duplicate alert triggered."
+        : isVerified 
+        ? (req.verifierNotes || "Duplicate check passed. Priority confirmed by human reviewer.")
+        : "Waiting for human verifier confirmation in Banda desk.",
+      status: isRejected ? "rejected" : isVerified ? "completed" : isPendingVerification ? "current" : "pending",
+      time: isVerified ? "Confirmed" : isPendingVerification ? "Under Review" : "Pending"
     },
     {
       title: t('reqMatchedTitle'),
-      desc: "Waiting for the provider to confirm availability.",
-      status: "current"
+      desc: isMatched
+        ? `Matched with verified local provider: ${req.matchedProvider?.name || 'Seva Sahayata Trust'}.`
+        : isVerified
+        ? "AI Smart Matching running. Donors & NGOs within 5 km being alerted."
+        : "Matches will be activated once verified.",
+      status: isMatched ? "completed" : isVerified ? "current" : "pending",
+      time: isMatched ? "Matched" : isVerified ? "Matching..." : "Pending"
     },
     {
       title: t('reqCompletedTitle'),
-      desc: "Both sides confirm once the help is delivered.",
-      status: "pending"
+      desc: isCompleted 
+        ? "Safe handover confirmed via single-use QR code."
+        : "Both sides confirm once the assistance/item is safely delivered.",
+      status: isCompleted ? "completed" : isMatched ? "current" : "pending",
+      time: isCompleted ? "Completed" : "Pending"
     }
   ];
 
@@ -41,7 +125,15 @@ export default function TrackStatusPage() {
       return;
     }
 
-    const text = "आपके अनुरोध #ZS-1042 की स्थिति: मानवीय सत्यापनकर्ता द्वारा प्रमाणित हो चुका है। सेवा सहायता ट्रस्ट से मिलान किया गया है। पिकअप तय करें।";
+    const statusHindi = isCompleted 
+      ? "अनुरोध पूरा हो चुका है।"
+      : isMatched 
+      ? `मददगार मिल चुका है: ${req.matchedProvider?.name || 'सहयोगी संस्था'}।`
+      : isVerified 
+      ? "मानवीय सत्यापनकर्ता द्वारा प्रमाणित हो चुका है। स्मार्ट मैचिंग सक्रिय है।"
+      : "सत्यापन प्रक्रियाधीन है।";
+
+    const text = `अनुरोध संख्या ${req.id}। शीर्षक: ${req.title}। प्राथमिकता: ${req.urgency}। स्थिति: ${statusHindi}`;
     const utterance = new SpeechSynthesisUtterance(text);
     utterance.lang = 'hi-IN';
     utterance.onend = () => setIsSpeakingTTS(false);
@@ -64,19 +156,19 @@ export default function TrackStatusPage() {
               <ArrowLeft className="w-5 h-5" />
             </button>
             <span className="px-3 py-1 rounded-full bg-softYellow/20 text-softYellow text-xs font-bold border border-softYellow/30">
-              Live Tracker · Request #ZS-1042
+              Live Tracker · Request #{req.id}
             </span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
-            {t('requestStatusTitle')}
+            {req.title}
           </h1>
           <p className="text-xs sm:text-sm text-cream/80">
-            Wheelchair for 2 weeks · Civil Lines, Banda (3 km)
+            {req.category} · {req.userArea || "REC Banda"} {req.distanceKm ? `(${req.distanceKm} km)` : ''}
           </p>
         </div>
 
         <div className="flex items-center gap-3">
-          <PriorityBadge urgency="High" size="md" />
+          <PriorityBadge urgency={req.urgency || "Normal"} size="md" />
           <button
             onClick={handleReadStatus}
             className="flex items-center gap-1.5 px-4 py-2.5 rounded-2xl bg-white/10 hover:bg-white/20 text-white text-xs font-bold transition border border-white/10"
@@ -88,15 +180,44 @@ export default function TrackStatusPage() {
         </div>
       </div>
 
+      {/* AI Smart Match Quick Dispatch Callout */}
+      <div className="p-4 sm:p-5 rounded-3xl bg-gradient-to-r from-darkbrown via-teal/90 to-teal text-white shadow-md flex flex-col sm:flex-row sm:items-center justify-between gap-4 border border-softYellow/30">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-2xl bg-terracotta text-white flex items-center justify-center shrink-0 shadow-sm">
+            <Sparkles className="w-5 h-5 animate-pulse" />
+          </div>
+          <div>
+            <div className="font-black text-sm text-white flex items-center gap-2">
+              <span>⚡ AI स्मार्ट मैचिंग इंजन (Smart Matching)</span>
+              <span className="px-2 py-0.5 rounded-full bg-softYellow text-darkbrown text-[10px] font-black uppercase">
+                6 Factors
+              </span>
+            </div>
+            <p className="text-xs text-cream/80 mt-0.5">
+              इमरजेंसी स्तर, दूरी (0-20km), संसाधन उपलब्धता और आधार KYC ट्रस्ट स्कोर के आधार पर मैच देखें।
+            </p>
+          </div>
+        </div>
+        <Link
+          to={`/smart-matching?requestId=${req.id}`}
+          className="px-4 py-2.5 rounded-2xl bg-white text-darkbrown hover:bg-softYellow font-black text-xs transition flex items-center justify-center gap-1.5 shadow-sm whitespace-nowrap self-start sm:self-center"
+        >
+          <span>मददगार खोजें (Find Matches)</span>
+          <ChevronRight className="w-4 h-4" />
+        </Link>
+      </div>
+
       {/* 2-Column Responsive Layout */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         {/* Left (7 cols): Stepper & Verification Audit */}
         <div className="lg:col-span-7 bg-white p-6 sm:p-8 rounded-3xl border border-darkbrown/10 shadow-sm space-y-6">
           <div className="flex items-center justify-between border-b border-darkbrown/10 pb-4">
             <h2 className="font-black text-lg text-darkbrown">Progress Milestones</h2>
-            <span className="text-xs font-bold text-teal flex items-center gap-1">
+            <span className={`text-xs font-bold flex items-center gap-1 ${
+              isVerified ? 'text-teal' : isRejected ? 'text-red-600' : 'text-terracotta'
+            }`}>
               <ShieldCheck className="w-4 h-4" />
-              Human Verified
+              {isVerified ? 'Human Verified' : isRejected ? 'Rejected' : 'Under Review'}
             </span>
           </div>
 
@@ -118,6 +239,8 @@ export default function TrackStatusPage() {
                   className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 z-10 font-bold text-xs ${
                     step.status === 'completed'
                       ? 'bg-teal text-white shadow-sm'
+                      : step.status === 'rejected'
+                      ? 'bg-red-600 text-white shadow-sm'
                       : step.status === 'current'
                       ? 'bg-terracotta text-white shadow-sm animate-pulse'
                       : 'bg-darkbrown/10 text-darkbrown/40'
@@ -125,6 +248,8 @@ export default function TrackStatusPage() {
                 >
                   {step.status === 'completed' ? (
                     <Check className="w-4 h-4 stroke-[3]" />
+                  ) : step.status === 'rejected' ? (
+                    <XCircle className="w-4 h-4" />
                   ) : step.status === 'current' ? (
                     <span className="w-2.5 h-2.5 rounded-full bg-white" />
                   ) : (
@@ -141,7 +266,7 @@ export default function TrackStatusPage() {
                       {step.title}
                     </h3>
                     <span className="text-[11px] font-semibold text-darkbrown/50">
-                      {idx === 0 ? "10:12 AM" : idx === 1 ? "10:14 AM" : idx === 2 ? "In progress" : "Pending"}
+                      {step.time}
                     </span>
                   </div>
                   <p className="text-xs text-darkbrown/70 mt-1 leading-relaxed">
@@ -155,11 +280,11 @@ export default function TrackStatusPage() {
           {/* Verification Audit Note */}
           <div className="p-4 rounded-2xl bg-cream/70 border border-darkbrown/10 text-xs space-y-1">
             <div className="font-extrabold text-darkbrown flex items-center gap-1.5">
-              <span>Verified by Verifier Manoj Tripathi (#01)</span>
+              <span>Verified by {req.verifierName || "Verifier Manoj Tripathi (#01)"}</span>
               <span className="w-1.5 h-1.5 rounded-full bg-teal"></span>
             </div>
             <p className="text-[11px] text-darkbrown/75 leading-normal">
-              Duplicate detection passed (similarity &lt; 0.25). Priority confirmed as <strong>High</strong> based on elderly patient rehabilitation urgency.
+              {req.verifierNotes || "Duplicate check passed. Priority confirmed based on community health and emergency triage parameters."}
             </p>
           </div>
         </div>
@@ -175,19 +300,25 @@ export default function TrackStatusPage() {
 
             <div className="flex items-center gap-4">
               <div className="w-12 h-12 rounded-2xl bg-teal text-white flex items-center justify-center font-black text-xl shadow-inner">
-                S
+                {req.matchedProvider?.name ? req.matchedProvider.name.charAt(0) : 'S'}
               </div>
               <div>
-                <div className="font-black text-base text-white">Seva Sahayata Trust</div>
-                <div className="text-xs text-cream/70 mt-0.5">Level 3 Verified NGO · 3 km away</div>
-                <div className="text-[11px] text-softYellow mt-1">Reg #UP-BND-2021-0428</div>
+                <div className="font-black text-base text-white">
+                  {req.matchedProvider?.name || "Seva Sahayata Trust"}
+                </div>
+                <div className="text-xs text-cream/70 mt-0.5">
+                  {req.matchedProvider?.tier || "Level 3 Verified NGO"} · {req.matchedProvider?.distance || "3 km away"}
+                </div>
+                <div className="text-[11px] text-softYellow mt-1">
+                  {req.matchedProvider?.reg || "Reg #UP-BND-2021-0428"}
+                </div>
               </div>
             </div>
 
             <div className="p-3.5 bg-white/10 rounded-2xl text-xs space-y-1 border border-white/10">
               <div className="font-bold text-white flex items-center gap-1.5">
                 <MapPin className="w-3.5 h-3.5 text-terracotta" />
-                <span>Pickup Hub: Civil Lines Community Center</span>
+                <span>Pickup Hub: {req.matchedProvider?.hub || "Civil Lines Community Center"}</span>
               </div>
               <div className="text-[11px] text-cream/80">
                 Contact details will be shared once provider confirms pickup window.

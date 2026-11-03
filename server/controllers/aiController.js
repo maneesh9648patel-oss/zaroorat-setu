@@ -78,5 +78,27 @@ export const aiController = {
         code: "AI_CHAT_ERROR"
       });
     }
+  },
+
+  // AI Lens image condition & item detection
+  async lensScan(req, res) {
+    try {
+      const { imageBase64, itemHint } = req.body;
+      const result = await GeminiService.analyzeItemImage({
+        imageBase64: imageBase64 || "",
+        itemHint: itemHint || ""
+      });
+
+      return res.json({
+        success: true,
+        item: result
+      });
+    } catch (err) {
+      return res.status(500).json({
+        success: false,
+        error: err.message,
+        code: "AI_LENS_ERROR"
+      });
+    }
   }
 };

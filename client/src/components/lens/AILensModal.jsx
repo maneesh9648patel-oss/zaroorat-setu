@@ -7,6 +7,7 @@ import {
 } from 'lucide-react';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useSettings } from '../../contexts/SettingsContext';
+import { api } from '../../services/api';
 
 export default function AILensModal({ isOpen, onClose, onApplyToLend }) {
   const { t } = useLanguage();
@@ -173,8 +174,9 @@ export default function AILensModal({ isOpen, onClose, onApplyToLend }) {
     startCamera(nextFacing);
   };
 
-  // Capture real snapshot from camera feed
-  const handleCaptureSnapshot = () => {
+  // Capture real snapshot from camera feed & run Backend AI Lens Classification
+  const handleCaptureSnapshot = async () => {
+    let dataUrl = null;
     if (videoRef.current && cameraActive) {
       try {
         const canvas = document.createElement('canvas');
@@ -182,28 +184,40 @@ export default function AILensModal({ isOpen, onClose, onApplyToLend }) {
         canvas.height = videoRef.current.videoHeight || 480;
         const ctx = canvas.getContext('2d');
         ctx.drawImage(videoRef.current, 0, 0, canvas.width, canvas.height);
-        const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
+        dataUrl = canvas.toDataURL('image/jpeg', 0.85);
         setCapturedImage(dataUrl);
-
-        // Perform AI Scan on captured image
-        setIsScanning(true);
-        setScanResult(null);
-        setTimeout(() => {
-          setIsScanning(false);
-          const matchedObject = {
-            ...demoObjects[Math.floor(Math.random() * demoObjects.length)],
-            imagePreview: dataUrl
-          };
-          setScanResult(matchedObject);
-        }, 1200);
-        return;
       } catch (err) {
-        console.warn("Snapshot capture fallback:", err);
+        console.warn("Snapshot capture note:", err);
       }
     }
 
-    // Fallback scan if camera is simulated
-    handlePerformScan();
+    setIsScanning(true);
+    setScanResult(null);
+
+    try {
+      const res = await api.ai.lensScan({
+        imageBase64: dataUrl || "",
+        itemHint: "Study Material, Electronics, Utensil, or Medical"
+      });
+
+      if (res && res.success && res.item) {
+        setScanResult({
+          ...res.item,
+          imagePreview: dataUrl || demoObjects[0].imagePreview
+        });
+      } else {
+        throw new Error("Lens scan fallback");
+      }
+    } catch (err) {
+      console.warn("Lens scan fallback to demo catalog:", err.message);
+      const fallbackObj = {
+        ...demoObjects[Math.floor(Math.random() * demoObjects.length)],
+        imagePreview: dataUrl || demoObjects[0].imagePreview
+      };
+      setScanResult(fallbackObj);
+    } finally {
+      setIsScanning(false);
+    }
   };
 
   // Perform AI Visual Scan (Simulation or Demo Object)

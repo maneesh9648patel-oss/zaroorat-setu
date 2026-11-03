@@ -21,6 +21,8 @@ import aiRoutes from './routes/aiRoutes.js';
 import offlineRoutes from './routes/offlineRoutes.js';
 import aadhaarRoutes from './routes/aadhaarRoutes.js';
 import exchangeRoutes from './routes/exchangeRoutes.js';
+import disputeRoutes from './routes/disputeRoutes.js';
+import { UPLOADS_DIR } from './utils/fileStorage.js';
 import { apiRateLimiter } from './middleware/rateLimiter.js';
 
 dotenv.config();
@@ -40,11 +42,16 @@ app.use(helmet({
   contentSecurityPolicy: false
 }));
 
-app.use(cors({
-  origin: '*',
+// CORS Configuration: Allow dev ports (5173, 5000, 3000) and deployed tunnels/domains
+const corsOptions = {
+  origin: true, // Reflect request origin to allow localhost dev ports, tunnel domains & deployed origins
+  credentials: true,
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
-}));
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'Origin']
+};
+
+app.use(cors(corsOptions));
+app.options('*', cors(corsOptions)); // Explicitly handle preflight OPTIONS for all routes
 
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
@@ -74,6 +81,8 @@ app.use('/api/ai', aiRoutes);
 app.use('/api/offline', offlineRoutes);
 app.use('/api/aadhaar', aadhaarRoutes);
 app.use('/api/exchange', exchangeRoutes);
+app.use('/api/disputes', disputeRoutes);
+app.use('/api/uploads', express.static(UPLOADS_DIR));
 
 // Serve Frontend Client Static Assets (from client/dist)
 const clientDistPath = path.resolve(__dirname, '..', 'client', 'dist');

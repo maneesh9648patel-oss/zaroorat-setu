@@ -1,9 +1,11 @@
 /**
  * ZarooratSetu - API Service Layer
- * Connects with Node.js backend with mock fallback for 100% offline hackathon demos
+ * Connects with Node.js backend with configurable API_BASE_URL and robust error handling
  */
 
-const BASE_URL = '/api';
+// Dynamically read from Vite environment variable or fallback to relative '/api'
+const envApiUrl = import.meta.env?.VITE_API_BASE_URL || import.meta.env?.VITE_API_URL || '/api';
+export const API_BASE_URL = envApiUrl.endsWith('/') ? envApiUrl.slice(0, -1) : envApiUrl;
 
 function getAuthHeader() {
   const token = localStorage.getItem('zaroorat_token');
@@ -17,18 +19,48 @@ async function request(endpoint, options = {}) {
     ...options.headers
   };
 
+  const url = `${API_BASE_URL}${endpoint}`;
+
   try {
-    const res = await fetch(`${BASE_URL}${endpoint}`, {
+    const res = await fetch(url, {
       ...options,
       headers
     });
-    const data = await res.json();
-    if (!res.ok) {
-      throw new Error(data.error || `Request failed with status ${res.status}`);
+
+    let data;
+    try {
+      data = await res.json();
+    } catch (parseErr) {
+      data = {};
     }
+
+    if (!res.ok) {
+      const serverError = data.error || data.message || `Request failed with status ${res.status}`;
+      const err = new Error(serverError);
+      err.status = res.status;
+      err.code = data.code;
+      throw err;
+    }
+
     return data;
   } catch (err) {
     console.warn(`API call ${endpoint} error:`, err.message);
+
+    // Differentiate between network/connectivity failure ("Failed to fetch") vs server response errors
+    const isNetworkError = err.name === 'TypeError' && (
+      err.message === 'Failed to fetch' ||
+      err.message.includes('fetch') ||
+      err.message.includes('NetworkError') ||
+      err.message.includes('network') ||
+      err.message.includes('Failed to load')
+    );
+
+    if (isNetworkError) {
+      const netErr = new Error("सर्वर से संपर्क नहीं हो पाया (Server se connect nahi ho paya / Cannot reach server). कृपया सुनिश्चित करें कि बैकएंड सर्वर पोर्ट 5000 पर सक्रिय है।");
+      netErr.isNetworkError = true;
+      throw netErr;
+    }
+
     throw err;
   }
 }
@@ -47,13 +79,26 @@ export const api = {
     logout: () => request('/auth/logout', {
       method: 'POST'
     }),
-    sendOtp: (phone) => request('/auth/send-otp', {
+    sendOtp: (payload) => request('/auth/send-otp', {
       method: 'POST',
-      body: JSON.stringify({ phone })
+      body: JSON.stringify(typeof payload === 'string' ? { phone: payload } : payload)
     }),
-    verifyOtp: (phone, otp) => request('/auth/verify-otp', {
+    resendOtp: (payload) => request('/auth/resend-otp', {
       method: 'POST',
-      body: JSON.stringify({ phone, otp })
+      body: JSON.stringify(typeof payload === 'string' ? { phone: payload } : payload)
+    }),
+    verifyOtp: (payload, otpCode) => {
+      const body = (typeof payload === 'object' && payload !== null && !otpCode)
+        ? payload
+        : { phone: payload, otp: otpCode };
+      return request('/auth/verify-otp', {
+        method: 'POST',
+        body: JSON.stringify(body)
+      });
+    },
+    resetPassword: (payload) => request('/auth/reset-password', {
+      method: 'POST',
+      body: JSON.stringify(payload)
     }),
     verifyEmail: (email) => request('/auth/verify-email', {
       method: 'POST',
@@ -160,6 +205,14 @@ export const api = {
     extractVoice: (transcript) => request('/ai/voice-extract', {
       method: 'POST',
       body: JSON.stringify({ transcript })
+    }),
+    chat: (data) => request('/ai/chat', {
+      method: 'POST',
+      body: JSON.stringify(data)
+    }),
+    lensScan: (data) => request('/ai/lens-scan', {
+      method: 'POST',
+      body: JSON.stringify(data)
     })
   },
 
@@ -170,5 +223,93 @@ export const api = {
       method: 'POST',
       body: JSON.stringify(data)
     })
+  },
+
+  // Dispute Resolution & Integrity System
+  disputes: {
+    saveConditionPhotos: (data) => request('/disputes/condition-photos', {
+      method: 'POST',
+      body: JSON.stringify(data)
+    }),
+    confirmCondition: (data) => request('/disputes/confirm-condition', {
+      method: 'POST',
+      body: JSON.stringify(data)
+    }),
+    getConditionPhotos: (transactionId) => request(`/disputes/condition-photos/${transactionId}`),
+    generateAgreement: (data) => request('/disputes/agreements/generate', {
+      method: 'POST',
+      body: JSON.stringify(data)
+    }),
+    signAgreement: (agreementId) => request(`/disputes/agreements/${agreementId}/sign`, {
+      method: 'POST'
+    }),
+    getAgreement: (transactionId) => request(`/disputes/agreements/${transactionId}`),
+    raiseDispute: (data) => request('/disputes/raise', {
+      method: 'POST',
+      body: JSON.stringify(data)
+    }),
+    submitResponse: (disputeId, data) => request(`/disputes/${disputeId}/respond`, {
+      method: 'POST',
+      body: JSON.stringify(data)
+    }),
+    getDispute: (id) => request(`/disputes/${id}`),
+    getMyDisputes: () => request('/disputes/my-disputes'),
+    getModeratorQueue: (params = {}) => {
+      const q = new URLSearchParams(params).toString();
+      return request(`/disputes/moderator/queue${q ? `?${q}` : ''}`);
+    },
+    moderatorAction: (disputeId, data) => request(`/disputes/${disputeId}/moderator-action`, {
+      method: 'POST',
+      body: JSON.stringify(data)
+    }),
+    issueDecision: (disputeId, data) => request(`/disputes/${disputeId}/decision`, {
+      method: 'POST',
+      body: JSON.stringify(data)
+    }),
+    submitAppeal: (disputeId, data) => request(`/disputes/${disputeId}/appeal`, {
+      method: 'POST',
+      body: JSON.stringify(data)
+    }),
+    resolveAppeal: (disputeId, data) => request(`/disputes/${disputeId}/appeal-decision`, {
+      method: 'POST',
+      body: JSON.stringify(data)
+    }),
+    assignModeratorRole: (data) => request('/disputes/admin/assign-moderator', {
+      method: 'POST',
+      body: JSON.stringify(data)
+    }),
+    getAdminUsersTrust: () => request('/disputes/admin/users-trust'),
+    unrestrictUser: (uid) => request(`/disputes/admin/unrestrict/${uid}`, {
+      method: 'POST'
+    })
+  },
+
+  // AI-Based Smart Matching Engine
+  matching: {
+    getSmartMatches: (requestId, params = {}) => {
+      const q = new URLSearchParams(params).toString();
+      return request(`/matching/smart/${requestId}${q ? `?${q}` : ''}`);
+    },
+    findCustomMatches: (data) => request('/matching/find', {
+      method: 'POST',
+      body: JSON.stringify(data)
+    }),
+    sendAssistanceRequest: (data) => request('/matching/send-request', {
+      method: 'POST',
+      body: JSON.stringify(data)
+    }),
+    respondMatch: (data) => request('/matching/respond', {
+      method: 'POST',
+      body: JSON.stringify(data)
+    }),
+    getNotifications: () => request('/matching/notifications'),
+    markNotificationRead: (id) => request(`/matching/notifications/${id}/read`, {
+      method: 'POST'
+    }),
+    updateDonorWillingness: (data) => request('/matching/donor/willingness', {
+      method: 'POST',
+      body: JSON.stringify(data)
+    }),
+    getAdminAnalytics: () => request('/matching/admin/analytics')
   }
 };

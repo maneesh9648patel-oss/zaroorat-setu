@@ -126,12 +126,12 @@ export function AuthProvider({ children }) {
     localStorage.removeItem('zaroorat_token');
   };
 
-  // OTP Fallback Methods
-  const sendOtp = async (phone) => {
+  // OTP Verification Methods
+  const sendOtp = async (payload) => {
     setLoading(true);
     setError(null);
     try {
-      const data = await api.auth.sendOtp(phone);
+      const data = await api.auth.sendOtp(payload);
       setLoading(false);
       return data;
     } catch (err) {
@@ -141,13 +141,43 @@ export function AuthProvider({ children }) {
     }
   };
 
-  const verifyOtp = async (phone, otp) => {
+  const resendOtp = async (payload) => {
     setLoading(true);
     setError(null);
     try {
-      const data = await api.auth.verifyOtp(phone, otp);
-      setToken(data.token);
-      setUser(data.user);
+      const data = await api.auth.resendOtp(payload);
+      setLoading(false);
+      return data;
+    } catch (err) {
+      setLoading(false);
+      setError(err.message);
+      throw err;
+    }
+  };
+
+  const verifyOtp = async (payload, otpCode) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const data = await api.auth.verifyOtp(payload, otpCode);
+      if (data.token) setToken(data.token);
+      if (data.user) setUser(data.user);
+      setLoading(false);
+      return data;
+    } catch (err) {
+      setLoading(false);
+      setError(err.message);
+      throw err;
+    }
+  };
+
+  const resetPassword = async (payload) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const data = await api.auth.resetPassword(payload);
+      if (data.token) setToken(data.token);
+      if (data.user) setUser(data.user);
       setLoading(false);
       return data;
     } catch (err) {
@@ -250,7 +280,9 @@ export function AuthProvider({ children }) {
         login,
         logout,
         sendOtp,
+        resendOtp,
         verifyOtp,
+        resetPassword,
         verifyEmail,
         updateProfile,
         submitTier2Id,

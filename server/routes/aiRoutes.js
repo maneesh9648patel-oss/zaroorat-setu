@@ -10,5 +10,6 @@ const router = Router();
 router.post('/priority-score', aiController.scorePriority);
 router.post('/voice-extract', aiController.extractVoice);
 router.post('/chat', aiController.chat);
+router.post('/lens-scan', aiController.lensScan);
 
 export default router;

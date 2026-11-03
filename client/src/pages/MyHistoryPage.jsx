@@ -371,7 +371,7 @@ export default function MyHistoryPage() {
                   </div>
 
                   {/* Right: Counterparty Details & "Mark as returned" Action for Giver */}
-                  <div className="md:border-l md:border-darkbrown/10 md:pl-6 shrink-0 flex flex-col justify-center min-w-[240px] space-y-2">
+                  <div className="w-full md:w-auto md:border-l md:border-darkbrown/10 md:pl-6 shrink-0 flex flex-col justify-center md:min-w-[240px] space-y-2">
                     <div className="p-3 rounded-2xl bg-cream/50 border border-darkbrown/10 text-xs space-y-1">
                       <div className="text-[10px] font-black uppercase tracking-wider text-darkbrown/50">
                         {isGave ? 'सामान प्राप्तकर्ता (Receiver Details):' : 'सामान प्रदाता (Giver Details):'}

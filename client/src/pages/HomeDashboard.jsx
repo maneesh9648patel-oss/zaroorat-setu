@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { 
   Plus, Repeat, ArrowRight, ShieldCheck, HeartHandshake, MapPin, Sparkles, 
-  AlertCircle, PhoneCall, CheckCircle, Mic, Globe, Clock, Users, PackageCheck, Camera, Shield
+  AlertCircle, PhoneCall, CheckCircle, Mic, Globe, Clock, Users, PackageCheck, Camera, Shield, RefreshCw, LogOut
 } from 'lucide-react';
+import { api } from '../services/api';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
 import PriorityBadge from '../components/common/PriorityBadge';
@@ -11,7 +12,7 @@ import KycBadge from '../components/common/KycBadge';
 import BrandLogo from '../components/common/BrandLogo';
 
 export default function HomeDashboard({ onOpenVoiceRecorder, onOpenAssistant, onOpenLens }) {
-  const { user, openAuthModal } = useAuth();
+  const { user, openAuthModal, logout } = useAuth();
   const { t } = useLanguage();
   const navigate = useNavigate();
 
@@ -93,13 +94,60 @@ export default function HomeDashboard({ onOpenVoiceRecorder, onOpenAssistant, on
     }
   ];
 
+  const [liveRequests, setLiveRequests] = useState(sampleRequests);
+  const [loadingRequests, setLoadingRequests] = useState(false);
+
+  // Fetch live requests from backend database on mount
+  useEffect(() => {
+    let isMounted = true;
+    setLoadingRequests(true);
+    api.requests.getAll()
+      .then(res => {
+        if (isMounted && res && res.requests && Array.isArray(res.requests) && res.requests.length > 0) {
+          const mapped = res.requests.map(r => {
+            const cat = r.category || 'Items';
+            const initialChar = r.title ? r.title.charAt(0).toUpperCase() : 'Z';
+            let initialColor = 'bg-teal/20 text-teal';
+            if (cat.toLowerCase().includes('medical')) initialColor = 'bg-terracotta/20 text-terracotta';
+            else if (cat.toLowerCase().includes('education')) initialColor = 'bg-softYellow/80 text-darkbrown';
+
+            return {
+              id: r.id,
+              initial: initialChar,
+              initialColor,
+              title: r.title,
+              area: r.userArea || "REC Banda",
+              distance: r.distanceKm ? `${r.distanceKm} km` : "2 km",
+              timeAgo: r.createdAt ? new Date(r.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "Recently",
+              urgency: r.urgency || "Normal",
+              category: cat,
+              desc: r.description
+            };
+          });
+
+          // Merge: new live items first, avoid duplicate IDs
+          const seen = new Set(mapped.map(m => m.id));
+          const remainingSample = sampleRequests.filter(s => !seen.has(s.id));
+          setLiveRequests([...mapped, ...remainingSample]);
+        }
+      })
+      .catch(err => {
+        console.warn("Requests feed sync notice (using defaults):", err.message);
+      })
+      .finally(() => {
+        if (isMounted) setLoadingRequests(false);
+      });
+
+    return () => { isMounted = false; };
+  }, []);
+
   const filteredRequests = activeCategory === 'all'
-    ? sampleRequests
-    : sampleRequests.filter(r => {
-        const cat = r.category.toLowerCase();
-        if (activeCategory === 'medical') return cat === 'medical';
-        if (activeCategory === 'education') return cat === 'education';
-        if (activeCategory === 'items') return cat === 'items' || cat === 'family utensils' || cat === 'electronics';
+    ? liveRequests
+    : liveRequests.filter(r => {
+        const cat = (r.category || '').toLowerCase();
+        if (activeCategory === 'medical') return cat.includes('medical');
+        if (activeCategory === 'education') return cat.includes('education');
+        if (activeCategory === 'items') return cat.includes('items') || cat.includes('family utensils') || cat.includes('electronics');
         return cat.includes(activeCategory.toLowerCase());
       });
 
@@ -108,16 +156,31 @@ export default function HomeDashboard({ onOpenVoiceRecorder, onOpenAssistant, on
       {/* FULL-WIDTH HERO SECTION */}
       <div className="bg-darkbrown text-cream p-6 sm:p-10 rounded-3xl shadow-xl relative overflow-hidden border border-white/10">
         <div className="relative z-10 max-w-3xl space-y-4">
-          {/* Welcome Pill & Location */}
-          <div className="flex flex-wrap items-center gap-2">
-            <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 text-xs font-bold text-softYellow">
-              <span>{t('heroGreeting')}, {user?.displayName ? user.displayName.split(' ')[0] : 'Neighbor'}</span>
-              <KycBadge level={user?.kycLevel} status={user?.kycStatus} size="sm" />
+          {/* Welcome Pill & Location with Logout Option */}
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <div className="flex flex-wrap items-center gap-2">
+              <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 text-xs font-bold text-softYellow">
+                <span>{t('heroGreeting')}, {user?.displayName ? user.displayName.split(' ')[0] : 'Neighbor'}</span>
+                <KycBadge level={user?.kycLevel} status={user?.kycStatus} size="sm" />
+              </div>
+              <div className="flex items-center gap-1 text-xs font-bold text-cream/90 bg-white/10 px-3 py-1 rounded-full">
+                <MapPin className="w-3.5 h-3.5 text-terracotta" />
+                <span>Pilot: REC Banda & nearby areas</span>
+              </div>
             </div>
-            <div className="flex items-center gap-1 text-xs font-bold text-cream/90 bg-white/10 px-3 py-1 rounded-full">
-              <MapPin className="w-3.5 h-3.5 text-terracotta" />
-              <span>Pilot: REC Banda & nearby areas</span>
-            </div>
+
+            {/* Logout Option directly on Homepage */}
+            <button
+              onClick={async () => {
+                await logout();
+                navigate('/login');
+              }}
+              className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-red-950/60 hover:bg-red-900 border border-red-500/30 text-xs font-bold text-red-300 hover:text-white transition shadow-sm"
+              title="लॉग आउट करें (Logout to Login Page)"
+            >
+              <LogOut className="w-3.5 h-3.5" />
+              <span>लॉग आउट (Logout)</span>
+            </button>
           </div>
 
           {/* Main Title & Tagline */}
@@ -135,7 +198,7 @@ export default function HomeDashboard({ onOpenVoiceRecorder, onOpenAssistant, on
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-3 max-w-xl">
             <button
               onClick={() => navigate('/new-request')}
-              className="p-5 rounded-2xl bg-terracotta hover:bg-terracotta-hover text-white text-left shadow-lg transition flex items-center justify-between group tap-target"
+              className="p-4 sm:p-5 rounded-2xl bg-terracotta hover:bg-terracotta-hover text-white text-left shadow-lg transition flex items-center justify-between group tap-target"
             >
               <div>
                 <div className="font-black text-lg leading-tight">{t('btnNeedHelp')}</div>
@@ -148,7 +211,7 @@ export default function HomeDashboard({ onOpenVoiceRecorder, onOpenAssistant, on
 
             <button
               onClick={() => navigate('/borrow-return')}
-              className="p-5 rounded-2xl bg-teal hover:bg-teal-hover text-white text-left shadow-lg transition flex items-center justify-between group tap-target"
+              className="p-4 sm:p-5 rounded-2xl bg-teal hover:bg-teal-hover text-white text-left shadow-lg transition flex items-center justify-between group tap-target"
             >
               <div>
                 <div className="font-black text-lg leading-tight">{t('btnBorrowLend')}</div>
@@ -171,6 +234,35 @@ export default function HomeDashboard({ onOpenVoiceRecorder, onOpenAssistant, on
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         {/* LEFT / MAIN COLUMN (8 Columns on desktop) */}
         <div className="lg:col-span-8 space-y-8">
+          {/* AI Smart Matching Engine Banner */}
+          <div 
+            onClick={() => navigate('/smart-matching')}
+            className="p-4 sm:p-5 rounded-3xl bg-gradient-to-r from-darkbrown via-darkbrown to-teal text-cream shadow-md hover:shadow-lg transition cursor-pointer flex items-center justify-between gap-4 group border border-softYellow/20"
+          >
+            <div className="flex items-center gap-3.5">
+              <div className="w-12 h-12 rounded-2xl bg-terracotta text-white flex items-center justify-center shrink-0 group-hover:scale-110 transition shadow-sm">
+                <Sparkles className="w-6 h-6 animate-pulse" />
+              </div>
+              <div className="space-y-0.5">
+                <div className="flex items-center gap-2">
+                  <span className="font-black text-sm sm:text-base text-white tracking-tight">
+                    AI स्मार्ट मैचिंग इंजन (Smart Matching Engine)
+                  </span>
+                  <span className="px-2 py-0.5 rounded-full bg-softYellow text-darkbrown text-[10px] font-black uppercase">
+                    Live
+                  </span>
+                </div>
+                <p className="text-xs text-cream/80 max-w-xl line-clamp-1">
+                  इमरजेंसी स्तर, 0-20km दूरी, इन्वेंट्री उपलब्धता, समयावधि और आधार KYC विश्वास स्कोर के आधार पर सटीक मददगार।
+                </p>
+              </div>
+            </div>
+            <div className="hidden sm:flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-softYellow text-xs font-bold shrink-0 border border-white/15">
+              <span>खोलें</span>
+              <span className="group-hover:translate-x-1 transition">&rarr;</span>
+            </div>
+          </div>
+
           {/* AI Voice Recorder Quick Banner */}
           {onOpenVoiceRecorder && (
             <div 
@@ -288,11 +380,24 @@ export default function HomeDashboard({ onOpenVoiceRecorder, onOpenAssistant, on
                     {req.desc}
                   </p>
 
-                  <div className="pt-1 flex items-center justify-between text-xs text-teal font-bold border-t border-darkbrown/5">
-                    <span>{req.category}</span>
-                    <span className="flex items-center gap-1 group-hover:translate-x-1 transition">
-                      View Status &rarr;
-                    </span>
+                  <div className="pt-2 flex items-center justify-between text-xs border-t border-darkbrown/5">
+                    <span className="font-bold text-teal">{req.category}</span>
+                    <div className="flex items-center gap-2">
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          navigate(`/smart-matching?requestId=${req.id}`);
+                        }}
+                        className="px-2.5 py-1 rounded-full bg-terracotta/10 hover:bg-terracotta text-terracotta hover:text-white font-bold text-[11px] transition flex items-center gap-1 shadow-xs"
+                        title="AI Smart Matching - उपयुक्त मददगार खोजें"
+                      >
+                        <span>⚡ AI Match</span>
+                      </button>
+                      <span className="flex items-center gap-1 font-bold text-darkbrown/60 group-hover:text-darkbrown group-hover:translate-x-0.5 transition">
+                        View &rarr;
+                      </span>
+                    </div>
                   </div>
                 </div>
               ))}

@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { ArrowLeft, Mic, MicOff, Volume2, Sparkles, AlertCircle, PhoneCall, Radio } from 'lucide-react';
+import { ArrowLeft, Mic, MicOff, Volume2, Sparkles, AlertCircle, PhoneCall, Radio, RefreshCw, CheckCircle2 } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useAuth } from '../contexts/AuthContext';
+import { api } from '../services/api';
 
 export default function NewRequestPage({ onOpenVoiceRecorder }) {
   const navigate = useNavigate();
@@ -18,6 +19,8 @@ export default function NewRequestPage({ onOpenVoiceRecorder }) {
   const [isListening, setIsListening] = useState(false);
   const [speechError, setSpeechError] = useState(null);
   const [isSpeakingTTS, setIsSpeakingTTS] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState(null);
 
   useEffect(() => {
     if (prefilled) {
@@ -112,9 +115,49 @@ export default function NewRequestPage({ onOpenVoiceRecorder }) {
     window.speechSynthesis.speak(utterance);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    navigate('/requests/req_1042/status');
+    const cleanDesc = description.trim();
+    if (!cleanDesc) {
+      setSpeechError("कृपया अपनी ज़रूरत का विवरण दर्ज करें। (Please enter request description)");
+      return;
+    }
+
+    setIsSubmitting(true);
+    setSubmitError(null);
+    setSpeechError(null);
+
+    try {
+      // Derive a short clean title from description or category
+      const words = cleanDesc.split(/\s+/);
+      const title = words.length > 7 ? words.slice(0, 7).join(' ') + '...' : cleanDesc;
+
+      const payload = {
+        category,
+        title,
+        description: cleanDesc,
+        urgency,
+        area: user?.area || "REC Banda",
+        coordinates: user?.coordinates || { lat: 25.5348, lng: 80.3478 }
+      };
+
+      const res = await api.requests.create(payload);
+      if (res && res.success && res.request?.id) {
+        navigate(`/requests/${res.request.id}/status`, { state: { justCreated: true } });
+      } else {
+        throw new Error(res?.error || "अनुरोध दर्ज करने में विफल (Failed to submit)");
+      }
+    } catch (err) {
+      console.warn("Request creation error:", err);
+      // If unauthorized or network error, fallback gracefully with demo ID so user is never blocked
+      if (err.message && err.message.includes('Authentication required')) {
+        setSubmitError("सत्र समाप्त हो गया है। कृपया पुनः लॉगिन करें।");
+      } else {
+        setSubmitError(err.message || "अनुरोध दर्ज करने में त्रुटि हुई।");
+      }
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -274,12 +317,33 @@ export default function NewRequestPage({ onOpenVoiceRecorder }) {
               </p>
             </div>
 
+            {/* Submit error alert */}
+            {submitError && (
+              <div className="p-3.5 rounded-2xl bg-red-50 text-red-800 text-xs font-bold border border-red-200 flex items-center gap-2">
+                <AlertCircle className="w-4 h-4 text-red-600 shrink-0" />
+                <span>{submitError}</span>
+              </div>
+            )}
+
             {/* Submit button */}
             <button
               type="submit"
-              className="w-full py-4 rounded-2xl bg-terracotta hover:bg-terracotta-hover text-white font-black text-sm shadow-lg transition tap-target"
+              disabled={isSubmitting}
+              className={`w-full py-4 rounded-2xl bg-terracotta hover:bg-terracotta-hover text-white font-black text-sm shadow-lg transition tap-target flex items-center justify-center gap-2 ${
+                isSubmitting ? 'opacity-80 cursor-wait' : ''
+              }`}
             >
-              {t('btnSubmitVerification')} &rarr;
+              {isSubmitting ? (
+                <>
+                  <RefreshCw className="w-4 h-4 animate-spin" />
+                  <span>सत्यापन के लिए भेजा जा रहा है... (Submitting...)</span>
+                </>
+              ) : (
+                <>
+                  <span>{t('btnSubmitVerification')}</span>
+                  <span>&rarr;</span>
+                </>
+              )}
             </button>
           </form>
         </div>
